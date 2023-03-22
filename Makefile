@@ -6,13 +6,13 @@
 #    By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/22 02:28:45 by bducrocq          #+#    #+#              #
-#    Updated: 2023/03/22 02:29:37 by bducrocq         ###   ########lyon.fr    #
+#    Updated: 2023/03/22 02:30:01 by bducrocq         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
 # Binary
 
-NAME = ircserv
+NAME = exec_ircserv
 
 # Path
 
