@@ -6,7 +6,7 @@
 #    By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/22 02:28:45 by bducrocq          #+#    #+#              #
-#    Updated: 2023/03/22 02:30:01 by bducrocq         ###   ########lyon.fr    #
+#    Updated: 2023/03/29 00:38:42 by bducrocq         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,12 +18,14 @@ NAME = exec_ircserv
 
 SRC_PATH = ./srcs/
 SRC_EXT = cpp
+INC_EXT = hpp
 
 OBJ_PATH = ./.objs/
 
 CPPFLAGS = -I./includes/
 
-HEADER =	$(wildcard ./includes/*.hpp)
+HEADER =	$(shell find $(SRC_PATH) -name '*.$(INC_EXT)')
+# HEADER =	$(wildcard ./includes/*.hpp)
 
 # Name
 
