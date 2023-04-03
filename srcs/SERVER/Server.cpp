@@ -86,7 +86,7 @@ int Server::openSocket(int port)
 	sockaddr_in server_address;
 	std::memset(&server_address, 0, sizeof(server_address));
 
-	server_address.sin_addr.s_addr = inet_addr("127.0.0.1"); //defini l'ip du serveur
+	server_address.sin_addr.s_addr = inet_addr("0.0.0.0"); //defini l'ip du serveur
 	server_address.sin_family = AF_INET; //defini le protocole d'ip (IPV4)
 	server_address.sin_port = htons(port); //defini le port du serveur
 
