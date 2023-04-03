@@ -25,33 +25,28 @@
 # include <poll.h>
 
 # include "../UTILS/ANSI.hpp"
+# include "../Client/Client.hpp"
 
 # include <map>
 
 class Server
 {
+public:
+	Server(std::string port, std::string address);
+	~Server();
 
-	public:
+	Server &operator=(Server const &rhs);
 
-		Server( std::string port, std::string address);
-		~Server();
+	void init(void);
 
-		Server &		operator=( Server const & rhs );
+private:
+	Server(Server const &src);
+	Server(void);
 
-		void	init( void );
+	int openSocket(int port);
 
-
-	private:
-
-		Server( Server const & src );
-		Server( void );
-		
-		int		openSocket( int port );
-
-		std::map<sockaddr_in, int>		_clients;
-		struct pollfd					_pollfd;
-
-
+	std::map<int, Client> _clients;
+	struct pollfd _pollfd;
 };
 
 std::ostream &			operator<<( std::ostream & o, Server const & i );

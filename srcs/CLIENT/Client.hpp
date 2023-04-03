@@ -25,9 +25,12 @@ class Client
 		Client( Client const & src );
 		~Client();
 
+		void Change_Nick(std::string);
 		Client &		operator=( Client const & rhs );
 
 	private:
+		int id;
+		std::string nick;
 
 };
 

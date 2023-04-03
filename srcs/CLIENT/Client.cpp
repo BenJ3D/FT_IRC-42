@@ -22,6 +22,7 @@ Client::Client()
 
 Client::Client( const Client & src )
 {
+	(void)src;
 }
 
 
@@ -40,6 +41,7 @@ Client::~Client()
 
 Client &				Client::operator=( Client const & rhs )
 {
+	(void)rhs;
 	//if ( this != &rhs )
 	//{
 		//this->_value = rhs.getValue();
@@ -49,6 +51,7 @@ Client &				Client::operator=( Client const & rhs )
 
 std::ostream &			operator<<( std::ostream & o, Client const & i )
 {
+	(void)i;
 	//o << "Value = " << i.getValue();
 	return o;
 }
@@ -58,6 +61,10 @@ std::ostream &			operator<<( std::ostream & o, Client const & i )
 ** --------------------------------- METHODS ----------------------------------
 */
 
+void Client::Change_Nick(std::string newname)
+{
+	this->nick = newname;
+}
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
