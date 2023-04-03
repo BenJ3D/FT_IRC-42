@@ -146,7 +146,7 @@ int Server::openSocket(int port)
 				{
 					std::string username = user_string.substr(user_pos, end_pos - user_pos);
 					_clients[client_fd].Change_Nick(username);
-					std::string out = ":servername 001 username\r\n:Welcome to my IRC server, " + username +"!\r\n";
+					std::string out = ":servername 001 "+username+"\r\n:Welcome to my IRC server, " + username +"!\r\n";
 					if (send(client_fd, out.c_str(), bytes_received, 0) == -1)
 					{
 						std::cerr << "Erreur lors de l'envoi des données au serveur distant" << std::endl;
