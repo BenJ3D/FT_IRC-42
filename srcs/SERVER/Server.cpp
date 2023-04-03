@@ -82,7 +82,7 @@ int Server::openSocket( int port )
 	sockaddr_in server_address;
 	std::memset(&server_address, 0, sizeof(server_address));
 
-	server_address.sin_addr.s_addr = inet_addr("127.0.0.1");
+	server_address.sin_addr.s_addr = inet_addr("0.0.0.0");
 	server_address.sin_family = AF_INET;
 	server_address.sin_port = htons(port);
 
@@ -110,30 +110,11 @@ int Server::openSocket( int port )
         return 1;
     }
 
-//  // connexion à un serveur distant
-//     int remote_fd = socket(AF_INET, SOCK_STREAM, 0);
-
-//     if (remote_fd == -1) {
-//         std::cerr << "Erreur lors de la création du socket" << std::endl;
-//         return 1;
-//     }
-
-//     sockaddr_in remote_address;
-//     std::memset(&remote_address, 0, sizeof(remote_address));
-
-//     remote_address.sin_family = AF_INET;
-//     remote_address.sin_addr.s_addr = inet_addr("irc.example.com"); // adresse du serveur IRC distant
-//     remote_address.sin_port = htons(6667); // port IRC par défaut
-
-//     if (connect(remote_fd, (sockaddr*)&remote_address, sizeof(remote_address)) == -1) {
-//         std::cerr << "Erreur lors de la connexion au serveur distant" << std::endl;
-//         return 1;
-//     }
 
 while (true) {
     char buffer[1024]= {0};
     int bytes_received = recv(client_fd, buffer, sizeof(buffer), 0);
-	std::cout << "DBG " << buffer << std::endl;
+	std::cout << buffer << std::endl;
     if (bytes_received == -1) {
         std::cerr << "Erreur lors de la réception des données" << std::endl;
         break;
@@ -141,8 +122,8 @@ while (true) {
         std::cerr << "Connexion fermée par le client" << std::endl;
         break;
     } else {
-        // envoyer les données reçues vers le socket distant
-        if (send(client_fd, buffer, bytes_received, 0) == -1) {
+       // envoyer les données reçues vers le socket distant
+        if (send(client_fd, ":servername 001 username\r\n:Welcome to my IRC server, username!\r\n", bytes_received, 0) == -1) {
             std::cerr << "Erreur lors de l'envoi des données au serveur distant" << std::endl;
             break;
         }
