@@ -104,12 +104,6 @@ int Server::openSocket( int port )
     socklen_t client_address_size = sizeof(client_address);
 
     int client_fd = accept(server_fd, (sockaddr*)&client_address, &client_address_size);
-	if (send(client_fd, ":servername 001 username\r\n:Welcome to my IRC server, username!\r\n", bytes_received, 0) == -1)
-	{
-		std::cerr << "Erreur lors de l'envoi des données au serveur distant" << std::endl;
-		break;
-	}
-	int client_fd2 = accept(server_fd2, (sockaddr*)&client_address, &client_address_size);
 
     if (client_fd == -1) {
         std::cerr << "Erreur lors de l'acceptation de la connexion entrante" << std::endl;
@@ -129,7 +123,7 @@ while (true) {
         break;
     } else {
        // envoyer les données reçues vers le socket distant
-        if (send(client_fd, ":servername 001 username\r\n:Welcome to my IRC server, username!\r\n", bytes_received, 0) == -1) {
+		if (send(client_fd, ":127.0.0.1 001 bducrocq :Welcome to my IRC server, bducrocq!\r\n", 64, 0) == -1) {
             std::cerr << "Erreur lors de l'envoi des données au serveur distant" << std::endl;
             break;
         }

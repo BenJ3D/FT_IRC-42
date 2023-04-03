@@ -72,6 +72,11 @@ fclean: clean
 	@rm -rf $(NAME)
 	@echo "\033[31mBinary $(NAME) deleted\n\033[0m"
 
+git:
+	@git add .
+	@printf "Message of the commit: " && read msg && git commit -m "$$msg"
+	@git push
+
 re: fclean all
 
 .PHONY: all, clean, fclean, re
