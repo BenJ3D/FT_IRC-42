@@ -70,9 +70,17 @@ std::ostream &			operator<<( std::ostream & o, Server const & i )
 ** --------------------------------- METHODS ----------------------------------
 */
 
-static int send_message()
+static int send_message(int client_fd, const char *message)
 {
-	
+	int msg_len = std::strlen(message);
+	if (msg_len >=1)
+	{
+		if (send(client_fd, message, msg_len, 0) == -1)
+			return -1;
+		return 0;
+	}
+	std::cerr << "Buffer is empty, can't send message" << std::endl;
+	return 0;
 }
 
 int Server::openSocket(int port)
@@ -145,7 +153,8 @@ int Server::openSocket(int port)
 		}
 		else
 		{
-			if (send(client_fd, ":127.0.0.1 001 username :Welcome to my IRC server!\r\n", 53, 0) == -1)
+			if (send_message(client_fd, ":127.0.0.1 001 username\r\n") == -1 \
+			|| send_message(client_fd, ":Welcome to my IRC server!\r\n") == -1)
 			{
 				std::cerr << "Erreur lors de l'envoi des données au serveur distant" << std::endl;
 				break;
