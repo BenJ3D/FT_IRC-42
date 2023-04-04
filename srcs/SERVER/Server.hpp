@@ -39,6 +39,7 @@ public:
 	Server &operator=(Server const &rhs);
 
 	void init(void);
+	int	send_message(int, const char *) const;
 
 private:
 	Server(Server const &src);
