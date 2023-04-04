@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Server.hpp"
+using namespace std;
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -30,10 +31,10 @@ Server::Server( const Server & src )
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
 
-Server::Server(std::string port, std::string address)
+Server::Server(string port, string address)
 {
 	(void)address;
-	openSocket(std::atoi(port.c_str())); //fonction TEST pour le moment
+	openSocket(atoi(port.c_str())); //fonction TEST pour le moment
 }
 
 Server::~Server()
@@ -59,7 +60,7 @@ void Server::init(void)
 {
 }
 
-std::ostream &			operator<<( std::ostream & o, Server const & i )
+ostream &			operator<<( ostream & o, Server const & i )
 {
 	(void)i;
 	//o << "Value = " << i.getValue();
@@ -70,9 +71,17 @@ std::ostream &			operator<<( std::ostream & o, Server const & i )
 ** --------------------------------- METHODS ----------------------------------
 */
 
-static int send_message()
+int Server::send_message(int client_fd, const char *message) const
 {
-	
+	int msg_len = strlen(message);
+	if (msg_len >=1)
+	{
+		if (send(client_fd, message, msg_len, 0) == -1)
+			return -1;
+		return 0;
+	}
+	cerr << "Buffer is empty, can't send message" << endl;
+	return 0;
 }
 
 int Server::openSocket(int port)
@@ -82,13 +91,13 @@ int Server::openSocket(int port)
 
 	if (server_fd == -1)
 	{
-		std::cerr << "Erreur lors de la création du socket" << std::endl;
+		cerr << "Erreur lors de la création du socket" << endl;
 		return 1;
 	}
 
 	// configuration de l'adresse et du port
 	sockaddr_in server_address;
-	std::memset(&server_address, 0, sizeof(server_address));
+	memset(&server_address, 0, sizeof(server_address));
 
 	server_address.sin_addr.s_addr = inet_addr("0.0.0.0"); //defini l'ip du serveur
 	server_address.sin_family = AF_INET; //defini le protocole d'ip (IPV4)
@@ -97,14 +106,14 @@ int Server::openSocket(int port)
 	// association du socket à l'adresse et au port
 	if (bind(server_fd, (sockaddr *)&server_address, sizeof(server_address)) == -1)
 	{
-		std::cerr << "Erreur lors de la mise en écoute des connexions entrantes1" << std::endl;
+		cerr << "Erreur lors de la mise en écoute des connexions entrantes1" << endl;
 		return 1;
 	}
 
 	// mise en écoute des connexions entrantes
 	if (listen(server_fd, SOMAXCONN) == -1)
 	{
-		std::cerr << "Erreur lors de la mise en écoute des connexions entrantes" << std::endl;
+		cerr << "Erreur lors de la mise en écoute des connexions entrantes" << endl;
 		return 1;
 	}
 
@@ -116,61 +125,62 @@ int Server::openSocket(int port)
 	{
 		int client_fd = accept(server_fd, (sockaddr *)&client_address, &client_address_size);
 
-		std::cout << "test" << std::endl;
+		cout << "test" << endl;
 		if (client_fd == -1)
 		{
-			std::cerr << "Erreur lors de l'acceptation de la connexion entrante" << std::endl;
+			cerr << "Erreur lors de l'acceptation de la connexion entrante" << endl;
 			return 1;
 		}
-		std::cerr << "////////////////////\nClient fd : " << client_fd << "\n////////////////////\n" << std::endl;
+		cerr << "////////////////////\nClient fd : " << client_fd << "\n////////////////////\n" << endl;
 		_clients[client_fd] = Client();
 
 		char buffer[1024] = {0};
 		int bytes_received = recv(client_fd, buffer, sizeof(buffer), 0);
-		std::cout << "---####DEBUG####---\n";
-		std::cout << buffer;
-		std::cout << "---#############---\n" << std::endl;
+		cout << "---####DEBUG####---\n";
+		cout << buffer;
+		cout << "---#############---\n" << endl;
 		
-		//std::cout << std::map<int, Client>::const_iterator(_clients.find(client_fd)) << std::endl;
+		//cout << map<int, Client>::const_iterator(_clients.find(client_fd)) << endl;
 
 		if (bytes_received == -1)
 		{
-			std::cerr << "Erreur lors de la réception des données" << std::endl;
+			cerr << "Erreur lors de la réception des données" << endl;
 			break;
 		}
 		else if (bytes_received == 0)
 		{
-			std::cerr << "Connexion fermée par le client" << std::endl;
+			cerr << "Connexion fermée par le client" << endl;
 			continue;
 		}
 		else
 		{
-			if (send(client_fd, ":127.0.0.1 001 username :Welcome to my IRC server!\r\n", 53, 0) == -1)
+			string msg(":127.0.0.1 001 username\r\n:Welcome to my IRC server!\r\n");
+			if (send_message(client_fd, msg.c_str()) == -1)
 			{
-				std::cerr << "Erreur lors de l'envoi des données au serveur distant" << std::endl;
+				cerr << "Erreur lors de l'envoi des données au serveur distant" << endl;
 				break;
 			}
-			// if (std::map<int, Client>::const_iterator(_clients.find(client_fd)) == _clients.end())
+			// if (map<int, Client>::const_iterator(_clients.find(client_fd)) == _clients.end())
 			// {
-			// 	std::cerr << "Send Welcome To New User" << std::endl;
+			// 	cerr << "Send Welcome To New User" << endl;
 			// 	send(client_fd, ":Welcome to my IRC server.", bytes_received, 0);
 			// }
 			//send(client_fd, ":127.0.0.1 001 root\r\n:Welcome to my IRC server\r\n", bytes_received, 0);
-			// std::string user_string(buffer);
+			// string user_string(buffer);
 			// size_t user_pos = user_string.find("NICK ");
-			// if (user_pos != std::string::npos)
+			// if (user_pos != string::npos)
 			// {
-			// 	std::cout << "User pos for NICKNAME :" << user_pos << std::endl;
+			// 	cout << "User pos for NICKNAME :" << user_pos << endl;
 			// 	user_pos += 5; // Skip "USER "
 			// 	size_t end_pos = user_string.find(" ", user_pos);
-			// 	if (end_pos != std::string::npos)
+			// 	if (end_pos != string::npos)
 			// 	{
-			// 		std::string username = user_string.substr(user_pos, end_pos - user_pos);
+			// 		string username = user_string.substr(user_pos, end_pos - user_pos);
 			// 		_clients[client_fd].Change_Nick(username);
-			// 		std::string out = ":IRC 001 " + username + "\r\n:Welcome to my IRC server, " + username + "!\r\n";
-			// 		if (send(client_fd, out.c_str(), std::strlen(out.c_str()), 0) == -1)
+			// 		string out = ":IRC 001 " + username + "\r\n:Welcome to my IRC server, " + username + "!\r\n";
+			// 		if (send(client_fd, out.c_str(), strlen(out.c_str()), 0) == -1)
 			// 		{
-			// 			std::cerr << "Erreur lors de l'envoi des données au serveur distant" << std::endl;
+			// 			cerr << "Erreur lors de l'envoi des données au serveur distant" << endl;
 			// 			break;
 			// 		}
 			// 	}
@@ -178,7 +188,7 @@ int Server::openSocket(int port)
 			// else
 			// {
 			// 	char ret[] = ":127.0.0.1 001 root\r\n:Welcome to my IRC server.";
-			// 	send(client_fd, ret, std::strlen(ret), 0);
+			// 	send(client_fd, ret, strlen(ret), 0);
 			// }
 		}
 	}
