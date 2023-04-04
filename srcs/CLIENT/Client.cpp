@@ -66,6 +66,11 @@ void Client::Change_Nick(std::string newname)
 	this->nick = newname;
 }
 
+void Client::Change_Real_Nick(std::string newrealname)
+{
+	this->real_nick = newrealname;
+}
+
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */

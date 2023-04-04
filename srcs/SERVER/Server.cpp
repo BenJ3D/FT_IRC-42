@@ -66,10 +66,14 @@ std::ostream &			operator<<( std::ostream & o, Server const & i )
 	return o;
 }
 
-
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
+
+static int send_message()
+{
+	
+}
 
 int Server::openSocket(int port)
 {
@@ -118,12 +122,17 @@ int Server::openSocket(int port)
 			std::cerr << "Erreur lors de l'acceptation de la connexion entrante" << std::endl;
 			return 1;
 		}
-
+		std::cerr << "////////////////////\nClient fd : " << client_fd << "\n////////////////////\n" << std::endl;
 		_clients[client_fd] = Client();
 
-		char buffer[512] = {0};
+		char buffer[1024] = {0};
 		int bytes_received = recv(client_fd, buffer, sizeof(buffer), 0);
-		std::cout << "DBG " << buffer << std::endl;
+		std::cout << "---####DEBUG####---\n";
+		std::cout << buffer;
+		std::cout << "---#############---\n" << std::endl;
+		
+		//std::cout << std::map<int, Client>::const_iterator(_clients.find(client_fd)) << std::endl;
+
 		if (bytes_received == -1)
 		{
 			std::cerr << "Erreur lors de la réception des données" << std::endl;
@@ -132,31 +141,48 @@ int Server::openSocket(int port)
 		else if (bytes_received == 0)
 		{
 			std::cerr << "Connexion fermée par le client" << std::endl;
-			break;
+			continue;
 		}
 		else
 		{
-			std::string user_string(buffer);
-			size_t user_pos = user_string.find("USER ");
-			if (user_pos != std::string::npos)
+			if (send(client_fd, ":127.0.0.1 001 username :Welcome to my IRC server!\r\n", 53, 0) == -1)
 			{
-				user_pos += 5; // Skip "USER "
-				size_t end_pos = user_string.find(" ", user_pos);
-				if (end_pos != std::string::npos)
-				{
-					std::string username = user_string.substr(user_pos, end_pos - user_pos);
-					_clients[client_fd].Change_Nick(username);
-					std::string out = ":servername 001 "+username+"\r\n:Welcome to my IRC server, " + username +"!\r\n";
-					if (send(client_fd, out.c_str(), bytes_received, 0) == -1)
-					{
-						std::cerr << "Erreur lors de l'envoi des données au serveur distant" << std::endl;
-						break;
-					}
-				}
+				std::cerr << "Erreur lors de l'envoi des données au serveur distant" << std::endl;
+				break;
 			}
+			// if (std::map<int, Client>::const_iterator(_clients.find(client_fd)) == _clients.end())
+			// {
+			// 	std::cerr << "Send Welcome To New User" << std::endl;
+			// 	send(client_fd, ":Welcome to my IRC server.", bytes_received, 0);
+			// }
+			//send(client_fd, ":127.0.0.1 001 root\r\n:Welcome to my IRC server\r\n", bytes_received, 0);
+			// std::string user_string(buffer);
+			// size_t user_pos = user_string.find("NICK ");
+			// if (user_pos != std::string::npos)
+			// {
+			// 	std::cout << "User pos for NICKNAME :" << user_pos << std::endl;
+			// 	user_pos += 5; // Skip "USER "
+			// 	size_t end_pos = user_string.find(" ", user_pos);
+			// 	if (end_pos != std::string::npos)
+			// 	{
+			// 		std::string username = user_string.substr(user_pos, end_pos - user_pos);
+			// 		_clients[client_fd].Change_Nick(username);
+			// 		std::string out = ":IRC 001 " + username + "\r\n:Welcome to my IRC server, " + username + "!\r\n";
+			// 		if (send(client_fd, out.c_str(), std::strlen(out.c_str()), 0) == -1)
+			// 		{
+			// 			std::cerr << "Erreur lors de l'envoi des données au serveur distant" << std::endl;
+			// 			break;
+			// 		}
+			// 	}
+			// }
+			// else
+			// {
+			// 	char ret[] = ":127.0.0.1 001 root\r\n:Welcome to my IRC server.";
+			// 	send(client_fd, ret, std::strlen(ret), 0);
+			// }
 		}
 	}
-	
+
 	return (0);
 }
 /*

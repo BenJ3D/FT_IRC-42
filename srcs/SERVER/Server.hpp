@@ -23,6 +23,7 @@
 # include <arpa/inet.h>
 # include <unistd.h>
 # include <poll.h>
+# include <sstream>
 
 # include "../UTILS/ANSI.hpp"
 # include "../CLIENT/Client.hpp"

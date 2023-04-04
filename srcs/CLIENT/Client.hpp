@@ -26,11 +26,13 @@ class Client
 		~Client();
 
 		void Change_Nick(std::string);
+		void Change_Real_Nick(std::string);
 		Client &		operator=( Client const & rhs );
 
 	private:
 		int id;
 		std::string nick;
+		std::string real_nick;
 
 };
 
