@@ -29,6 +29,7 @@
 # include "../CLIENT/Client.hpp"
 
 # include <map>
+using namespace std;
 
 class Server
 {
@@ -38,14 +39,16 @@ public:
 
 	Server &operator=(Server const &rhs);
 
-	void init(void);
+	void init(int port);
+
+	int start_server(int port);
 	int	send_message(int, const char *) const;
 
 private:
 	Server(Server const &src);
-	Server(void);
+	Server(int port);
 
-	int openSocket(int port);
+	int openSocket();
 
 	std::map<int, Client> _clients;
 	struct pollfd _pollfd;
