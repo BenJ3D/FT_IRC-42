@@ -29,8 +29,8 @@ class Client
 		Client( Client const & src );
 		~Client();
 
-		const int get_id() const;
-		const std::string get_nick() const;
+		int get_id() const;
+		std::string get_nick() const;
 
 		void set_nick(std::string nick);
 

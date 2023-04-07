@@ -23,6 +23,12 @@ Server::Server()
 
 Server::Server(const Server &src)
 {
+	this->_channel = src._channel;
+	this->_client = src._client;
+	this->_max_fd = src._max_fd;
+	this->_pass_word = src._pass_word;
+	this->_read_fds = src._read_fds;
+	this->_server_name = src._server_name;
 }
 
 /*
@@ -31,15 +37,17 @@ Server::Server(const Server &src)
 
 Server::Server(string port, string address)
 {
-	openSocket(atoi(port.c_str())); // fonction TEST pour le moment
+	(void)address;
 	init_parsing_map();
+	openSocket(atoi(port.c_str())); // fonction TEST pour le moment
 }
 
 Server::~Server()
 {
-	for (vector<int>::iterator it = _client_fds.begin(); it != _client_fds.end(); it++)
+	for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++)
 	{
-		close(*it);
+		close((*it).first);
+		_client.erase(it);
 	}
 }
 
@@ -49,6 +57,7 @@ Server::~Server()
 
 Server &Server::operator=(Server const &rhs)
 {
+	(void)rhs;
 	// if ( this != &rhs )
 	//{
 	// this->_value = rhs.getValue();
@@ -58,6 +67,7 @@ Server &Server::operator=(Server const &rhs)
 
 ostream &operator<<(ostream &o, Server const &i)
 {
+	(void)i;
 	// o << "Value = " << i.getValue();
 	return o;
 }
@@ -139,6 +149,7 @@ int Server::openSocket(int port)
 			_client[new_client_fd] = Client(new_client_fd);
 			// _client_fds.push_back(new_client_fd);
 			cout << ANSI::green << ANSI::bold << "Nouvelle connexion entrante sur le socket " << new_client_fd << endl;
+			//if (send(new_client_fd, ":PONG", 64, 0) == -1)
 			if (send(new_client_fd, ":127.0.0.1 001 bducrocq :Welcome to my IRC server, bducrocq!\r\n", 64, 0) == -1)
 			{
 				cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
@@ -149,12 +160,10 @@ int Server::openSocket(int port)
 		// vector<int>::iterator it = _client_fds.begin();
 		//if (_client.find(new_client_fd) != _client.end()){};
 		//for (; it != _client_fds.end(); it++)
-		cout << "test1" << endl;
 		for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++)
 		{
 			if (FD_ISSET((*it).first, &_read_fds))
 			{
-				cout << "test2" << endl;
 				char buffer[1024] = {0};
 				bytes_received = recv((*it).first, buffer, 1024, 0);
 
@@ -191,6 +200,7 @@ int Server::openSocket(int port)
 					{
 						// envoyer les données reçues vers tous les clients connectés, sauf le client source
 						//parsing...
+						this->parser(str_buff, (*it).first);
 					}
 				}
 			}

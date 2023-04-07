@@ -26,6 +26,8 @@ Client::Client(int fd) : _id(fd)
 
 Client::Client( const Client & src )
 {
+	this->_id = src._id;
+	this->_nick = src._nick;
 }
 
 
@@ -44,16 +46,17 @@ Client::~Client()
 
 Client &				Client::operator=( Client const & rhs )
 {
-	//if ( this != &rhs )
-	//{
-		//this->_value = rhs.getValue();
-	//}
+	if ( this != &rhs )
+	{
+		this->_id = rhs._id;
+		this->_nick = rhs._nick;
+	}
 	return *this;
 }
 
 std::ostream &			operator<<( std::ostream & o, Client const & i )
 {
-	//o << "Value = " << i.getValue();
+	o << "FD = " << i.get_id() << " | NICK = " << i.get_nick() << std::endl;
 	return o;
 }
 
@@ -62,11 +65,11 @@ std::ostream &			operator<<( std::ostream & o, Client const & i )
 ** --------------------------------- METHODS ----------------------------------
 */
 
-const int Client::get_id() const {
+int Client::get_id() const {
 	return this->_id;
 }
 
-const std::string Client::get_nick() const {
+std::string Client::get_nick() const {
 	return this->_nick;
 }
 
