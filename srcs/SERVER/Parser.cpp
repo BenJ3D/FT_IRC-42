@@ -6,7 +6,7 @@
 /*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 20:39:56 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/07 04:32:23 by abucia           ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 04:32:50 by abucia           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,5 +67,5 @@ void Server::nick(vector<string> args, int cl) {
 	string msg(":");
 	msg += args[0] + " " + args[1];
 	//send(cl, msg.c_str(), strlen(msg.c_str()), 0);
-	Rep(*this).R001(cl, args[1])
+	Rep(*this).R001(cl, args[1]);
 }
