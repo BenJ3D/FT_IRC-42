@@ -22,6 +22,7 @@ class Client
 
 		int _id;
 		std::string _nick;
+		std::string _realnick;
 
 	public:
 		Client();
@@ -31,8 +32,10 @@ class Client
 
 		int get_id() const;
 		std::string get_nick() const;
+		std::string get_realnick() const;
 
 		void set_nick(std::string nick);
+		void set_realnick(std::string nick);
 
 		Client &		operator=( Client const & rhs );
 };

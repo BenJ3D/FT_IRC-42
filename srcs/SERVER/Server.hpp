@@ -54,11 +54,13 @@ class Server
 		map<int,Client> _client;
 		map<int,Channel> _channel;
 
-		std::map<std::string, std::pair<int, CmdFunc> > commands;
+		std::map<std::string, std::pair<long unsigned int, CmdFunc> > commands;
 
 
 		/** COMMAND **/
 		void nick(vector<string> args, int cl);
+		void ping(vector<string> args, int cl);
+		void user(vector<string> args, int cl);
 		// void join(vector<string> args, Client& cl);
 		// void privmsg(vector<string> args, Client& cl);
 

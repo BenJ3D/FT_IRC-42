@@ -73,8 +73,16 @@ std::string Client::get_nick() const {
 	return this->_nick;
 }
 
+std::string Client::get_realnick() const {
+	return this->_realnick;
+}
+
 void Client::set_nick(std::string nick) {
 	this->_nick = nick;
+}
+
+void Client::set_realnick(std::string nick) {
+	this->_realnick = nick;
 }
 
 /*

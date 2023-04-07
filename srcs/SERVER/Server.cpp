@@ -149,17 +149,15 @@ int Server::openSocket(int port)
 			_client[new_client_fd] = Client(new_client_fd);
 			// _client_fds.push_back(new_client_fd);
 			cout << ANSI::green << ANSI::bold << "Nouvelle connexion entrante sur le socket " << new_client_fd << endl;
-			//if (send(new_client_fd, ":PONG", 64, 0) == -1)
+			//if (send(new_client_fd, ":PONG", 6, 0) == -1)
 			if (send(new_client_fd, ":127.0.0.1 001 bducrocq :Welcome to my IRC server, bducrocq!\r\n", 64, 0) == -1)
 			{
 				cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
 				return 1;
 			}
 		}
+		//if (_client.find(new_client_fd) != _client.end()){}; //si le client n'existe pas
 		// vérification des données reçues des clients existants
-		// vector<int>::iterator it = _client_fds.begin();
-		//if (_client.find(new_client_fd) != _client.end()){};
-		//for (; it != _client_fds.end(); it++)
 		for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++)
 		{
 			if (FD_ISSET((*it).first, &_read_fds))
@@ -188,20 +186,9 @@ int Server::openSocket(int port)
 						 << ANSI::italic << str_buff.c_str() << ANSI::purple << "#####################\n"
 						 << endl;
 
-					if (str_buff.substr(0,4) == "PING")
-					{
-						if (send((*it).first, "PONG\r\n", strlen("PONG\r\n"), 0) == -1)
-						{
-							cerr << "Erreur lors de l'envoi des données au client" << endl;
-							return 1;
-						}
-					}
-					else
-					{
-						// envoyer les données reçues vers tous les clients connectés, sauf le client source
-						//parsing...
-						this->parser(str_buff, (*it).first);
-					}
+					// envoyer les données reçues vers tous les clients connectés, sauf le client source
+					// parsing...
+					this->parser(str_buff, (*it).first);
 				}
 			}
 		}
