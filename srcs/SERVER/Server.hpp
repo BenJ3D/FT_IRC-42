@@ -6,63 +6,73 @@
 /*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/03/29 01:24:55 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/05 10:30:00 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
+# include <cstdlib>
+# include <cstdio>
 # include <stdlib.h>
 # include <string>
 # include <cstring>
 # include <iostream>
+# include <sstream>
 # include <sys/types.h>
+# include <sys/select.h>
 # include <sys/socket.h>
 # include <netinet/in.h>
 # include <arpa/inet.h>
 # include <unistd.h>
-# include <poll.h>
-# include <sstream>
+# include <vector>
+# include <map>
 
 # include "../UTILS/ANSI.hpp"
+# include "./Channel.hpp"
 # include "../CLIENT/Client.hpp"
+# include "../UTILS/NumericReplies.hpp"
 
-# include <map>
 using namespace std;
+typedef void (Server::*CmdFunc)(std::vector<std::string>, int);
 
 class Server
 {
-public:
-	Server(std::string port, std::string address);
-	~Server();
+	private:
+		Server(Server const &src);
+		Server(void);
 
-	Server &operator=(Server const &rhs);
+		int		openSocket(int port);
+		void	init_parsing_map();
 
-	void init(int port);
+		string _server_name;
+		string _pass_word;
+		fd_set _read_fds;
+		int _max_fd;
+		vector<int> _client_fds;
+		map<int,Client> _client;
+		map<int,Channel> _channel;
 
-	int start_server(int port);
-	int	send_message(int, const char *) const;
+		std::map<std::string, std::pair<int, CmdFunc> > commands;
 
-private:
-	Server(Server const &src);
-	Server(int port);
 
-	int openSocket();
+		/** COMMAND **/
+		void nick(vector<string> args, int cl);
+		// void join(vector<string> args, Client& cl);
+		// void privmsg(vector<string> args, Client& cl);
 
-	std::map<int, Client> _clients;
-	struct pollfd _pollfd;
+	public:
+		Server(std::string port, std::string address);//adress doit devenir password
+		~Server();
+
+		Server &operator=(Server const &rhs);
+
+		/* --- PARSING --- */
+		void parser(string command, int client_fd);
 };
 
-std::ostream &			operator<<( std::ostream & o, Server const & i );
+std::ostream &operator<<(std::ostream &o, Server const &i);
 
+#endif /* ********************************************************* SERVER_HPP */
 
-
-# define COLOR_RED		"\033[0;31m"
-# define COLOR_GREEN	"\033[0;32m"
-# define COLOR_YELLOW	"\033[0;33m"
-# define COLOR_BLUE		"\033[0;34m"
-# define COLOR_PURPLE	"\033[0;35m"
-# define COLOR_CYAN		"\033[0;36m"
-# define COLOR_NONE		"\033[0;37m"
-#endif /* ********************************************************* SERVIRC_H */

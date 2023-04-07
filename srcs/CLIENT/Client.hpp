@@ -18,22 +18,23 @@
 
 class Client
 {
+	private:
+
+		int _id;
+		std::string _nick;
 
 	public:
-
 		Client();
+		Client(int fd);
 		Client( Client const & src );
 		~Client();
 
-		void Change_Nick(std::string);
-		void Change_Real_Nick(std::string);
+		const int get_id() const;
+		const std::string get_nick() const;
+
+		void set_nick(std::string nick);
+
 		Client &		operator=( Client const & rhs );
-
-	private:
-		int id;
-		std::string nick;
-		std::string real_nick;
-
 };
 
 std::ostream &			operator<<( std::ostream & o, Client const & i );

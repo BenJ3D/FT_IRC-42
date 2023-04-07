@@ -14,8 +14,8 @@
 
 int	main( int ac, char **av)
 {
-	(void)ac;
-	std::cout << ANSI::purple << "₩ΞŁϾØΜΞ ŦØ ƑṲϾӃ_ḮŘϾ" << std::endl;
+
+	cout << ANSI::purple << "₩ΞŁϾØΜΞ ŦØ ƑṲϾӃ_ḮŘϾ" << ANSI::white << endl;
 
 	//*******provisoire, pour DEBUG************/
 	if (av[1])								/**/

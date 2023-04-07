@@ -6,26 +6,24 @@
 /*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/03/29 00:45:44 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/05 10:00:00 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-
+#include "../UTILS/ANSI.hpp"
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Server::Server(int port)
+Server::Server()
 {
 }
 
-Server::Server( const Server & src )
+Server::Server(const Server &src)
 {
-	(void)src;
 }
-
 
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
@@ -33,39 +31,34 @@ Server::Server( const Server & src )
 
 Server::Server(string port, string address)
 {
-	(void)address;
-	init(atoi(port.c_str())); //fonction TEST pour le moment
+	openSocket(atoi(port.c_str())); // fonction TEST pour le moment
+	init_parsing_map();
 }
 
 Server::~Server()
 {
+	for (vector<int>::iterator it = _client_fds.begin(); it != _client_fds.end(); it++)
+	{
+		close(*it);
+	}
 }
-
 
 /*
 ** --------------------------------- OVERLOAD ---------------------------------
 */
 
-Server &				Server::operator=( Server const & rhs )
+Server &Server::operator=(Server const &rhs)
 {
-	//if ( this != &rhs )
+	// if ( this != &rhs )
 	//{
-		//this->_value = rhs.getValue();
+	// this->_value = rhs.getValue();
 	//}
-	(void)rhs;
 	return *this;
 }
 
-void Server::init(int port)
+ostream &operator<<(ostream &o, Server const &i)
 {
-	if (start_server(port))
-		/*...*/
-}
-
-ostream &			operator<<( ostream & o, Server const & i )
-{
-	(void)i;
-	//o << "Value = " << i.getValue();
+	// o << "Value = " << i.getValue();
 	return o;
 }
 
@@ -73,60 +66,139 @@ ostream &			operator<<( ostream & o, Server const & i )
 ** --------------------------------- METHODS ----------------------------------
 */
 
-int Server::openSocket()
+int Server::openSocket(int port)
 {
-	
+	// création du socket
+	int server_fd = socket(AF_INET, SOCK_STREAM, 0);
 
-	// accepter une connexion entrante
+	if (server_fd == -1)
+	{
+		cerr << "Erreur lors de la création du socket" << endl;
+		return 1;
+	}
+
+	// configuration de l'adresse et du port
+	sockaddr_in server_address;
+	memset(&server_address, 0, sizeof(server_address));
+
+	server_address.sin_addr.s_addr = inet_addr("0.0.0.0");
+	server_address.sin_family = AF_INET;
+	server_address.sin_port = htons(port);
+
+	// association du socket à l'adresse et au port
+	if (bind(server_fd, (sockaddr *)&server_address, sizeof(server_address)) == -1)
+	{
+		cerr << "Erreur lors de la mise en écoute des connexions entrantes1" << endl;
+		return 1;
+	}
+
+	// mise en écoute des connexions entrantes
+	if (listen(server_fd, SOMAXCONN) == -1)
+	{
+		cerr << "Erreur lors de la mise en écoute des connexions entrantes2" << endl;
+		return 1;
+	}
+
+	fd_set _read_fds;
+	int _max_fd;
+	int new_client_fd;
 	sockaddr_in client_address;
 	socklen_t client_address_size = sizeof(client_address);
-	//while CONNECTION CLIENT
+	int bytes_received;
+
 	while (true)
 	{
-		int client_fd = accept(server_fd, (sockaddr *)&client_address, &client_address_size);
+		FD_ZERO(&_read_fds);
+		FD_SET(server_fd, &_read_fds);
+		_max_fd = server_fd;
 
-		cout << "test" << endl;
-		if (client_fd == -1)
+		// for (vector<int>::iterator it = _client_fds.begin(); it != _client_fds.end(); it++)
+		for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++)
 		{
-			cerr << "Erreur lors de l'acceptation de la connexion entrante" << endl;
+			FD_SET((*it).first, &_read_fds);
+			_max_fd = max(_max_fd, (*it).first);
+		}
+
+		// utilisation de la fonction select pour attendre des connexions entrantes ou des données reçues des clients existants
+		if (select(_max_fd + 1, &_read_fds, NULL, NULL, NULL) == -1)
+		{
+			cerr << "Erreur lors de l'utilisation de la fonction select" << endl;
 			return 1;
 		}
-		cerr << "////////////////////\nClient fd : " << client_fd << "\n////////////////////\n" << endl;
-		_clients[client_fd] = Client();
 
-		char buffer[1024] = {0};
-		int bytes_received = recv(client_fd, buffer, sizeof(buffer), 0);
-		cout << "---####DEBUG####---\n";
-		cout << buffer;
-		cout << "---#############---\n" << endl;
-		
-		//cout << map<int, Client>::const_iterator(_clients.find(client_fd)) << endl;
+		// vérification des connexions entrantes
+		if (FD_ISSET(server_fd, &_read_fds))
+		{
+			new_client_fd = accept(server_fd, (sockaddr *)&client_address, &client_address_size);
 
-		if (bytes_received == -1)
-		{
-			cerr << "Erreur lors de la réception des données" << endl;
-			break;
-		}
-		else if (bytes_received == 0)
-		{
-			cerr << "Connexion fermée par le client" << endl;
-			continue;
-		}
-		else
-		{
-			string msg(":127.0.0.1 001 username\r\n:Welcome to my IRC server!\r\n");
-			if (send_message(client_fd, msg.c_str()) == -1)
+			if (new_client_fd == -1)
 			{
-				cerr << "Erreur lors de l'envoi des données au serveur distant" << endl;
-				break;
+				cerr << ANSI::red << "Erreur lors de l'acceptation de la connexion entrante" << endl;
+				return 1;
+			}
+			_client[new_client_fd] = Client(new_client_fd);
+			// _client_fds.push_back(new_client_fd);
+			cout << ANSI::green << ANSI::bold << "Nouvelle connexion entrante sur le socket " << new_client_fd << endl;
+			if (send(new_client_fd, ":127.0.0.1 001 bducrocq :Welcome to my IRC server, bducrocq!\r\n", 64, 0) == -1)
+			{
+				cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+				return 1;
+			}
+		}
+		// vérification des données reçues des clients existants
+		// vector<int>::iterator it = _client_fds.begin();
+		//if (_client.find(new_client_fd) != _client.end()){};
+		//for (; it != _client_fds.end(); it++)
+		cout << "test1" << endl;
+		for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++)
+		{
+			if (FD_ISSET((*it).first, &_read_fds))
+			{
+				cout << "test2" << endl;
+				char buffer[1024] = {0};
+				bytes_received = recv((*it).first, buffer, 1024, 0);
+
+				if (bytes_received == -1)
+				{
+					cerr << "Erreur lors de la réception des données" << endl;
+					close((*it).first);
+					_client.erase(it);
+					break;
+				}
+				else if (bytes_received == 0)
+				{
+					cout << ANSI::red << "Connexion fermée par le client n°" << (*it).first << endl;
+					close((*it).first);
+					_client.erase(it);
+					break;
+				}
+				else
+				{
+					string str_buff(buffer);
+					cout << ANSI::purple << "\n### Recv client " << (*it).first << " ###\n"
+						 << ANSI::italic << str_buff.c_str() << ANSI::purple << "#####################\n"
+						 << endl;
+
+					if (str_buff.substr(0,4) == "PING")
+					{
+						if (send((*it).first, "PONG\r\n", strlen("PONG\r\n"), 0) == -1)
+						{
+							cerr << "Erreur lors de l'envoi des données au client" << endl;
+							return 1;
+						}
+					}
+					else
+					{
+						// envoyer les données reçues vers tous les clients connectés, sauf le client source
+						//parsing...
+					}
+				}
 			}
 		}
 	}
-	return (0);
 }
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
-
 
 /* ************************************************************************** */

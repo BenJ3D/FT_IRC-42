@@ -27,6 +27,10 @@ CPPFLAGS = -I./includes/
 HEADER =	$(shell find $(SRC_PATH) -name '*.$(INC_EXT)')
 # HEADER =	$(wildcard ./includes/*.hpp)
 
+# Variable d'inclusion
+# INC = -I./includes/
+
+
 # Name
 
 SRC_NAME =	$(shell find $(SRC_PATH) -name '*.$(SRC_EXT)')
@@ -43,7 +47,7 @@ OBJ = $(OBJ_NAME)
 
 CC = c++ $(STDCPP) $(CFLAGS) $(SANITIZE) $(LLDBFLAG)
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra# -Werror
 SANITIZE =# -fsanitize=address
 LLDBFLAG = -g3
 STDCPP = -std=c++98
@@ -71,6 +75,11 @@ fclean: clean
 	@echo "\033[33mRemoval of $(NAME)...\033[0m"
 	@rm -rf $(NAME)
 	@echo "\033[31mBinary $(NAME) deleted\n\033[0m"
+
+git:
+	@git add .
+	@printf "Message of the commit: " && read msg && git commit -m "$$msg"
+	@git push
 
 re: fclean all
 

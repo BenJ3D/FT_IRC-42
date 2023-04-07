@@ -20,9 +20,12 @@ Client::Client()
 {
 }
 
+Client::Client(int fd) : _id(fd)
+{
+}
+
 Client::Client( const Client & src )
 {
-	(void)src;
 }
 
 
@@ -41,7 +44,6 @@ Client::~Client()
 
 Client &				Client::operator=( Client const & rhs )
 {
-	(void)rhs;
 	//if ( this != &rhs )
 	//{
 		//this->_value = rhs.getValue();
@@ -51,7 +53,6 @@ Client &				Client::operator=( Client const & rhs )
 
 std::ostream &			operator<<( std::ostream & o, Client const & i )
 {
-	(void)i;
 	//o << "Value = " << i.getValue();
 	return o;
 }
@@ -61,14 +62,16 @@ std::ostream &			operator<<( std::ostream & o, Client const & i )
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void Client::Change_Nick(std::string newname)
-{
-	this->nick = newname;
+const int Client::get_id() const {
+	return this->_id;
 }
 
-void Client::Change_Real_Nick(std::string newrealname)
-{
-	this->real_nick = newrealname;
+const std::string Client::get_nick() const {
+	return this->_nick;
+}
+
+void Client::set_nick(std::string nick) {
+	this->_nick = nick;
 }
 
 /*

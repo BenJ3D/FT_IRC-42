@@ -21,7 +21,7 @@
 class	Server;
 
 # define USERMODE_CHARLIST "o"
-# define CHANNELMODE_CHARLIST "ositnmlbvk"
+# define CHANNELMODE_CHARLIST "ositnmlbvk" //est utilisée pour définir une liste de caractères qui représentent les modes de canal dans un réseau IRC
 # define NR_ARG int const &fd, const std::string& cNick
 
 # include <ctime>
