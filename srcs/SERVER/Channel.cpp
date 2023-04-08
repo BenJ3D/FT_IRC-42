@@ -8,9 +8,9 @@ Channel::Channel()
 {
 }
 
-Channel::Channel( const Channel & src )
+Channel::Channel( const Channel & name ) : _name(name._name)
 {
-	(void)src;
+
 }
 
 
@@ -22,6 +22,25 @@ Channel::~Channel()
 {
 }
 
+string const &Channel::getList()
+{
+	// TODO: insert return statement here
+}
+
+string const &Channel::getOperator()
+{
+	// TODO: insert return statement here
+}
+
+void Channel::setOperator()
+{
+	
+}
+
+void Channel::addClient(Client const & client)
+{
+	_list.push_back(client);
+}
 
 /*
 ** --------------------------------- OVERLOAD ---------------------------------
