@@ -6,7 +6,7 @@
 /*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 20:39:56 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/08 06:25:44 by abucia           ###   ########lyon.fr   */
+/*   Updated: 2023/04/08 08:01:48 by abucia           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,6 @@ vector<string> split_cmd(const string command, char separator)
 	string buffer;
 	while (getline(stream, buffer, separator))
 	{
-		if (buffer[buffer.length() - 1] == '\r')
-		{
-			cout << ANSI::red << "REMOVE \\r ⏬" << endl;
-			buffer.substr(0, buffer.length() - 1);
-		}
-		else if (separator == '\n')
-		{
-			cerr << ANSI::red << "ERROR: Command not ended with \\r\\n" << endl;
-			return vector<string>();
-		}
 		args.push_back(buffer);
 		cout << ANSI::purple << "ADD ARG : " << ANSI::red << buffer << endl; // DEBUG
 	}
@@ -46,10 +36,23 @@ vector<string> split_cmd(const string command, char separator)
 	return args;
 }
 
-void	Server::parser(string command, int client_fd) {
+string get_cmd(string cmd)
+{
+	string command = "";
+	for (size_t i = 0; i < cmd.length(); i++)
+		if (cmd[i] != '\r')
+			command += cmd[i];
+	return command;
+}
+
+void	Server::parser(string cmd, int client_fd) {
+	string command = get_cmd(cmd);
 	vector<string> cmds = split_cmd(command, '\n');
 	if (cmds.size() == 0)
+	{
+		Rep().E421(client_fd ,_client[client_fd].get_nick(), command);
 		return;
+	}
 	for (vector<string>::iterator it = cmds.begin(); it != cmds.end(); it++)
 	{
 		vector<string> args = split_cmd(*it, ' ');
@@ -65,8 +68,8 @@ void	Server::parser(string command, int client_fd) {
 		}
 		else
 		{
-			
+			Rep().E421(client_fd ,_client[client_fd].get_nick(), args[0]);
+			cout << ANSI::red << "Command not found for " << args[0] << endl;
 		}
-		
 	}
 }

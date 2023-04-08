@@ -56,7 +56,7 @@ class Server
 		map<int,Channel> _channel;
 
 		std::map<std::string, std::pair<long unsigned int, CmdFunc> > commands;
-
+		void confirm_to_client(const int& fd, string& msg);
 
 		/** COMMAND **/
 		void nick(vector<string> args, int cl);
@@ -76,6 +76,8 @@ class Server
 };
 
 std::ostream &operator<<(std::ostream &o, Server const &i);
+
+
 
 #endif /* ********************************************************* SERVER_HPP */
 

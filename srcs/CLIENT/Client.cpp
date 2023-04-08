@@ -61,7 +61,8 @@ std::ostream &			operator<<( std::ostream & o, Client const & i )
 {
 	o << "FD = " << i.get_id() << 
 	" | NICK = " << i.get_nick() << 
-	" | FIST_CONNECT = " << i.get_fisrt_connection() << std::endl;
+	" | FIST_CONNECT = " << i.get_fisrt_connection() << 
+	" | PASS_CONFIRMED = " << i.get_pass_confirm() << std::endl;
 	return o;
 }
 
