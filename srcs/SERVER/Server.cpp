@@ -23,7 +23,7 @@ Server::Server()
 
 Server::Server(const Server &src)
 {
-	this->_channel = src._channel;
+	// this->_channel = src._channel;
 	this->_client = src._client;
 	this->_max_fd = src._max_fd;
 	this->_pass_word = src._pass_word;
@@ -148,12 +148,12 @@ int Server::openSocket(int port)
 			_client[new_client_fd] = Client(new_client_fd);
 			cout << ANSI::green << ANSI::bold << "Nouvelle connexion entrante sur le socket " << new_client_fd << endl;
 			
-			Rep().R001(new_client_fd, "test");
-			// if (send(new_client_fd, ":127.0.0.1 001 bducrocq :Welcome to my IRC server, bducrocq!\r\n", 64, 0) == -1)
-			// {
-			// 	cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
-			// 	return 1;
-			// }
+			// Rep().R001(new_client_fd, "test");
+			if (send(new_client_fd, ":127.0.0.1 001 bducrocq :Welcome to my IRC server, bducrocq!\r\n", 64, 0) == -1)
+			{
+				cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+				return 1;
+			}
 		}
 		//if (_client.find(new_client_fd) != _client.end()){}; //si le client n'existe pas
 		// vérification des données reçues des clients existants
@@ -189,7 +189,7 @@ int Server::openSocket(int port)
 					this->parser(str_buff, (*it).first);
 				}
 			}
-		}
+		} 
 	}
 }
 /*

@@ -3,36 +3,49 @@
 
 # include <iostream>
 # include <string>
+# include <algorithm>
 # include "Server.hpp"
 # include "../CLIENT/Client.hpp"
 
 class Client;
 
+using namespace std;
 class Channel
 {
 
 	public:
 
-		Channel( Channel const & name );
+		Channel( int fd_client, string const & name, Client client);
+		Channel( int fd_client, string const & name, Client client, string const & passwd );
 		~Channel();
 
 		vector<int>				getList();
+		string const &			getListStr();
 		vector<int>				getOperator();
-		void					addOperator(int fd_client);
 		void					addClient(int fd_client);
+		void					removeClient(int fd_client);
+		void					addOperator(int fd_client);
+		void					removeOperator(int fd_client);
+		void					setTopic(string const & topic);
+		string					getTopic();
+		string					getName();
+		void					setPasswd(string const & passwd);
+		string					getPasswd();
+		void					setMode(string const & mode);
 
 	private:
 		Channel();
-		Channel &				operator=( Channel const & rhs );
 		
 		bool					isOperator(int fd_client);
+		
 
-		string const &			_topic;
-		string const &			_name;
-		vector<int>				_list;
+		string					_passwd;
+		string					_topic;
+		string		 			_name;
+		vector<int>				_list; //OLD 
+		vector<Client>			_listClient; //WIP
 		vector<int>				_operator;
+		string					_mode;
 };
-
-std::ostream &			operator<<( std::ostream & o, Channel const & i );
 
 #endif /* ********************************************************* CHANNEL_H */

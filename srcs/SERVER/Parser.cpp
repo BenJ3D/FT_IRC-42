@@ -18,7 +18,7 @@ void	Server::init_parsing_map()
 	this->commands["NICK"] = make_pair(2, &Server::nick);
 	this->commands["PING"] = make_pair(2, &Server::ping);
 	this->commands["USER"] = make_pair(5, &Server::user);
-	// this->commands["JOIN"] = make_pair(2, &nick);
+	this->commands["JOIN"] = make_pair(2, &Server::join_channel);
 	// this->commands["PRIVMSG"] = make_pair(3, &nick);
 }
 

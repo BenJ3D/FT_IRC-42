@@ -38,6 +38,7 @@ using namespace std;
 typedef void (Server::*CmdFunc)(std::vector<std::string>, int);
 # define SERVER_NAME "MINITEL_ROSE"
 
+class Channel;
 class Server
 {
 	private:
@@ -47,13 +48,13 @@ class Server
 		int		openSocket(int port);
 		void	init_parsing_map();
 
-		string _server_name;
-		string _pass_word;
-		fd_set _read_fds;
-		int _max_fd;
-		vector<int> _client_fds;
-		map<int,Client> _client;
-		map<int,Channel> _channel;
+		string					_server_name;
+		string					_pass_word;
+		fd_set					_read_fds;
+		int						_max_fd;
+		vector<int>				_client_fds;
+		map<int,Client>			_client;
+		map<string,Channel>		_channel;
 
 		std::map<std::string, std::pair<long unsigned int, CmdFunc> > commands;
 
@@ -64,6 +65,9 @@ class Server
 		void user(vector<string> args, int cl);
 		// void join(vector<string> args, Client& cl);
 		// void privmsg(vector<string> args, Client& cl);
+		
+		void	join_channel(vector<string> args, int fd_client);
+
 
 	public:
 		Server(std::string port, std::string address);//adress doit devenir password
@@ -73,6 +77,7 @@ class Server
 
 		/* --- PARSING --- */
 		void parser(string command, int client_fd);
+
 };
 
 std::ostream &operator<<(std::ostream &o, Server const &i);
