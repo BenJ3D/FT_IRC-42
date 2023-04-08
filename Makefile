@@ -3,75 +3,134 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+         #
+#    By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/22 02:28:45 by bducrocq          #+#    #+#              #
-#    Updated: 2023/03/29 00:38:42 by bducrocq         ###   ########lyon.fr    #
+#    Updated: 2023/04/08 03:50:14 by amiguez          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-# Binary
+# =====	Binary Name	=====
 
-NAME = exec_ircserv
+NAME = ircserv
 
-# Path
+# -----------------------
+# =====		Path	=====
+# -----------------------
 
-SRC_PATH = ./srcs/
-SRC_EXT = cpp
-INC_EXT = hpp
+PATH_SRCS		:=	srcs
+PATH_OBJS		:=	.objs
+PATH_INCLUDES	:=	includes
 
-OBJ_PATH = ./.objs/
+# -----------------------
+# =====		Files	=====
+# -----------------------
 
-CPPFLAGS = -I./includes/
+LST_SRCS	 :=	main.cpp
+SRCS_SRCS	 :=	$(addprefix $(PATH_SRCS)/,$(LST_SRCS))
+OBJS_SRCS	 :=	$(addprefix $(PATH_OBJS)/,$(LST_SRCS:.cpp=.o))
+        ####
+UTILS		 :=	
+PATH_UTILS	 :=	UTILS
+LST_UTILS	 :=	$(addprefix $(PATH_UTILS)/,$(UTILS))
+SRCS_UTILS	 :=	$(addprefix $(PATH_SRCS)/,$(LST_UTILS))
+OBJS_UTILS	 :=	$(addprefix $(PATH_OBJS)/,$(LST_UTILS:.cpp=.o))
+        ####
+SERVER		 :=	Server.cpp
+PATH_SERVER	 :=	SERVER
+LST_SERVER	 :=	$(addprefix $(PATH_SERVER)/,$(SERVER))
+SRCS_SERVER	 :=	$(addprefix $(PATH_SRCS)/,$(LST_SERVER))
+OBJS_SERVER	 :=	$(addprefix $(PATH_OBJS)/,$(LST_SERVER:.cpp=.o))
+        ####
+CLIENT		 :=	Client.cpp
+PATH_CLIENT	 :=	CLIENT
+LST_CLIENT	 :=	$(addprefix $(PATH_CLIENT)/,$(CLIENT))
+SRCS_CLIENT	 :=	$(addprefix $(PATH_SRCS)/,$(LST_CLIENT))
+OBJS_CLIENT	 :=	$(addprefix $(PATH_OBJS)/,$(LST_CLIENT:.cpp=.o))
+        ####
+# CHANNEL		 :=	channel.cpp
+# PATH_CHANNEL :=	CHANNEL
+# LST_CHANNEL	 :=	$(addprefix $(PATH_CHANNEL)/,$(CHANNEL))
+# SRCS_CHANNEL :=	$(addprefix $(PATH_SRCS)/,$(LST_CHANNEL))
+# OBJS_CHANNEL :=	$(addprefix $(PATH_OBJS)/,$(LST_CHANNEL:.cpp=.o))
+        ####
+LST_INCS	 :=	ANSI.hpp\
+				Client.hpp\
+				Server.hpp
+INCS		 := $(addprefix $(PATH_INCLUDES)/,$(LST_INCS))
 
-HEADER =	$(shell find $(SRC_PATH) -name '*.$(INC_EXT)')
-# HEADER =	$(wildcard ./includes/*.hpp)
+# -----------------------
+# =====	Definition	=====
+# -----------------------
 
-# Name
+SRCS = $(SRCS_SRCS) $(SRCS_CLIENT) $(SRCS_SERVER) $(SRCS_UTILS) $(SRCS_CHANNEL)
 
-SRC_NAME =	$(shell find $(SRC_PATH) -name '*.$(SRC_EXT)')
+OBJS = $(OBJS_SRCS) $(OBJS_CLIENT) $(OBJS_SERVER) $(OBJS_UTILS) $(OBJS_CHANNEL)
 
-OBJ_NAME = $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(SRC_NAME:.cpp=.o))
+# -----------------------
+# =====		Flags	=====
+# -----------------------
 
-# Files
+CPP		 :=	c++ -std=c++98
+CPPFLAGS :=	-Wall -Wextra #-Werror
+SANITIZE :=	-fsanitize=address -g3
 
-SRC = $(SRC_NAME)
+# -----------------------
+# =====	Cosmetics	=====
+# -----------------------
 
-OBJ = $(OBJ_NAME)
+ERASE	 :=	\033[2K\r
+GREY	 :=	\033[30m
+RED		 :=	\033[31m
+GREEN	 :=	\033[32m
+YELLOW	 :=	\033[33m
+BLUE	 :=	\033[34m
+PINK	 :=	\033[35m
+CYAN	 :=	\033[36m
+WHITE	 :=	\033[37m
+BOLD	 :=	\033[1m
+UNDER	 :=	\033[4m
+SUR		 :=	\033[7m
+END		 :=	\033[0m
 
-# Flags
+# -----------------------
+# =====		Rules	=====
+# -----------------------
 
-CC = c++ $(STDCPP) $(CFLAGS) $(SANITIZE) $(LLDBFLAG)
+all : $(NAME)
 
-CFLAGS = -Wall -Wextra# -Werror
-SANITIZE =# -fsanitize=address
-LLDBFLAG = -g3
-STDCPP = -std=c++98
+$(NAME) : $(OBJS)
+	echo "$(BLUE)Creation of $(NAME) on linux ...$(END)"
+	$(CPP) $(CPPFLAGS) $(OBJS) -I$(PATH_INCLUDES) -o $@
+	echo "$(GREEN)$(NAME) created$(END)"
 
-# Rules
+$(PATH_OBJS)/%.o : $(PATH_SRCS)/%.cpp $(INCS) Makefile | $(PATH_OBJS)
+	printf "$(ERASE)$(CYAN)Compilation of $< ...$(END)$(RED)"
+	$(CPP) $(CPPFLAGS) -I$(PATH_INCLUDES) -o $@ -c $<
 
-all: $(NAME)
+$(PATH_OBJS) :
+	mkdir -p $(PATH_OBJS)
+	mkdir -p $(PATH_OBJS)/$(PATH_SERVER)
+	mkdir -p $(PATH_OBJS)/$(PATH_CLIENT)
+	mkdir -p $(PATH_OBJS)/$(PATH_UTILS)
+ #	 mkdir -p $(PATH_OBJS)/$(PATH_CHANNEL)
 
-$(NAME): $(OBJ)
-	@echo "\033[34mCreation of $(NAME) on linux ...\033[0m"
-	@$(CC) $(OBJ) -o $@
-	@echo "\033[32m$(NAME) created\n\033[0m"
+clean :
+	echo "$(BLUE)Removal of .o files of $(NAME) ...$(END)"
+	rm -rf $(PATH_OBJS)
+	echo "$(RED)Files .o deleted\n$(END)"
 
-$(OBJ_PATH)%.o: $(SRC_PATH)%.$(SRC_EXT) $(HEADER) ./Makefile
-	@mkdir -p $(@D) 2> /dev/null || true
-	$(CC) $(CPPFLAGS) -o $@ -c $<
+fclean : clean
+	echo "$(BLUE)Removal of $(NAME)...$(END)"
+	rm -rf $(NAME)
+	echo "$(RED)Binary $(NAME) deleted\n$(END)"
 
-clean:
-	@echo "\033[33mRemoval of .o files of $(NAME) ...\033[0m"
-	@rm -f $(OBJ)
-	@find $(OBJ_PATH) -type d -empty -delete 2> /dev/null || true
-	@echo "\033[31mFiles .o deleted\n\033[0m"
+git :
+	git add .
+	printf "Message of the commit: " && read msg && git commit -m "$$msg"
+	git push
 
-fclean: clean
-	@echo "\033[33mRemoval of $(NAME)...\033[0m"
-	@rm -rf $(NAME)
-	@echo "\033[31mBinary $(NAME) deleted\n\033[0m"
+re : fclean all
 
-re: fclean all
-
-.PHONY: all, clean, fclean, re
+.PHONY : all, clean, fclean, re, $(PATH_OBJS), git
+.SILENT :

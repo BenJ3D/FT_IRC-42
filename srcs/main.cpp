@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 01:27:56 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/03/29 01:26:53 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/08 03:51:40 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "SERVER/Server.hpp"
+#include "Server.hpp"
 
 int	main( int ac, char **av)
 {
