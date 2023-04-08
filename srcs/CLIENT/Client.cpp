@@ -20,8 +20,9 @@ Client::Client()
 {
 }
 
-Client::Client(int fd) : _id(fd), _first_connection(true)
+Client::Client(int fd) : _id(fd), _first_connection(true), _pass_confirm(false)
 {
+	
 }
 
 Client::Client( const Client & src )
@@ -69,6 +70,11 @@ std::ostream &			operator<<( std::ostream & o, Client const & i )
 ** --------------------------------- METHODS ----------------------------------
 */
 
+
+/*
+** --------------------------------- ACCESSOR ---------------------------------
+*/
+
 int Client::get_id() const {
 	return this->_id;
 }
@@ -85,6 +91,12 @@ bool Client::get_fisrt_connection() const {
 	return this->_first_connection;
 }
 
+bool Client::get_pass_confirm() const {
+	return this->_pass_confirm;
+}
+
+
+
 void Client::set_nick(std::string nick) {
 	this->_nick = nick;
 }
@@ -97,9 +109,8 @@ void Client::set_first_connection(bool connect) {
 	this->_first_connection = connect;
 }
 
-/*
-** --------------------------------- ACCESSOR ---------------------------------
-*/
-
+void Client::set_pass_confirm(bool pass) {
+	this->_pass_confirm = pass;
+}
 
 /* ************************************************************************** */

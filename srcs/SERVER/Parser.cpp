@@ -6,7 +6,7 @@
 /*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 20:39:56 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/07 04:50:21 by abucia           ###   ########lyon.fr   */
+/*   Updated: 2023/04/08 06:25:44 by abucia           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,17 @@ vector<string> split_cmd(const string command, char separator)
 	string buffer;
 	while (getline(stream, buffer, separator))
 	{
-		if (separator == '\n')
-			buffer.erase(buffer.length());
+		if (buffer[buffer.length() - 1] == '\r')
+		{
+			cout << ANSI::red << "REMOVE \\r ⏬" << endl;
+			buffer.substr(0, buffer.length() - 1);
+		}
+		else if (separator == '\n')
+		{
+			cerr << ANSI::red << "ERROR: Command not ended with \\r\\n" << endl;
+			return vector<string>();
+		}
 		args.push_back(buffer);
-
 		cout << ANSI::purple << "ADD ARG : " << ANSI::red << buffer << endl; // DEBUG
 	}
 	cout << endl;

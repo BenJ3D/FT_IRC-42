@@ -6,7 +6,7 @@
 /*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 04:46:30 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/08 04:48:41 by abucia           ###   ########lyon.fr   */
+/*   Updated: 2023/04/08 06:28:08 by abucia           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@
 
 void Server::nick(vector<string> args, int client_fd) {
 	cout << ANSI::cyan << client_fd << " --> " << args[0] << endl;
-	cout << endl;
 	// Vérification des arguments de la commande
 	if (args.size() < 2)
 	{
@@ -33,10 +32,15 @@ void Server::nick(vector<string> args, int client_fd) {
 
 	// Récupération du nouveau pseudo
 	string new_nick = args[1];
+	if (new_nick[args[1].length() - 1] == '\r')
+		new_nick = new_nick.substr(0, new_nick.length() - 1);
+	else if (new_nick[args[1].length() - 1] == '\n')
+		new_nick = new_nick.substr(0, new_nick.length() - 2);
 
 	// Vérification que le pseudo n'est pas déjà pris
 	for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++) {
-		cout.flush();
+		if ((*it).first == client_fd)
+			continue;
 		//cout << "hello mine turtle" << endl;
 		cout << _client.size() << " " << (*it).second.get_nick() << endl;
 		if ((*it).second.get_nick() == new_nick)
@@ -56,8 +60,8 @@ void Server::nick(vector<string> args, int client_fd) {
 	}
 
 	// Envoi d'un message de confirmation
-	string confirm_msg = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_realnick() + "@127.0.0.1 NICK " + new_nick + "\r\n";
-	cout << ANSI::gray << "{send} => " << ANSI::cyan << confirm_msg << endl;
+	string confirm_msg = ":" + _client[client_fd].get_nick() + "!~" + _client[client_fd].get_realnick() + "@127.0.0.1 NICK " + new_nick + "\r\n";
+	cout << ANSI::gray << "{send} ==> " << ANSI::cyan <<  _client[client_fd].get_nick() << " " << confirm_msg;
 	send(client_fd, confirm_msg.c_str(), strlen(confirm_msg.c_str()), 0);
 
 	// Attribution du nouveau pseudo au client
