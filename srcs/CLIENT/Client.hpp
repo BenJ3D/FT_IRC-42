@@ -23,6 +23,7 @@ class Client
 		int _id;
 		std::string _nick;
 		std::string _realnick;
+		bool _first_connection;
 
 	public:
 		Client();
@@ -33,9 +34,11 @@ class Client
 		int get_id() const;
 		std::string get_nick() const;
 		std::string get_realnick() const;
+		bool get_fisrt_connection() const;
 
 		void set_nick(std::string nick);
 		void set_realnick(std::string nick);
+		void set_first_connection(bool connect);
 
 		Client &		operator=( Client const & rhs );
 };

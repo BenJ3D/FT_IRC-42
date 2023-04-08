@@ -91,21 +91,21 @@ int Server::openSocket(int port)
 	sockaddr_in server_address;
 	memset(&server_address, 0, sizeof(server_address));
 
-	server_address.sin_addr.s_addr = inet_addr("0.0.0.0");
+	server_address.sin_addr.s_addr = htonl(INADDR_ANY);
 	server_address.sin_family = AF_INET;
 	server_address.sin_port = htons(port);
 
 	// association du socket à l'adresse et au port
 	if (bind(server_fd, (sockaddr *)&server_address, sizeof(server_address)) == -1)
 	{
-		cerr << "Erreur lors de la mise en écoute des connexions entrantes1" << endl;
+		cerr << "Erreur lors de l'association du socket à l'adresse et au port" << endl;
 		return 1;
 	}
 
 	// mise en écoute des connexions entrantes
 	if (listen(server_fd, SOMAXCONN) == -1)
 	{
-		cerr << "Erreur lors de la mise en écoute des connexions entrantes2" << endl;
+		cerr << "Erreur lors de la mise en écoute des connexions entrantes" << endl;
 		return 1;
 	}
 
@@ -122,7 +122,6 @@ int Server::openSocket(int port)
 		FD_SET(server_fd, &_read_fds);
 		_max_fd = server_fd;
 
-		// for (vector<int>::iterator it = _client_fds.begin(); it != _client_fds.end(); it++)
 		for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++)
 		{
 			FD_SET((*it).first, &_read_fds);
@@ -147,14 +146,14 @@ int Server::openSocket(int port)
 				return 1;
 			}
 			_client[new_client_fd] = Client(new_client_fd);
-			// _client_fds.push_back(new_client_fd);
 			cout << ANSI::green << ANSI::bold << "Nouvelle connexion entrante sur le socket " << new_client_fd << endl;
-			//if (send(new_client_fd, ":PONG", 6, 0) == -1)
-			if (send(new_client_fd, ":127.0.0.1 001 bducrocq :Welcome to my IRC server, bducrocq!\r\n", 64, 0) == -1)
-			{
-				cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
-				return 1;
-			}
+			
+			Rep().R001(new_client_fd, "test");
+			// if (send(new_client_fd, ":127.0.0.1 001 bducrocq :Welcome to my IRC server, bducrocq!\r\n", 64, 0) == -1)
+			// {
+			// 	cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+			// 	return 1;
+			// }
 		}
 		//if (_client.find(new_client_fd) != _client.end()){}; //si le client n'existe pas
 		// vérification des données reçues des clients existants
@@ -186,7 +185,6 @@ int Server::openSocket(int port)
 						 << ANSI::italic << str_buff.c_str() << ANSI::purple << "#####################\n"
 						 << endl;
 
-					// envoyer les données reçues vers tous les clients connectés, sauf le client source
 					// parsing...
 					this->parser(str_buff, (*it).first);
 				}

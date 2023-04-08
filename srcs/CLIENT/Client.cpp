@@ -20,7 +20,7 @@ Client::Client()
 {
 }
 
-Client::Client(int fd) : _id(fd)
+Client::Client(int fd) : _id(fd), _first_connection(true)
 {
 }
 
@@ -28,6 +28,7 @@ Client::Client( const Client & src )
 {
 	this->_id = src._id;
 	this->_nick = src._nick;
+	this->_first_connection = src._first_connection;
 }
 
 
@@ -50,13 +51,16 @@ Client &				Client::operator=( Client const & rhs )
 	{
 		this->_id = rhs._id;
 		this->_nick = rhs._nick;
+		this->_first_connection = rhs._first_connection;
 	}
 	return *this;
 }
 
 std::ostream &			operator<<( std::ostream & o, Client const & i )
 {
-	o << "FD = " << i.get_id() << " | NICK = " << i.get_nick() << std::endl;
+	o << "FD = " << i.get_id() << 
+	" | NICK = " << i.get_nick() << 
+	" | FIST_CONNECT = " << i.get_nick() << std::endl;
 	return o;
 }
 
@@ -77,12 +81,20 @@ std::string Client::get_realnick() const {
 	return this->_realnick;
 }
 
+bool Client::get_fisrt_connection() const {
+	return this->_first_connection;
+}
+
 void Client::set_nick(std::string nick) {
 	this->_nick = nick;
 }
 
 void Client::set_realnick(std::string nick) {
 	this->_realnick = nick;
+}
+
+void Client::set_first_connection(bool connect) {
+	this->_first_connection = connect;
 }
 
 /*

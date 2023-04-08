@@ -31,9 +31,8 @@ class Rep
 {
 	private:
 		std::stringstream	output;
-		Server	&io;
 	public:
-		Rep(Server &io);
+		Rep();
 		/* Replies */
 		void R001(NR_ARG);
 		void R002(NR_ARG, const std::string& servName, const std::string &servVersion);
