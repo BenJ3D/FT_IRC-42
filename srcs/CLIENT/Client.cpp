@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/03/29 00:40:42 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/08 07:50:08 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ Client::Client()
 {
 }
 
-Client::Client(int fd) : _id(fd), _first_connection(true)
+Client::Client(int fd) : _id(fd), _first_connection(true), _pass_confirm(false)
 {
 }
 
@@ -85,6 +85,10 @@ bool Client::get_fisrt_connection() const {
 	return this->_first_connection;
 }
 
+bool Client::is_pass() const {
+	return (this->_pass_confirm);
+}
+
 void Client::set_nick(std::string nick) {
 	this->_nick = nick;
 }
@@ -95,6 +99,10 @@ void Client::set_realnick(std::string nick) {
 
 void Client::set_first_connection(bool connect) {
 	this->_first_connection = connect;
+}
+
+void Client::comfirm_password() {
+	this->_pass_confirm = true;
 }
 
 /*

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 20:39:56 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/07 04:50:21 by abucia           ###   ########lyon.fr   */
+/*   Updated: 2023/04/08 08:06:14 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	Server::init_parsing_map()
 {
 	cout << ANSI::yellow << "init PARSING OK" << endl;
+	this->commands["PASS"] = make_pair(0, &Server::pass);
 	this->commands["NICK"] = make_pair(2, &Server::nick);
 	this->commands["PING"] = make_pair(2, &Server::ping);
 	this->commands["USER"] = make_pair(5, &Server::user);
@@ -54,7 +55,8 @@ void	Server::parser(string command, int client_fd) {
 				cout << "Not enough arguments for command " << args[0] << endl;
 				continue;
 			}
-			(this->*commands[args[0]].second)(args, client_fd);
+			if (_client[client_fd].is_pass() || args[0] == "PASS") // Check if user gave password
+				(this->*commands[args[0]].second)(args, client_fd);
 		}
 		else
 		{

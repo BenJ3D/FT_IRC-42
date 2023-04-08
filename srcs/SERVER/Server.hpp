@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/05 10:30:00 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/08 06:40:42 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,7 @@ class Server
 		int		openSocket(int port);
 		void	init_parsing_map();
 
-		string _server_name;
-		string _pass_word;
+		const string _pass_word;
 		fd_set _read_fds;
 		int _max_fd;
 		vector<int> _client_fds;
@@ -62,11 +61,12 @@ class Server
 		void nick(vector<string> args, int cl);
 		void ping(vector<string> args, int cl);
 		void user(vector<string> args, int cl);
+		void pass(vector<string> args, int cl);
 		// void join(vector<string> args, Client& cl);
 		// void privmsg(vector<string> args, Client& cl);
 
 	public:
-		Server(std::string port, std::string address);//adress doit devenir password
+		Server(std::string port, std::string password);
 		~Server();
 
 		Server &operator=(Server const &rhs);

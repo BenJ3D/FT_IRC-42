@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NumericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 02:57:54 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/04 02:57:55 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/08 07:35:52 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,8 +108,8 @@ class Rep
 		void E443(NR_ARG, const std::string& chanName, const std::string& inputNick);
 
 		void E451(NR_ARG);
-		void E461(NR_ARG, const std::string& cmd);
-		void E462(NR_ARG);
+		void E461(const int &fd, const std::string& cmd);
+		void E462(const int &fd);
 		void E464(NR_ARG);
 		void E465(NR_ARG);
 

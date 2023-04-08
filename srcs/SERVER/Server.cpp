@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/05 10:00:00 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/08 08:05:06 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,29 +18,20 @@
 */
 
 Server::Server()
-{
-}
+{}
 
 Server::Server(const Server &src)
-{
-	this->_channel = src._channel;
-	this->_client = src._client;
-	this->_max_fd = src._max_fd;
-	this->_pass_word = src._pass_word;
-	this->_read_fds = src._read_fds;
-	this->_server_name = src._server_name;
+{}
+
+Server::Server(string port, string password) : _pass_word(password) {
+	init_parsing_map();
+	openSocket(atoi(port.c_str())); // fonction TEST pour le moment
 }
+
 
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
-
-Server::Server(string port, string address)
-{
-	(void)address;
-	init_parsing_map();
-	openSocket(atoi(port.c_str())); // fonction TEST pour le moment
-}
 
 Server::~Server()
 {

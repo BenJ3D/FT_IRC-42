@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 04:46:30 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/08 04:48:41 by abucia           ###   ########lyon.fr   */
+/*   Updated: 2023/04/08 08:02:18 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,4 +80,17 @@ void Server::ping(vector<string> args, int cl) {
 	msg += args[1] + "\r\n";
 	send(cl, msg.c_str(), strlen(msg.c_str()), 0);
 	// Rep(*this).R001(cl, args[1]);
+}
+
+void	Server::pass(vector<string> args, int cl_fd) {
+	cout << ANSI::cyan << cl_fd << " --> " << args[0] << endl;
+	Rep rep;
+	if (_client[cl_fd].is_pass())
+		rep.E462(cl_fd);
+	else if (args.size() == 1)
+		rep.E461(cl_fd, "PASS");
+	else {
+		if (args[1] == this->_pass_word)
+			_client[cl_fd].comfirm_password();
+	}
 }
