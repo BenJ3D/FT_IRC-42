@@ -6,7 +6,7 @@
 /*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 04:46:30 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/07 05:23:29 by abucia           ###   ########lyon.fr   */
+/*   Updated: 2023/04/08 04:48:41 by abucia           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 // }
 
 void Server::nick(vector<string> args, int client_fd) {
+	cout << ANSI::cyan << client_fd << " --> " << args[0] << endl;
+	cout << endl;
 	// Vérification des arguments de la commande
 	if (args.size() < 2)
 	{
@@ -34,6 +36,9 @@ void Server::nick(vector<string> args, int client_fd) {
 
 	// Vérification que le pseudo n'est pas déjà pris
 	for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++) {
+		cout.flush();
+		//cout << "hello mine turtle" << endl;
+		cout << _client.size() << " " << (*it).second.get_nick() << endl;
 		if ((*it).second.get_nick() == new_nick)
 		{
 			string error_msg = "ERROR :Nickname is already in use.";
@@ -42,11 +47,21 @@ void Server::nick(vector<string> args, int client_fd) {
 		}
 	}
 
+	if (_client[client_fd].get_fisrt_connection() == true)
+	{
+		_client[client_fd].set_first_connection(false);
+		_client[client_fd].set_nick(new_nick);
+		Rep().R001(client_fd, new_nick);
+		return;
+	}
+
+	// Envoi d'un message de confirmation
+	string confirm_msg = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_realnick() + "@127.0.0.1 NICK " + new_nick + "\r\n";
+	cout << ANSI::gray << "{send} => " << ANSI::cyan << confirm_msg << endl;
+	send(client_fd, confirm_msg.c_str(), strlen(confirm_msg.c_str()), 0);
+
 	// Attribution du nouveau pseudo au client
 	_client[client_fd].set_nick(new_nick);
-	// Envoi d'un message de confirmation
-	string confirm_msg = "Your nickname has been changed to " + new_nick;
-	send(client_fd, confirm_msg.c_str(), strlen(confirm_msg.c_str()), 0);
 }
 
 

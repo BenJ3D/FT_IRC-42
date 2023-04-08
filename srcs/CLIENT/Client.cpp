@@ -60,7 +60,7 @@ std::ostream &			operator<<( std::ostream & o, Client const & i )
 {
 	o << "FD = " << i.get_id() << 
 	" | NICK = " << i.get_nick() << 
-	" | FIST_CONNECT = " << i.get_nick() << std::endl;
+	" | FIST_CONNECT = " << i.get_fisrt_connection() << std::endl;
 	return o;
 }
 
