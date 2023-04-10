@@ -19,11 +19,11 @@ void Server::notice(int const &fd, string msg) {
 	msg = ":" + string(SERVER_NAME) + " NOTICE * :*** " + msg + "\r\n";
 	if (send(fd, msg.c_str(), msg.length(), 0) == -1)
 		cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
-	
+
 	cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 }
 
-void Server::confirm_to_client(int const &fd, string &msg) {
+void Server::confirm_to_client(int const &fd, string msg) {
 	msg = ":" + _client[fd].get_nick() + "!" + _client[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
 	if (send(fd, msg.c_str(), msg.length(), 0) == -1)
 		cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;

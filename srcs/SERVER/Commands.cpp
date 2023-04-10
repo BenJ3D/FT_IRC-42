@@ -6,7 +6,7 @@
 /*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 04:46:30 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/10 12:58:27 by abucia           ###   ########lyon.fr   */
+/*   Updated: 2023/04/10 14:53:07 by abucia           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,18 +73,18 @@ void Server::user(vector<string> args, int cl) {
 
 void Server::ping(vector<string> args, int cl) {
 	cout << ANSI::cyan << cl << " --> " << args[0] << endl;
+
 	if (args.size() < 2)
 		return Rep().E409(cl, _client[cl].get_nick());
 
-	for (size_t i = 1; i < args.size(); i++)
-	{
-		if (args[i] != SERVER_NAME)
-			return Rep().E402(cl, _client[cl].get_nick(), args[1]);
-		string msg("PONG ");
-		msg += args[1] + "\r\n";
-		send(cl, msg.c_str(), strlen(msg.c_str()), 0);
-	}
+	if (args.size() == 2)
+		return confirm_to_client(cl, "PONG " + string(SERVER_NAME) + " :" + args[1]);
 	
-	
-	// Rep(*this).R001(cl, args[1]);
+	if (args[1] != SERVER_NAME)
+		return Rep().E402(cl, _client[cl].get_nick(), args[1]);
+	confirm_to_client(cl, "PONG " + string(SERVER_NAME) + " :" + args[2]);
+}
+
+void Server::privmsg(vector<string> args, int cl) {
+	cout << ANSI::cyan << cl << " --> " << args[0] << endl;
 }

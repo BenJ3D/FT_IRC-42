@@ -6,7 +6,7 @@
 /*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 20:39:56 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/08 20:07:11 by abucia           ###   ########lyon.fr   */
+/*   Updated: 2023/04/10 14:51:30 by abucia           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 void	Server::init_parsing_map()
 {
 	this->commands["NICK"] = make_pair(1, &Server::nick);
-	this->commands["PING"] = make_pair(2, &Server::ping);
-	this->commands["USER"] = make_pair(5, &Server::user);
+	this->commands["PING"] = make_pair(1, &Server::ping);
+	this->commands["USER"] = make_pair(1, &Server::user);
+	this->commands["PRIVMSG"] = make_pair(1, &nick);
 	// this->commands["JOIN"] = make_pair(2, &nick);
-	// this->commands["PRIVMSG"] = make_pair(3, &nick);
 	cout << ANSI::yellow << "init PARSING OK" << endl;
 }
 

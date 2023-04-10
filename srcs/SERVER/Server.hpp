@@ -56,15 +56,15 @@ class Server
 		map<int,Channel> _channel;
 
 		std::map<std::string, std::pair<long unsigned int, CmdFunc> > commands;
-		void confirm_to_client(const int& fd, string& msg);
+		void confirm_to_client(const int& fd, string msg);
 		void notice(int const &fd, string msg);
 
 		/** COMMAND **/
 		void nick(vector<string> args, int cl);
 		void ping(vector<string> args, int cl);
 		void user(vector<string> args, int cl);
+		void privmsg(vector<string> args, int cl);
 		// void join(vector<string> args, Client& cl);
-		// void privmsg(vector<string> args, Client& cl);
 
 	public:
 		Server(std::string port, std::string address);//adress doit devenir password
