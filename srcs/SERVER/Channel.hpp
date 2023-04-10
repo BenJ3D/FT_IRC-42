@@ -19,7 +19,7 @@ class Channel
 		Channel( int fd_client, string const & name, Client client, string const & passwd );
 		~Channel();
 
-		vector<int>				getList();
+		vector<int>		const &		getList();
 		string const &			getListStr();
 		vector<int>				getOperator();
 		void					addClient(int fd_client);
@@ -42,8 +42,8 @@ class Channel
 		string					_passwd;
 		string					_topic;
 		string		 			_name;
+		vector<int>				_blackList; 
 		vector<int>				_list; //OLD 
-		vector<Client>			_listClient; //WIP
 		vector<int>				_operator;
 		string					_mode;
 };

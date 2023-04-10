@@ -35,7 +35,7 @@ Channel::~Channel()
 {
 }
 
-vector<int>				Channel::getList()
+vector<int> const &			Channel::getList()
 {
 	return _list;
 }
@@ -109,17 +109,6 @@ void 					Channel::setMode(string const & mode)
 	_mode = mode;
 }
 
-string const &			Channel::getListStr()
-{
-	stringstream ss;
-	if (_listClient.size() == 0)
-		return "";
-	for (vector<Client>::iterator it = _listClient.begin(); it != _listClient.end(); it++)
-	{
-		ss << it->get_nick() << " ";
-	}
-	return ss.str();
-}
 
 /*
 ** --------------------------------- OVERLOAD ---------------------------------

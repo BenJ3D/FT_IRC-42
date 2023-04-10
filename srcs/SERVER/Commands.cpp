@@ -70,8 +70,6 @@ void Server::ping(vector<string> args, int cl) {
 
 void	Server::join_channel(vector<string> args, int fd_client) //TODO: gerer le cas de multi canaux (ex: JOIN #test #test2 #test3 passwd)
 {
-	Channel tmp2(fd_client, args[0], _client[fd_client]);
-	cerr << ANSI::red << "DBG error : " << tmp2.getListStr() << ANSI::reset << endl;
 
 	if (_channel.find(args[0]) == _channel.end())
 	{
