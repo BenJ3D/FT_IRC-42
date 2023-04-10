@@ -20,15 +20,16 @@ Client::Client()
 {
 }
 
-Client::Client(int fd) : _id(fd), _first_connection(true)
+Client::Client(int fd) : _id(fd), _nick("*"), _is_auth(false), _pass_confirm(false)
 {
+	
 }
 
 Client::Client( const Client & src )
 {
 	this->_id = src._id;
 	this->_nick = src._nick;
-	this->_first_connection = src._first_connection;
+	this->_is_auth = src._is_auth;
 }
 
 
@@ -51,7 +52,7 @@ Client &				Client::operator=( Client const & rhs )
 	{
 		this->_id = rhs._id;
 		this->_nick = rhs._nick;
-		this->_first_connection = rhs._first_connection;
+		this->_is_auth = rhs._is_auth;
 	}
 	return *this;
 }
@@ -60,7 +61,8 @@ std::ostream &			operator<<( std::ostream & o, Client const & i )
 {
 	o << "FD = " << i.get_id() << 
 	" | NICK = " << i.get_nick() << 
-	" | FIST_CONNECT = " << i.get_nick() << std::endl;
+	" | FIST_CONNECT = " << i.get_is_auth() << 
+	" | PASS_CONFIRMED = " << i.get_pass_confirm() << std::endl;
 	return o;
 }
 
@@ -68,6 +70,28 @@ std::ostream &			operator<<( std::ostream & o, Client const & i )
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
+
+/**
+ * @brief set the client as authentified (NICK and USER command)
+ * @param connect 
+ */
+void Client::now_auth() {
+	this->_is_auth = true;
+}
+
+/**
+ * @brief set the client password verified (PASS command)
+ * @param connect 
+ */
+void Client::password_verified() {
+	this->_pass_confirm = true;
+}
+
+/*
+** --------------------------------- ACCESSOR ---------------------------------
+*/
+
+//######################### GETTER #########################
 
 int Client::get_id() const {
 	return this->_id;
@@ -77,29 +101,46 @@ std::string Client::get_nick() const {
 	return this->_nick;
 }
 
-std::string Client::get_realnick() const {
-	return this->_realnick;
+std::string Client::get_username() const {
+	return this->_username;
 }
 
-bool Client::get_fisrt_connection() const {
-	return this->_first_connection;
+std::string Client::get_realname() const {
+	return this->_realname;
 }
 
+bool Client::get_is_auth() const {
+	return this->_is_auth;
+}
+
+bool Client::get_pass_confirm() const {
+	return this->_pass_confirm;
+}
+
+//######################### SETTER #########################
+
+/**
+ * @brief set the nick of the client
+ * @param nick 
+ */
 void Client::set_nick(std::string nick) {
 	this->_nick = nick;
 }
 
-void Client::set_realnick(std::string nick) {
-	this->_realnick = nick;
+/**
+ * @brief set the username of the client
+ * @param username 
+ */
+void Client::set_username(std::string username) {
+	this->_username = username;
 }
 
-void Client::set_first_connection(bool connect) {
-	this->_first_connection = connect;
+/**
+ * @brief set the realname of the client
+ * @param realname 
+ */
+void Client::set_realname(std::string realname) {
+	this->_realname = realname;
 }
-
-/*
-** --------------------------------- ACCESSOR ---------------------------------
-*/
-
 
 /* ************************************************************************** */

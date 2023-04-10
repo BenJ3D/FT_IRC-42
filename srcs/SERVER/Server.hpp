@@ -36,7 +36,7 @@
 
 using namespace std;
 typedef void (Server::*CmdFunc)(std::vector<std::string>, int);
-# define SERVER_NAME "MINITEL_ROSE"
+# define SERVER_NAME "127.0.0.1"
 
 class Channel;
 class Server
@@ -57,15 +57,15 @@ class Server
 		map<string,Channel>		_channel;
 
 		std::map<std::string, std::pair<long unsigned int, CmdFunc> > commands;
-
+		void confirm_to_client(const int& fd, string msg);
+		void notice(int const &fd, string msg);
 
 		/** COMMAND **/
 		void nick(vector<string> args, int cl);
 		void ping(vector<string> args, int cl);
 		void user(vector<string> args, int cl);
+		void privmsg(vector<string> args, int cl);
 		// void join(vector<string> args, Client& cl);
-		// void privmsg(vector<string> args, Client& cl);
-		
 		void	join_channel(vector<string> args, int fd_client);
 
 
@@ -81,6 +81,8 @@ class Server
 };
 
 std::ostream &operator<<(std::ostream &o, Server const &i);
+
+
 
 #endif /* ********************************************************* SERVER_HPP */
 

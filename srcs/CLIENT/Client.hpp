@@ -22,8 +22,10 @@ class Client
 
 		int _id;
 		std::string _nick;
-		std::string _realnick;
-		bool _first_connection;
+		std::string _username;
+		std::string _realname;
+		bool _is_auth;
+		bool _pass_confirm;
 
 	public:
 		Client();
@@ -33,12 +35,17 @@ class Client
 
 		int get_id() const;
 		std::string get_nick() const;
-		std::string get_realnick() const;
-		bool get_fisrt_connection() const;
+		std::string get_username() const;
+		std::string get_realname() const;
+		bool get_is_auth() const;
+		bool get_pass_confirm() const;
 
 		void set_nick(std::string nick);
-		void set_realnick(std::string nick);
-		void set_first_connection(bool connect);
+		void set_username(std::string nick);
+		void set_realname(std::string nick);
+
+		void now_auth();
+		void password_verified();
 
 		Client &		operator=( Client const & rhs );
 };

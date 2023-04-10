@@ -147,15 +147,12 @@ int Server::openSocket(int port)
 			}
 			_client[new_client_fd] = Client(new_client_fd);
 			cout << ANSI::green << ANSI::bold << "Nouvelle connexion entrante sur le socket " << new_client_fd << endl;
-			
-			// Rep().R001(new_client_fd, "test");
-			if (send(new_client_fd, ":127.0.0.1 001 bducrocq :Welcome to my IRC server, bducrocq!\r\n", 64, 0) == -1)
+			if (send(new_client_fd, "", 0, MSG_CONFIRM) == -1)
 			{
 				cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
 				return 1;
 			}
 		}
-		//if (_client.find(new_client_fd) != _client.end()){}; //si le client n'existe pas
 		// vérification des données reçues des clients existants
 		for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++)
 		{
@@ -171,7 +168,7 @@ int Server::openSocket(int port)
 					_client.erase(it);
 					break;
 				}
-				else if (bytes_received == 0)
+				else if (!bytes_received)
 				{
 					cout << ANSI::red << "Connexion fermée par le client n°" << (*it).first << endl;
 					close((*it).first);
@@ -184,6 +181,8 @@ int Server::openSocket(int port)
 					cout << ANSI::purple << "\n### Recv client " << (*it).first << " ###\n"
 						 << ANSI::italic << str_buff.c_str() << ANSI::purple << "#####################\n"
 						 << endl;
+					if (str_buff == " " || str_buff == "\r\n" || str_buff == "\n" || str_buff.empty())
+						continue;
 
 					// parsing...
 					this->parser(str_buff, (*it).first);
@@ -192,6 +191,7 @@ int Server::openSocket(int port)
 		} 
 	}
 }
+
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
