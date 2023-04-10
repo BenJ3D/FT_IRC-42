@@ -6,7 +6,7 @@
 /*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 04:46:30 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/10 14:53:07 by abucia           ###   ########lyon.fr   */
+/*   Updated: 2023/04/10 17:35:10 by abucia           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,13 @@ void Server::user(vector<string> args, int cl) {
 		username = "~" + username;
 		notice(cl, "Could not find your ident, using " + username + " instead.");
 	}
+	if (!_client[cl].get_is_auth() && _client[cl].get_nick() != "")
+	{
+		_client[cl].now_auth();
+		this->_client[cl].set_username(username);
+		this->_client[cl].set_realname(realname);
+		return Rep().R001(cl, _client[cl].get_nick());
+	}
 	this->_client[cl].set_username(username);
 	this->_client[cl].set_realname(realname);
 }
@@ -87,4 +94,8 @@ void Server::ping(vector<string> args, int cl) {
 
 void Server::privmsg(vector<string> args, int cl) {
 	cout << ANSI::cyan << cl << " --> " << args[0] << endl;
+
+	if (args.size() < 3)
+		return Rep().E411(cl, _client[cl].get_nick(), args[0]);
+	
 }
