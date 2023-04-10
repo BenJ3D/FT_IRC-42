@@ -6,7 +6,7 @@
 /*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 04:46:30 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/10 17:04:31 by abucia           ###   ########lyon.fr   */
+/*   Updated: 2023/04/10 17:35:10 by abucia           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void Server::nick(vector<string> args, int client_fd) {
 		return Rep().R001(client_fd, new_nick);
 	}
 	string confirm_msg = "NICK " + new_nick + "\r\n";
-	confirm_to_client(client_fd, confirm_msg);
+	confirm_to_client(client_fd, confirm_msg, _client);
 	_client[client_fd].set_nick(new_nick);
 }
 
@@ -68,6 +68,13 @@ void Server::user(vector<string> args, int cl) {
 		username = "~" + username;
 		notice(cl, "Could not find your ident, using " + username + " instead.");
 	}
+	if (!_client[cl].get_is_auth() && _client[cl].get_nick() != "*")
+	{
+		_client[cl].now_auth();
+		this->_client[cl].set_username(username);
+		this->_client[cl].set_realname(realname);
+		return Rep().R001(cl, _client[cl].get_nick());
+	}
 	this->_client[cl].set_username(username);
 	this->_client[cl].set_realname(realname);
 }
@@ -79,23 +86,27 @@ void Server::ping(vector<string> args, int cl)
 		return Rep().E409(cl, _client[cl].get_nick());
 
 	if (args.size() == 2)
-		return confirm_to_client(cl, "PONG " + string(SERVER_NAME) + " :" + args[1]);
+		return confirm_to_client(cl, "PONG " + string(SERVER_NAME) + " :" + args[1], _client);
 
 	if (args[1] != SERVER_NAME)
 		return Rep().E402(cl, _client[cl].get_nick(), args[1]);
-	confirm_to_client(cl, "PONG " + string(SERVER_NAME) + " :" + args[2]);
+	confirm_to_client(cl, "PONG " + string(SERVER_NAME) + " :" + args[2], _client);
 }
 
 
 
 void	Server::join_channel(vector<string> args, int fd_client) //TODO: gerer le cas de multi canaux (ex: JOIN #test #test2 #test3 passwd)
 {
-	//nouveau channel
-	if (_channel.find(args[0]) == _channel.end())
+	
+	if (args.size() < 2)
+		return Rep().E461(fd_client, _client[fd_client].get_nick(), args[0]);
+	
+	if (_channel.find(args[1]) == _channel.end())
 	{
 		_channel[args[1]] = Channel(fd_client, args[0], _client[fd_client]);
-		confirm_to_client(fd_client, "JOIN " + args[1]);
-		confirm_to_client(fd_client, "MODE " + args[1] + " +o " + _client[fd_client].get_nick());
+		_channel[args[1]].addClient(fd_client, '@');
+		confirm_to_client(fd_client, "JOIN " + args[1], _client);
+		confirm_to_client(fd_client, "MODE " + args[1] + " +o " + _client[fd_client].get_nick(), _client);
 
 		Rep().R353(fd_client, _client[fd_client].get_nick(), args[1], _client[fd_client].get_nick(), _channel[args[1]].getMode(), _channel[args[1]].getList().at(fd_client));
 		Rep().R366(fd_client, _client[fd_client].get_nick(), args[1]);
@@ -103,17 +114,20 @@ void	Server::join_channel(vector<string> args, int fd_client) //TODO: gerer le c
 	else
 	{
 		// Channel tmp(fd_client, args[0], _client[fd_client]);
+		for (vector<int>::iterator it = _channel[args[1]].getBlackList().begin(); it != _channel[args[1]].getBlackList().end(); it++)
+			if ((*it) == fd_client)
+				return Rep().E474(fd_client, _client[fd_client].get_nick(), args[1]);
 		
-		string user_list = "";
-		for (map<int, char>::iterator it = _channel[args[1]].getList().begin(); it != _channel[args[1]].getList().end(); it++)
-			user_list += " " + _client[(*it).first].get_nick();
-		user_list = user_list.substr(1);
-		
-		confirm_to_client(fd_client, "JOIN :" + args[1]);
+		_channel[args[1]].addClient(fd_client, ' ');
+		string user_list = _channel[args[1]].ListNick(_client);
 		
 		Rep().R353(fd_client, _client[fd_client].get_nick(), args[1], user_list, _channel[args[1]].getMode(), _channel[args[1]].getList().at(fd_client));
 		Rep().R366(fd_client, _client[fd_client].get_nick(), args[1]);
 	}
+}
+
+void Server::mode(vector<string> args, int fd_client) {
+	
 }
 
 /*
@@ -125,4 +139,6 @@ void	Server::join_channel(vector<string> args, int fd_client) //TODO: gerer le c
 
 void Server::privmsg(vector<string> args, int cl) {
 	cout << ANSI::cyan << cl << " --> " << args[0] << endl;
+	if (args.size() < 3)
+		return Rep().E411(cl, _client[cl].get_nick(), args[0]);
 }
