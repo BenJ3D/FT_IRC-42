@@ -8,14 +8,17 @@ Channel::Channel()
 {
 }
 
+#include "../UTILS/ANSI.hpp"
+
 Channel::Channel(int fd_client, string const & name, Client client) : _name(name), _mode('=')
 {
-	_list[fd_client] = '@';
+	_list.insert(pair<int, char>(fd_client, '@'));
+	cout << ANSI::green << "Channel " << name << " created by " << client.get_nick() << endl;
 }
 
 Channel::Channel(int fd_client, string const & name, Client client, string const & passwd ) : _name(name), _passwd(passwd), _mode('=')
 {
-	_list[fd_client] = '@';
+	_list.insert(pair<int, char>(fd_client, '@'));
 }
 
 
@@ -25,6 +28,17 @@ Channel::Channel(int fd_client, string const & name, Client client, string const
 
 Channel::~Channel()
 {
+}
+
+string Channel::ListNick(map<int, Client> & clients)
+{
+	string list;
+	for (map<int, char>::iterator it = _list.begin(); it != _list.end(); it++)
+	{
+		confirm_to_client(clients[(*it).first].get_id(), "JOIN :" + _name, clients);
+		list += clients[(*it).first].get_nick() + " ";
+	}
+	return list;
 }
 
 map<int, char>		Channel::getList()
@@ -47,7 +61,7 @@ void 					Channel::addClient(int fd_client, char mode)
 	for (map<int, char>::iterator it = _list.begin(); it != _list.end(); it++)
 		if ((*it).first == fd_client)
 			return;
-	_list[fd_client] = mode;
+	_list.insert(pair<int, char>(fd_client, mode));
 }
 
 void					Channel::removeClient(int fd_client)
@@ -96,6 +110,16 @@ string					Channel::getPasswd()
 char 					Channel::getMode()
 {
 	return _mode;
+}
+
+bool 					Channel::isInviteOnly()
+{
+	return (_mode == 'i');
+}
+
+vector<int>	Channel::getBlackList()
+{
+	return this->_blackList;
 }
 
 

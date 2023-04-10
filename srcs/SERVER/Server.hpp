@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/05 10:30:00 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/10 20:36:08 by abucia           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,15 +57,14 @@ class Server
 		map<string,Channel>		_channel;
 
 		std::map<std::string, std::pair<long unsigned int, CmdFunc> > commands;
-		void confirm_to_client(const int& fd, string msg);
 		void notice(int const &fd, string msg);
 
 		/** COMMAND **/
-		void nick(vector<string> args, int cl);
-		void ping(vector<string> args, int cl);
-		void user(vector<string> args, int cl);
-		void privmsg(vector<string> args, int cl);
-		// void join(vector<string> args, Client& cl);
+		void	nick(vector<string> args, int cl);
+		void	ping(vector<string> args, int cl);
+		void	user(vector<string> args, int cl);
+		void	privmsg(vector<string> args, int cl);
+		void	mode(vector<string> args, int fd_client);
 		void	join_channel(vector<string> args, int fd_client);
 
 
@@ -80,6 +79,7 @@ class Server
 
 };
 
+void confirm_to_client(const int &fd, string msg, map<int, Client>);
 std::ostream &operator<<(std::ostream &o, Server const &i);
 
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NumericReplies.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 02:58:43 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/04 03:01:44 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/10 20:34:01 by abucia           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void Server::notice(int const &fd, string msg) {
 	cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 }
 
-void Server::confirm_to_client(int const &fd, string msg) {
+void confirm_to_client(int const &fd, string msg, map<int, Client> _client) {
 	msg = ":" + _client[fd].get_nick() + "!" + _client[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
 	if (send(fd, msg.c_str(), msg.length(), 0) == -1)
 		cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
@@ -659,21 +659,21 @@ void Rep::E472(int const &fd, const string &cNick, const char& modeChar)
 
 void Rep::E473(int const &fd, const string &cNick, const string& chanName)
 {
-	output << "473 " << cNick << " " << chanName << " :Cannot join channel (<<i)";
+	output << "473 " << cNick << " " << chanName << " :Cannot join channel (+i)";
 	send_to_client(output.str(), fd);
 	clearBuffer();
 }
 
 void Rep::E474(int const &fd, const string &cNick, const string& chanName)
 {
-	output << "474 " << cNick << " " << chanName << " :Cannot join channel (<<b)";
+	output << "474 " << cNick << " " << chanName << " :Cannot join channel (+b)";
 	send_to_client(output.str(), fd);
 	clearBuffer();
 }
 
 void Rep::E475(int const &fd, const string &cNick, const string& chanName)
 {
-	output << "475 " << cNick << " " << chanName << " :Cannot join channel (<<k)";
+	output << "475 " << cNick << " " << chanName << " :Cannot join channel (+k)";
 	send_to_client(output.str(), fd);
 	clearBuffer();
 }

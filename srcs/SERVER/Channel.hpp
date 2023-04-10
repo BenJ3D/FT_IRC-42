@@ -20,18 +20,33 @@ class Channel
 		Channel( int fd_client, string const & name, Client client, string const & passwd );
 		~Channel();
 
-		map<int, char> 								getList();
-		vector<int>									getOperators();
-		void										addClient(int fd_client, char mode);
-		void										removeClient(int fd_client);
-		void										removeOperator(int fd_client);
-		void										setTopic(string const & topic);
-		string										getTopic();
-		string										getName();
-		void										setPasswd(string const & passwd);
-		string										getPasswd();
-		void										setMode(char const & mode);  // = for public | * for private | @ for secret
-		char										getMode();
+		void				addClient(int fd_client, char mode);
+		void				removeClient(int fd_client);
+
+		void				addOperator(int fd_client);
+		void				removeOperator(int fd_client);
+
+		void				addBlackList(int fd_client);
+		void				removeBlackList(int fd_client);
+
+		bool				isInviteOnly();
+
+		void				setInviteOnly(bool const & inviteOnly);
+		void				setModerated(bool const & moderated);
+		void				setLimit(int const & limit);
+		void				setTopic(string const & topic);
+		void				setPasswd(string const & passwd);
+		void				setMode(char const & mode);  // = for public | * for private | @ for secret
+
+		vector<int>			getBlackList();
+		map<int, char>		getList();
+		vector<int>			getOperators();
+		string				getPasswd();
+		string				getTopic();
+		string				getName();
+		char				getMode();
+
+		string ListNick(map<int, Client> & clients);
 
 	private:
 		
@@ -40,9 +55,12 @@ class Channel
 		string				_passwd;
 		string				_topic;
 		string		 		_name;
-		vector<int>			_blackList; 
-		map<int, char>		_list; //OLD 
+		vector<int>			_blackList; // fd_client
+		map<int, char>		_list; // fd_client, mode 
 		char				_mode;
+		bool 				_inviteOnly;
+		bool 				_moderated;
+		int 				_limit;
 };
 
 #endif /* ********************************************************* CHANNEL_H */
