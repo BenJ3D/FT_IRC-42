@@ -6,7 +6,7 @@
 /*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 04:46:30 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/08 09:53:19 by abucia           ###   ########lyon.fr   */
+/*   Updated: 2023/04/10 12:58:27 by abucia           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void Server::nick(vector<string> args, int client_fd) {
 
 	if (args.size() < 2)
 		return Rep().E431(client_fd, _client[client_fd].get_nick());
-	string check("[]\\`_^{|}abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+	string check("[]\\`_^{|}$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 	string new_nick = args[1];
 	if (check.find(new_nick[0]) == string::npos || new_nick.length() > 9)
 		return Rep().E432(client_fd, _client[client_fd].get_nick(), new_nick);
@@ -32,14 +32,13 @@ void Server::nick(vector<string> args, int client_fd) {
 		if ((*it).second.get_nick() == new_nick)
 			return Rep().E433(client_fd, _client[client_fd].get_nick(), new_nick);
 	}
-	if (_client[client_fd].get_fisrt_connection())
+	if (!_client[client_fd].get_is_auth() && _client[client_fd].get_username() != "")
 	{
-		_client[client_fd].set_first_connection(false);
+		_client[client_fd].now_auth();
 		_client[client_fd].set_nick(new_nick);
 		return Rep().R001(client_fd, new_nick);
 	}
 	string confirm_msg = "NICK " + new_nick + "\r\n";
-	//cout << ANSI::gray << "{send} ==> " << ANSI::cyan <<  _client[client_fd].get_nick() << " " << confirm_msg;
 	confirm_to_client(client_fd, confirm_msg);
 	_client[client_fd].set_nick(new_nick);
 }
@@ -47,17 +46,45 @@ void Server::nick(vector<string> args, int client_fd) {
 
 void Server::user(vector<string> args, int cl) {
 	cout << ANSI::cyan << cl << " --> " << args[0] << endl;
-	this->_client[cl].set_realnick(args[1]);
-	string msg(":");
-	msg += args[0] + " " + args[1] + "\r\n";
-	//send(cl, msg.c_str(), strlen(msg.c_str()), 0);
-	//Rep(*this).R001(cl, args[1]);
+
+	if (args.size() < 5)
+		return Rep().E461(cl, _client[cl].get_nick(), args[0]);
+	if (_client[cl].get_username() != "")
+		return Rep().E462(cl, _client[cl].get_nick());
+	string check("[]\\`_^{|}$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-");
+	for (size_t i = 1; i < args[1].length(); i++)
+		if (check.find(args[1][i]) == string::npos)
+			return Rep().E468(cl, _client[cl].get_nick());
+
+	string realname = "";
+	string username = args[1];
+
+	for (size_t i = 3; i < args.size(); i++)
+		realname += args[i] + " ";
+	if (args[1].size() > 9 || _client[cl].get_username() == "") {
+		if (args[1].size() > 9)
+			username = args[1].substr(0, 9);
+		username = "~" + username;
+		notice(cl, "Could not find your ident, using " + username + " instead.");
+	}
+	this->_client[cl].set_username(username);
+	this->_client[cl].set_realname(realname);
 }
 
 void Server::ping(vector<string> args, int cl) {
 	cout << ANSI::cyan << cl << " --> " << args[0] << endl;
-	string msg("PONG ");
-	msg += args[1] + "\r\n";
-	send(cl, msg.c_str(), strlen(msg.c_str()), 0);
+	if (args.size() < 2)
+		return Rep().E409(cl, _client[cl].get_nick());
+
+	for (size_t i = 1; i < args.size(); i++)
+	{
+		if (args[i] != SERVER_NAME)
+			return Rep().E402(cl, _client[cl].get_nick(), args[1]);
+		string msg("PONG ");
+		msg += args[1] + "\r\n";
+		send(cl, msg.c_str(), strlen(msg.c_str()), 0);
+	}
+	
+	
 	// Rep(*this).R001(cl, args[1]);
 }

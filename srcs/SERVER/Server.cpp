@@ -153,15 +153,7 @@ int Server::openSocket(int port)
 				cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
 				return 1;
 			}
-
-			//Rep().R001(new_client_fd, "test");
-			// if (send(new_client_fd, ":127.0.0.1 001 bducrocq :Welcome to my IRC server, bducrocq!\r\n", 64, 0) == -1)
-			// {
-			// 	cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
-			// 	return 1;
-			// }
 		}
-		//if (_client.find(new_client_fd) != _client.end()){}; //si le client n'existe pas
 		// vérification des données reçues des clients existants
 		for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++)
 		{
@@ -177,7 +169,7 @@ int Server::openSocket(int port)
 					_client.erase(it);
 					break;
 				}
-				else if (bytes_received == 0)
+				else if (!bytes_received)
 				{
 					cout << ANSI::red << "Connexion fermée par le client n°" << (*it).first << endl;
 					close((*it).first);

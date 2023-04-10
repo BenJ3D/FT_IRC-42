@@ -57,6 +57,7 @@ class Server
 
 		std::map<std::string, std::pair<long unsigned int, CmdFunc> > commands;
 		void confirm_to_client(const int& fd, string& msg);
+		void notice(int const &fd, string msg);
 
 		/** COMMAND **/
 		void nick(vector<string> args, int cl);
