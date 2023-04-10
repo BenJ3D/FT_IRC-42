@@ -8,22 +8,14 @@ Channel::Channel()
 {
 }
 
-Channel::Channel(int fd_client, string const & name, Client client) : _name(name)
+Channel::Channel(int fd_client, string const & name, Client client) : _name(name), _mode('=')
 {
-	if(find(_list.begin(), _list.end(), fd_client) == _list.end())
-	{
-		_list.push_back(fd_client);// suprression si listClient ok
-		_listClient.push_back(client);//WIP
-	}
+	_list[fd_client] = '@';
 }
 
-Channel::Channel(int fd_client, string const & name, Client client, string const & passwd ) : _name(name), _passwd(passwd)
+Channel::Channel(int fd_client, string const & name, Client client, string const & passwd ) : _name(name), _passwd(passwd), _mode('=')
 {
-	if(find(_list.begin(), _list.end(), fd_client) == _list.end())
-	{
-		_list.push_back(fd_client);// suprression si listClient ok
-		_listClient.push_back(client);//WIP
-	}
+	_list[fd_client] = '@';
 }
 
 
@@ -35,34 +27,36 @@ Channel::~Channel()
 {
 }
 
-vector<int> const &			Channel::getList()
+map<int, char>		Channel::getList()
 {
 	return _list;
 }
 
-vector<int>				Channel::getOperator()
+vector<int>			Channel::getOperators()
 {
-	return _operator;
+	vector<int>		operator_list;
+
+	for (map<int, char>::iterator it = _list.begin(); it != _list.end(); it++)
+		if ((*it).second == '@')
+			operator_list.push_back((*it).first);
+	return operator_list;
 }
 
-void					Channel::addOperator(int fd_client)
+void 					Channel::addClient(int fd_client, char mode)
 {
-	_operator.push_back(fd_client);
-}
-
-void 					Channel::addClient(int fd_client)
-{
-	if (find(_list.begin(), _list.end(), fd_client) == _list.end())
-		_list.push_back(fd_client);
+	for (map<int, char>::iterator it = _list.begin(); it != _list.end(); it++)
+		if ((*it).first == fd_client)
+			return;
+	_list[fd_client] = mode;
 }
 
 void					Channel::removeClient(int fd_client)
 {
-	for (vector<int>::iterator it = _list.begin(); it != _list.end(); it++)
+	for (map<int, char>::iterator it = _list.begin(); it != _list.end(); it++)
 	{
-		if ((*it) == fd_client)
+		if ((*it).first == fd_client)
 		{
-			_list.erase(it);
+			_list.erase((*it).first);
 			break;
 		}
 	}
@@ -70,11 +64,11 @@ void					Channel::removeClient(int fd_client)
 
 void					Channel::removeOperator(int fd_client)
 {
-	for (vector<int>::iterator it = _operator.begin(); it != _operator.end(); it++)
+	for (map<int, char>::iterator it = _list.begin(); it != _list.end(); it++)
 	{
-		if ((*it) == fd_client)
+		if ((*it).first == fd_client)
 		{
-			_operator.erase(it);
+			(*it).second = ' ';
 			break;
 		}
 	}
@@ -99,12 +93,18 @@ string					Channel::getPasswd()
 	return _passwd;
 }
 
+char 					Channel::getMode()
+{
+	return _mode;
+}
+
+
 void 					Channel::setPasswd(string const & passwd)
 {
 	_passwd = passwd;
 }
 
-void 					Channel::setMode(string const & mode)
+void 					Channel::setMode(char const & mode)
 {
 	_mode = mode;
 }
