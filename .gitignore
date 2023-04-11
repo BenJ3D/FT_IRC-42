@@ -32,3 +32,4 @@
 *.app
 ircserv
 exec_ircserv
+.nfs*

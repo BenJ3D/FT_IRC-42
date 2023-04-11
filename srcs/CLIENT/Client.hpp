@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/08 07:49:57 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/11 15:36:09 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,9 @@ class Client
 
 		int _id;
 		std::string _nick;
-		std::string _realnick;
-		bool _first_connection;
+		std::string _username;
+		std::string _realname;
+		bool _is_auth;
 		bool _pass_confirm;
 
 	public:
@@ -34,14 +35,19 @@ class Client
 
 		int get_id() const;
 		std::string get_nick() const;
-		std::string get_realnick() const;
+		std::string get_username() const;
+		std::string get_realname() const;
+
+		bool get_is_auth() const;
 		bool is_pass() const;
-		bool get_fisrt_connection() const;
 
 		void comfirm_password();
 		void set_nick(std::string nick);
-		void set_realnick(std::string nick);
-		void set_first_connection(bool connect);
+		void set_username(std::string nick);
+		void set_realname(std::string nick);
+
+		void now_auth();
+		void password_verified();
 
 		Client &		operator=( Client const & rhs );
 };

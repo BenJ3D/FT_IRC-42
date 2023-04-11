@@ -33,6 +33,7 @@ class Rep
 		std::stringstream	output;
 	public:
 		Rep();
+		void send_to_client(std::string msg, int const &fd);
 		/* Replies */
 		void R001(NR_ARG);
 		void R002(NR_ARG, const std::string& servName, const std::string &servVersion);
@@ -51,7 +52,6 @@ class Rep
 		void R253(NR_ARG, int unknownConnnections);
 		void R254(NR_ARG, int channels);
 		void R255(NR_ARG, const std::string& infostr);
-		void R265(NR_ARG, int users);
 		void R266(NR_ARG, int users);
 
 		void R311(NR_ARG, const std::string& queryNick, const std::string& queryName, const std::string& queryRealName);
@@ -88,9 +88,11 @@ class Rep
 
 		/* Errors */
 		void E401(NR_ARG, const std::string& inputNick);
+		void E402(NR_ARG, const std::string& chanName);
 		void E403(NR_ARG, const std::string& chanName);
 		void E404(NR_ARG, const std::string& chanName);
 		void E405(int const &fd, const std::string &cNick, const std::string& chanName);
+		void E409(NR_ARG);
 
 		void E411(NR_ARG, const std::string& cmd);
 		void E412(NR_ARG);
@@ -112,6 +114,8 @@ class Rep
 		void E462(const int &fd);
 		void E464(NR_ARG);
 		void E465(NR_ARG);
+
+		void E468(int const &fd, const std::string &cNick);
 
 		void E471(NR_ARG, const std::string& chanName);
 		void E472(NR_ARG, const char& 		 modeChar);

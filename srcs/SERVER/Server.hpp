@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/08 06:40:42 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/11 15:39:22 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,10 @@
 using namespace std;
 typedef void (Server::*CmdFunc)(std::vector<std::string>, int);
 # define SERVER_NAME "127.0.0.1"
+# define SERVER_VERSION "1.0.0"
+# define SERVER_DATE "2021-03-29"
 
+class Channel;
 class Server
 {
 	private:
@@ -47,23 +50,26 @@ class Server
 		int		openSocket(int port);
 		void	init_parsing_map();
 
-		const string _pass_word;
-		fd_set _read_fds;
-		int _max_fd;
-		vector<int> _client_fds;
-		map<int,Client> _client;
-		map<int,Channel> _channel;
+		string					_server_name;
+		const string			_pass_word;
+		fd_set					_read_fds;
+		int						_max_fd;
+		vector<int>				_client_fds;
+		map<int,Client>			_client;
+		map<string,Channel>		_channel;
 
 		std::map<std::string, std::pair<long unsigned int, CmdFunc> > commands;
-
+		void notice(int const &fd, string msg);
 
 		/** COMMAND **/
-		void nick(vector<string> args, int cl);
-		void ping(vector<string> args, int cl);
-		void user(vector<string> args, int cl);
-		void pass(vector<string> args, int cl);
-		// void join(vector<string> args, Client& cl);
-		// void privmsg(vector<string> args, Client& cl);
+		void	pass(vector<string> args, int cl);
+		void	nick(vector<string> args, int cl);
+		void	ping(vector<string> args, int cl);
+		void	user(vector<string> args, int cl);
+		void	privmsg(vector<string> args, int cl);
+		void	mode(vector<string> args, int fd_client);
+		
+		void	join_channel(vector<string> args, int fd_client);
 
 	public:
 		Server(std::string port, std::string password);
@@ -73,9 +79,13 @@ class Server
 
 		/* --- PARSING --- */
 		void parser(string command, int client_fd);
+
 };
 
+void confirm_to_client(const int &fd, string msg, map<int, Client>);
 std::ostream &operator<<(std::ostream &o, Server const &i);
+
+
 
 #endif /* ********************************************************* SERVER_HPP */
 

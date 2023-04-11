@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/08 08:05:06 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/11 15:40:00 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,13 @@
 Server::Server()
 {}
 
-Server::Server(const Server &src)
-{}
+Server::Server(const Server &src) {
+	// this->_channel = src._channel;
+	this->_client = src._client;
+	this->_max_fd = src._max_fd;
+	this->_read_fds = src._read_fds;
+	this->_server_name = src._server_name;
+}
 
 Server::Server(string port, string password) : _pass_word(password) {
 	init_parsing_map();
@@ -138,21 +143,12 @@ int Server::openSocket(int port)
 			}
 			_client[new_client_fd] = Client(new_client_fd);
 			cout << ANSI::green << ANSI::bold << "Nouvelle connexion entrante sur le socket " << new_client_fd << endl;
-
 			if (send(new_client_fd, "", 0, MSG_CONFIRM) == -1)
 			{
 				cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
 				return 1;
 			}
-
-			//Rep().R001(new_client_fd, "test");
-			// if (send(new_client_fd, ":127.0.0.1 001 bducrocq :Welcome to my IRC server, bducrocq!\r\n", 64, 0) == -1)
-			// {
-			// 	cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
-			// 	return 1;
-			// }
 		}
-		//if (_client.find(new_client_fd) != _client.end()){}; //si le client n'existe pas
 		// vérification des données reçues des clients existants
 		for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++)
 		{
@@ -168,7 +164,7 @@ int Server::openSocket(int port)
 					_client.erase(it);
 					break;
 				}
-				else if (bytes_received == 0)
+				else if (!bytes_received)
 				{
 					cout << ANSI::red << "Connexion fermée par le client n°" << (*it).first << endl;
 					close((*it).first);
@@ -188,9 +184,10 @@ int Server::openSocket(int port)
 					this->parser(str_buff, (*it).first);
 				}
 			}
-		}
+		} 
 	}
 }
+
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
