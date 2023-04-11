@@ -29,12 +29,14 @@ Channel::~Channel()
 {
 }
 
-string Channel::ListNick(map<int, Client> & clients)
+string Channel::ListNick(map<int, Client> & clients, int fd_client)
 {
 	string list;
 	for (map<int, char>::iterator it = _list.begin(); it != _list.end(); it++)
 	{
-		confirm_to_client(clients[(*it).first].get_id(), "JOIN :" + _name, clients);
+		string msg = ":" + clients[fd_client].get_nick() + "!" + clients[fd_client].get_username() + "@" + string(SERVER_NAME) + " JOIN" + _name + "\r\n";
+		if (send(fd_client, msg.c_str(), msg.length(), 0) == -1)
+			cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
 		list += clients[(*it).first].get_nick() + " ";
 	}
 	return list;
@@ -55,7 +57,7 @@ vector<int>			Channel::getOperators()
 	return operator_list;
 }
 
-void 					Channel::addClient(int fd_client, char mode)
+void	Channel::addClient(int fd_client, char mode)
 {
 	for (map<int, char>::iterator it = _list.begin(); it != _list.end(); it++)
 		if ((*it).first == fd_client)

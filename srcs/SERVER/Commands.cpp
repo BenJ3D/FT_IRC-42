@@ -123,7 +123,7 @@ void	Server::join_channel(vector<string> args, int fd_client) //TODO: gerer le c
 				return Rep().E474(fd_client, _client[fd_client].get_nick(), args[1]);
 		
 		_channel[args[1]].addClient(fd_client, ' ');
-		string user_list = _channel[args[1]].ListNick(_client);
+		string user_list = _channel[args[1]].ListNick(_client, fd_client);
 		
 		Rep().R353(fd_client, _client[fd_client].get_nick(), args[1], user_list, _channel[args[1]].getMode(), _channel[args[1]].getList().at(fd_client));
 		Rep().R366(fd_client, _client[fd_client].get_nick(), args[1]);
@@ -131,7 +131,42 @@ void	Server::join_channel(vector<string> args, int fd_client) //TODO: gerer le c
 }
 
 void Server::mode(vector<string> args, int fd_client) {
-	(void)args;(void)fd_client;
+	cout << ANSI::cyan << fd_client << " --> " << args[0] << endl;
+
+	if (args.size() < 3)
+		return Rep().E461(fd_client, _client[fd_client].get_nick(), args[0]);
+	
+	if (args[1][0] != '#' || _channel.find(args[1]) == _channel.end())
+		return Rep().E403(fd_client, _client[fd_client].get_nick(), args[1]);
+	
+	string check = "ov";
+	if (string("+-").find(args[2][0]) == string::npos && args[2].length() < 2)
+		return Rep().E472(fd_client, _client[fd_client].get_nick(), args[2][0]);
+	size_t i = 1;
+	for (; i < args[2].length(); i++)
+		if (check.find(args[2][i]) == string::npos)
+			return Rep().E472(fd_client, _client[fd_client].get_nick(), args[2][i]);
+	if (i != args.size() - 2)
+		return Rep().E461(fd_client, _client[fd_client].get_nick(), args[0]); // OU 401 ?
+
+		for (size_t i = 1; i < args[2].length(); i++)
+		{
+			if (args[2][i] == 'o')
+			{
+				if (args[2][0] == '+')
+					_channel[args[1]].addClient(fd_client, '@');
+				else if (args[2][0] == '-')
+					_channel[args[1]].addClient(fd_client, ' ');
+			}
+			else if (args[2][i] == 'v')
+			{
+				if (args[2][0] == '+')
+					_channel[args[1]].addClient(fd_client, '+');
+				else if (args[2][0] == '-')
+					_channel[args[1]].addClient(fd_client, ' ');
+			}
+		}
+	
 }
 
 /*
