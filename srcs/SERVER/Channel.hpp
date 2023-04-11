@@ -39,7 +39,7 @@ class Channel
 		void				setMode(char const & mode);  // = for public | * for private | @ for secret
 
 		vector<int>									getBlackList();
-		map<int, pair<char, vector<string> > >		getList();
+		const map<int, pair<char, vector<string> > >	&	getList();
 		vector<int>									getOperators();
 		string										getPasswd();
 		string										getTopic();

@@ -177,16 +177,37 @@ void Server::mode(vector<string> args, int fd_client) {
 
 void Server::privmsg(vector<string> args, int client_fd) {
 	cout << ANSI::cyan << client_fd << " --> " << args[0] << endl;
+	for (size_t i = 0; i < args.size(); i++)
+		cerr << ANSI::red << "ARGS[" << i << "] = " << args[i] << ANSI::reset << endl;
+
 	if (args.size() < 3)
 		return Rep().E411(client_fd, _client[client_fd].get_nick(), args[0]);
 	
+	string msg = " ";
+
 	if (args[1][0] == '#')
 	{
+		for (size_t i = 2; i < args.size(); i++)
+			msg += args[i] + " ";
+		msg = msg.substr(0, msg.length() - 1);
 		if (_channel.find(args[1]) == _channel.end())
 			return Rep().E403(client_fd, _client[client_fd].get_nick(), args[1]);
-		for (map<int, pair<char, vector<string> > >::iterator it = _channel[args[1]].getList().begin(); it != _channel[args[1]].getList().end(); it++)
+		for (map<int, pair<char, vector<string> > >::const_iterator it = _channel[args[1]].getList().begin(); it != _channel[args[1]].getList().end(); it++)
+		{
+			if (args[2][0] == ':')
+				args[2] = args[2].substr(1);
 			if (it->first != client_fd)
-				confirm_to_client(it->first, "PRIVMSG " + args[1] + " :" + args[2], _client);
+			{
+				string ret = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_username() + "@" + string(SERVER_NAME) + " PRIVMSG " + args[1] + msg + "\r\n";
+				if (send((*it).first, ret.c_str(), ret.length(), 0) == -1)
+					cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+				// confirm_to_client(it->first, "PRIVMSG " + args[1] + " :" + msg, _client);
+			}
+			
+			
+
+			cout << ANSI::red << "DEBUG TEST PRIVMSG = " << msg << ANSI::reset << endl;
+		}
 	}
 	else
 	{

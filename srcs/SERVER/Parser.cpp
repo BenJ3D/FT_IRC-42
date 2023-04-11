@@ -32,12 +32,6 @@ vector<string> split_cmd(const string command, char separator)
 	{
 		if (buffer.length() != 0)
 			args.push_back(buffer);
-		if (args.size() > 0 && args[0] == "PRIVMSG" && buffer[0] == ':')
-		{
-			args.push_back(buffer.substr(1));
-
-			break;
-		}
 		cout << ANSI::purple << "ADD ARG : " << ANSI::red << buffer << endl; // DEBUG
 	}
 	cout << endl; // DEBUG
