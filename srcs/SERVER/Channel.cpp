@@ -42,10 +42,6 @@ string Channel::ListNick(map<int, Client> & clients)
 			list += "+" + clients[(*it).first].get_nick() + " ";
 		else
 			list += clients[(*it).first].get_nick() + " ";
-		// if (clients[(*it).first].isOperatorInChannel(*this)) //TODO add prefix @ or + if operator or bot
-		// 	list += "@" + clients[(*it).first].get_nick() + " ";
-		// else
-		// 	list += clients[(*it).first].get_nick() + " ";
 	}
 	return list;
 }
