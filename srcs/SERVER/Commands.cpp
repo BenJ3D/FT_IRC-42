@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 04:46:30 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/10 17:35:10 by abucia           ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 04:52:53 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,10 +100,10 @@ void	Server::join_channel(vector<string> args, int fd_client) //TODO: gerer le c
 	
 	if (args.size() < 2)
 		return Rep().E461(fd_client, _client[fd_client].get_nick(), args[0]);
-	
+
 	if (_channel.find(args[1]) == _channel.end())
 	{
-		_channel[args[1]] = Channel(fd_client, args[0], _client[fd_client]);
+		_channel[args[1]] = Channel(fd_client, args[1], _client[fd_client]);
 		_channel[args[1]].addClient(fd_client, '@');
 		confirm_to_client(fd_client, "JOIN " + args[1], _client);
 		confirm_to_client(fd_client, "MODE " + args[1] + " +o " + _client[fd_client].get_nick(), _client);
@@ -120,9 +120,18 @@ void	Server::join_channel(vector<string> args, int fd_client) //TODO: gerer le c
 		
 		_channel[args[1]].addClient(fd_client, ' ');
 		string user_list = _channel[args[1]].ListNick(_client);
-		
+
+		// confirm_to_client(fd_client, "JOIN " + args[1], _client);
 		Rep().R353(fd_client, _client[fd_client].get_nick(), args[1], user_list, _channel[args[1]].getMode(), _channel[args[1]].getList().at(fd_client));
 		Rep().R366(fd_client, _client[fd_client].get_nick(), args[1]);
+		// vector<int>::const_iterator it = _client_fds.begin();
+		// for (; it != _client_fds.end(); it++)
+		// 	if (fd_client != (*it))
+		// 		confirm_to_client(_client[*it].get_id(), "JOIN " + args[1], _client);
+			// confirm_to_client(_client[*it].get_id(), "JOIN :" + _client[*it].get_nick(), _client);
+
+		cerr << ANSI::red << "DEBUG TEST USER LIST = "  << user_list << ANSI::reset << endl;
+
 	}
 }
 

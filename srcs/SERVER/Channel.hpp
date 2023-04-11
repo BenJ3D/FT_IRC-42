@@ -45,6 +45,7 @@ class Channel
 		string				getTopic();
 		string				getName();
 		char				getMode();
+		char				getClientMode(int fd_client);
 
 		string ListNick(map<int, Client> & clients);
 

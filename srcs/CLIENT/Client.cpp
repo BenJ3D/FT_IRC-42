@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/03/29 00:40:42 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 04:30:09 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,20 @@ void Client::now_auth() {
  */
 void Client::password_verified() {
 	this->_pass_confirm = true;
+}
+
+bool Client::isOperatorInChannel(Channel &channel) const
+{
+	vector<int> chanOp = channel.getOperators();
+	for (vector<int>::iterator it = chanOp.begin(); it != chanOp.end(); it++)
+		if (*it == this->get_id())
+			return true;
+	return false;
+}
+
+char Client::getClientModeInChannel(Channel &channel) const
+{
+	return channel.getClientMode(this->get_id());
 }
 
 /*

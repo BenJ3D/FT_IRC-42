@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/03/29 00:40:43 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 04:30:07 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 
 # include <iostream>
 # include <string>
+# include "../SERVER/Server.hpp"
 
+class Channel;
 class Client
 {
 	private:
@@ -46,6 +48,9 @@ class Client
 
 		void now_auth();
 		void password_verified();
+
+		bool isOperatorInChannel(Channel & channel) const; // delete if getMod OK
+		char getClientModeInChannel(Channel & channel) const;
 
 		Client &		operator=( Client const & rhs );
 };

@@ -16,7 +16,7 @@ Channel::Channel(int fd_client, string const & name, Client client) : _name(name
 	cout << ANSI::green << "Channel " << name << " created by " << client.get_nick() << endl;
 }
 
-Channel::Channel(int fd_client, string const & name, Client client, string const & passwd ) : _name(name), _passwd(passwd), _mode('=')
+Channel::Channel(int fd_client, string const & name, Client client, string const & passwd ) : _passwd(passwd), _name(name),  _mode('=')
 {
 	_list.insert(pair<int, char>(fd_client, '@'));
 }
@@ -36,7 +36,16 @@ string Channel::ListNick(map<int, Client> & clients)
 	for (map<int, char>::iterator it = _list.begin(); it != _list.end(); it++)
 	{
 		confirm_to_client(clients[(*it).first].get_id(), "JOIN :" + _name, clients);
-		list += clients[(*it).first].get_nick() + " ";
+		if (clients[(*it).first].getClientModeInChannel(*this) == '@')
+			list += "@" + clients[(*it).first].get_nick() + " ";
+		else if (clients[(*it).first].getClientModeInChannel(*this) == '+')
+			list += "+" + clients[(*it).first].get_nick() + " ";
+		else
+			list += clients[(*it).first].get_nick() + " ";
+		// if (clients[(*it).first].isOperatorInChannel(*this)) //TODO add prefix @ or + if operator or bot
+		// 	list += "@" + clients[(*it).first].get_nick() + " ";
+		// else
+		// 	list += clients[(*it).first].get_nick() + " ";
 	}
 	return list;
 }
@@ -110,6 +119,16 @@ string					Channel::getPasswd()
 char 					Channel::getMode()
 {
 	return _mode;
+}
+
+char Channel::getClientMode(int fd_client)
+{
+	for (map<int, char>::iterator it = _list.begin(); it != _list.end(); it++)
+	{
+		if (it->first == fd_client)
+			return it->second;
+	}
+	return '\0';
 }
 
 bool 					Channel::isInviteOnly()
