@@ -117,21 +117,15 @@ void	Server::join_channel(vector<string> args, int fd_client) //TODO: gerer le c
 	}
 	else
 	{
-		// Channel tmp(fd_client, args[0], _client[fd_client]);
 		for (vector<int>::iterator it = _channel[args[1]].getBlackList().begin(); it != _channel[args[1]].getBlackList().end(); it++)
 			if ((*it) == fd_client)
 				return Rep().E474(fd_client, _client[fd_client].get_nick(), args[1]);
 		
 		_channel[args[1]].addClient(fd_client, ' ');
+		confirm_to_client(fd_client, "JOIN " + args[1], _client);
 		string user_list = _channel[args[1]].ListNick(_client, fd_client);
 		Rep().R353(fd_client, _client[fd_client].get_nick(), args[1], user_list, _channel[args[1]].getMode(), _channel[args[1]].getList().at(fd_client));
 		Rep().R366(fd_client, _client[fd_client].get_nick(), args[1]);
-		// vector<int>::const_iterator it = _client_fds.begin();
-		// for (; it != _client_fds.end(); it++)
-		// 	if (fd_client != (*it))
-		// 		confirm_to_client(_client[*it].get_id(), "JOIN " + args[1], _client);
-			// confirm_to_client(_client[*it].get_id(), "JOIN :" + _client[*it].get_nick(), _client);
-
 		cerr << ANSI::red << "DEBUG TEST USER LIST = "  << user_list << ANSI::reset << endl;
 
 	}
