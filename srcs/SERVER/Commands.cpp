@@ -68,7 +68,7 @@ void Server::user(vector<string> args, int cl) {
 		if (args[1].size() > 9)
 			username = args[1].substr(0, 9);
 		username = "~" + username;
-		notice(cl, "Could not find your ident, using " + username + " instead.");
+		notice(cl, "*** Could not find your ident, using " + username + " instead.");
 	}
 	if (!_client[cl].get_is_auth() && _client[cl].get_nick() != "*")
 	{
@@ -120,14 +120,13 @@ void	Server::join_channel(vector<string> args, int fd_client) //TODO: gerer le c
 		for (vector<int>::iterator it = _channel[args[1]].getBlackList().begin(); it != _channel[args[1]].getBlackList().end(); it++)
 			if ((*it) == fd_client)
 				return Rep().E474(fd_client, _client[fd_client].get_nick(), args[1]);
-		
+
 		_channel[args[1]].addClient(fd_client, ' ');
 		confirm_to_client(fd_client, "JOIN " + args[1], _client);
 		string user_list = _channel[args[1]].ListNick(_client, fd_client);
 		Rep().R353(fd_client, _client[fd_client].get_nick(), args[1], user_list, _channel[args[1]].getMode(), _channel[args[1]].getList().at(fd_client).first);
 		Rep().R366(fd_client, _client[fd_client].get_nick(), args[1]);
 		cerr << ANSI::red << "DEBUG TEST USER LIST = "  << user_list << ANSI::reset << endl;
-
 	}
 }
 
@@ -176,8 +175,25 @@ void Server::mode(vector<string> args, int fd_client) {
 :irc.server.com 366 bducrocq  #test :End of /NAMES list.
 */
 
-void Server::privmsg(vector<string> args, int cl) {
-	cout << ANSI::cyan << cl << " --> " << args[0] << endl;
+void Server::privmsg(vector<string> args, int client_fd) {
+	cout << ANSI::cyan << client_fd << " --> " << args[0] << endl;
 	if (args.size() < 3)
-		return Rep().E411(cl, _client[cl].get_nick(), args[0]);
+		return Rep().E411(client_fd, _client[client_fd].get_nick(), args[0]);
+	
+	if (args[1][0] == '#')
+	{
+		if (_channel.find(args[1]) == _channel.end())
+			return Rep().E403(client_fd, _client[client_fd].get_nick(), args[1]);
+		for (map<int, pair<char, vector<string> > >::iterator it = _channel[args[1]].getList().begin(); it != _channel[args[1]].getList().end(); it++)
+			if (it->first != client_fd)
+				confirm_to_client(it->first, "PRIVMSG " + args[1] + " :" + args[2], _client);
+	}
+	else
+	{
+		int dst_fd = Client().find_user_by_nick(args[1], _client);
+		if (dst_fd == -1)
+			return Rep().E401(client_fd, _client[client_fd].get_nick(), args[1]);
+		confirm_to_client(dst_fd, "PRIVMSG " + args[1] + " :" + args[2], _client);
+		confirm_to_client(client_fd, "PRIVMSG " + args[1] + " :" + args[2], _client);
+	}
 }

@@ -96,6 +96,16 @@ bool Client::isOperatorInChannel(Channel &channel) const
 	return false;
 }
 
+int Client::find_user_by_nick(std::string nick, std::map<int, Client> &clients)
+{
+	for (std::map<int, Client>::iterator it = clients.begin(); it != clients.end(); it++)
+	{
+		if ((*it).second.get_nick() == nick)
+			return (*it).first;
+	}
+	return -1;
+}
+
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
