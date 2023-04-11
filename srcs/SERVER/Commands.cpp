@@ -112,7 +112,7 @@ void	Server::join_channel(vector<string> args, int fd_client) //TODO: gerer le c
 		confirm_to_client(fd_client, "JOIN " + args[1], _client);
 		confirm_to_client(fd_client, "MODE " + args[1] + " +o " + _client[fd_client].get_nick(), _client);
 
-		Rep().R353(fd_client, _client[fd_client].get_nick(), args[1], _client[fd_client].get_nick(), _channel[args[1]].getMode(), _channel[args[1]].getList().at(fd_client));
+		Rep().R353(fd_client, _client[fd_client].get_nick(), args[1], _client[fd_client].get_nick(), _channel[args[1]].getMode(), _channel[args[1]].getList().at(fd_client).first);
 		Rep().R366(fd_client, _client[fd_client].get_nick(), args[1]);
 	}
 	else
@@ -124,7 +124,7 @@ void	Server::join_channel(vector<string> args, int fd_client) //TODO: gerer le c
 		_channel[args[1]].addClient(fd_client, ' ');
 		confirm_to_client(fd_client, "JOIN " + args[1], _client);
 		string user_list = _channel[args[1]].ListNick(_client, fd_client);
-		Rep().R353(fd_client, _client[fd_client].get_nick(), args[1], user_list, _channel[args[1]].getMode(), _channel[args[1]].getList().at(fd_client));
+		Rep().R353(fd_client, _client[fd_client].get_nick(), args[1], user_list, _channel[args[1]].getMode(), _channel[args[1]].getList().at(fd_client).first);
 		Rep().R366(fd_client, _client[fd_client].get_nick(), args[1]);
 		cerr << ANSI::red << "DEBUG TEST USER LIST = "  << user_list << ANSI::reset << endl;
 

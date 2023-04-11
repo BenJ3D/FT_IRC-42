@@ -38,14 +38,14 @@ class Channel
 		void				setPasswd(string const & passwd);
 		void				setMode(char const & mode);  // = for public | * for private | @ for secret
 
-		vector<int>			getBlackList();
-		map<int, char>		getList();
-		vector<int>			getOperators();
-		string				getPasswd();
-		string				getTopic();
-		string				getName();
-		char				getMode();
-		char				getClientMode(int fd_client);
+		vector<int>									getBlackList();
+		map<int, pair<char, vector<string> > >		getList();
+		vector<int>									getOperators();
+		string										getPasswd();
+		string										getTopic();
+		string										getName();
+		char										getMode();
+		char										getClientMode(int fd_client);
 
 		string ListNick(map<int, Client>& clients, int fd_client);
 
@@ -53,15 +53,15 @@ class Channel
 		
 		bool					isOperator(int fd_client);
 
-		string		 		_name;
-		string				_passwd;
-		string				_topic;
-		vector<int>			_blackList; // fd_client
-		map<int, char>		_list; // fd_client, mode 
-		char				_mode;
-		bool 				_inviteOnly;
-		bool 				_moderated;
-		int 				_limit;
+		string		 								_name;
+		string										_passwd;
+		string										_topic;
+		vector<int>									_blackList; // fd_client
+		map<int, pair<char, vector<string> > >		_list; // fd_client, mode, flags
+		bool 										_inviteOnly;
+		bool 										_moderated;
+		int 										_limit;
+		char										_mode; // = for public | * for private | @ for secret
 };
 
 #endif /* ********************************************************* CHANNEL_H */
