@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/11 15:39:22 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/11 18:39:20 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 
 using namespace std;
 typedef void (Server::*CmdFunc)(std::vector<std::string>, int);
-# define SERVER_NAME "127.0.0.1"
+# define SERVER_NAME "Minitel-Rose"
 # define SERVER_VERSION "1.0.0"
 # define SERVER_DATE "2021-03-29"
 

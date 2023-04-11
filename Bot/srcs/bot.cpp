@@ -6,13 +6,13 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 06:32:53 by amiguez           #+#    #+#             */
-/*   Updated: 2023/04/11 14:48:03 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/11 19:22:24 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Bot.hpp"
 
-Bot::Bot(): _server_fd (-1), _real_name("Bot_bob"), _nick_name("bob"){}
+Bot::Bot(): _server_fd (-1), _real_name("Bot_bob"), _nick_name("Bob"){}
 
 Bot::~Bot(){
 	if (_server_fd != -1)
@@ -30,42 +30,43 @@ void Bot::init(string ip, string port) throw(exception){
 	server_address.sin_addr.s_addr = inet_addr(ip.c_str());
 	server_address.sin_port = htons(atoi(port.c_str()));
 
-	if (connect(_server_fd, (struct sockaddr *)&server_address, sizeof(server_address)) == -1 )
+	if (connect(_server_fd, (struct sockaddr *)&server_address, sizeof(server_address)) == -1)
 		throw (runtime_error("Error: couldn't connect to " + ip + " with port " + port) );
 
 	cout << bold << green <<"Connection established ip : " << ip << end;
+	_ip = ip;
 }
 
 
 void Bot::auth(string pasw) throw(exception){
-
-	string s_pass("PASS " + pasw + "\n");
-	cout << ANSI::back_yellow << _server_fd << end;
+	string s_pass("PASS " + pasw + "\r\n");  //  check PASS
 	if (send_serv(s_pass) == -1 )
 		throw(runtime_error("Couldn t send password"));
-
-	string s_nick("NICK " + _nick_name + "\n");
+	string s_nick("NICK " + _nick_name + "\r\n");  //  check NICK
 	if (send_serv(s_nick) == -1 )
+		throw(runtime_error("Couldn t send nick command"));
+	string ret_nick = recv_serv();
+	cout << cmd << _nick_name << end;
+	cout << cmd << ret_nick << end;
+	if (ret_nick != ":*!@Minitel-Rose NICK " + _nick_name + "\r\n"){	
+		for (int i = 0;i < 3; i++ ){
+			stringstream snum;
+			snum << i;
+			s_nick = "NICK " + _nick_name + snum.str() + "\r\n";
+			if (send_serv(s_nick) == -1 )
+				throw(runtime_error("Couldn t send nick command"));
+			ret_nick = recv_serv();
+			if (ret_nick == ":*!@" + _ip + " NICK " + _nick_name + snum.str() + "\r\n"){
+				_nick_name = _nick_name + snum.str();
+				break;
+			}
+			if (i == 100)
+				throw(runtime_error("Couldn t choose nickname Bob[0-100]"));
+		}
+	}
+	string s_user("USER " + _nick_name + " 0 * :" + _real_name + "\r\n");  //  Check USER
+	if (send_serv(s_user) == -1 )
 		throw(runtime_error("Couldn t send nick and user command"));
-
-	// char buffer_s[1024] = {0};
-	// int bytes_received_s = recv(_server_fd, buffer_s, 1024, 0);
-	// if (bytes_received_s == -1){
-	// 	cout << back_red << " -1 " << end;
-	// } else
-	// 	cout << back_green << bytes_received_s << " NICK : " << buffer_s << reset << endl;
-	
-	
-	string s_user("USER " + _nick_name + " 0 * :" + _real_name + "\n");
-	if (send_serv() == -1 )
-		throw(runtime_error("Couldn t send nick and user command"));
-
-	char buffer[1024] = {0};
-	int bytes_received = recv(_server_fd, buffer, 1024, 0);
-	if (bytes_received == -1){
-		cout << back_red << " -1 " << end;
-	} else
-		cout << back_green << bytes_received << " USER : " << buffer << reset << endl;
 }
 
 void Bot::run() {

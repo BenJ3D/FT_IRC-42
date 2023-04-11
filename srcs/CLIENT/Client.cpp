@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/11 16:31:44 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/11 19:28:13 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Client::Client() {
+Client::Client() : _pass_confirm(false) {
 }
 
 Client::Client(int fd) : _id(fd), _nick("*"), _is_auth(false), _pass_confirm(false){ 
@@ -25,6 +25,7 @@ Client::Client(int fd) : _id(fd), _nick("*"), _is_auth(false), _pass_confirm(fal
 Client::Client( const Client & src ){
 	this->_id = src._id;
 	this->_nick = src._nick;
+	this->_pass_confirm = src._pass_confirm;
 	this->_is_auth = src._is_auth;
 }
 
@@ -34,7 +35,6 @@ Client::Client( const Client & src ){
 */
 
 Client::~Client() {
-	this->_pass_confirm = false;
 }
 
 
@@ -73,14 +73,6 @@ void Client::now_auth() {
 	this->_is_auth = true;
 }
 
-/**
- * @brief set the client password verified (PASS command)
- * @param connect 
- */
-void Client::password_verified() {
-	this->_pass_confirm = true;
-}
-
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
@@ -103,9 +95,12 @@ std::string Client::get_realname() const {
 	return this->_realname;
 }
 
-
+/**
+ * @brief set the client password verified (PASS command)
+ * @param connect 
+ */
 bool Client::get_pass() const {
-	return (this->_pass_confirm);
+	return this->_pass_confirm;
 }
 
 bool Client::get_is_auth() const {

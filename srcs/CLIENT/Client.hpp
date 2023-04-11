@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/11 15:50:18 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/11 16:52:10 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ class Client
 		void set_realname(std::string nick);
 
 		void now_auth();
-		void password_verified();
 
 		Client &		operator=( Client const & rhs );
 };
