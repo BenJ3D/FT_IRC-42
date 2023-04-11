@@ -149,24 +149,23 @@ void Server::mode(vector<string> args, int fd_client) {
 	if (i != args.size() - 2)
 		return Rep().E461(fd_client, _client[fd_client].get_nick(), args[0]); // OU 401 ?
 
-		for (size_t i = 1; i < args[2].length(); i++)
+	for (size_t i = 1; i < args[2].length(); i++)
+	{
+		if (args[2][i] == 'o')
 		{
-			if (args[2][i] == 'o')
-			{
-				if (args[2][0] == '+')
-					_channel[args[1]].addClient(fd_client, '@');
-				else if (args[2][0] == '-')
-					_channel[args[1]].addClient(fd_client, ' ');
-			}
-			else if (args[2][i] == 'v')
-			{
-				if (args[2][0] == '+')
-					_channel[args[1]].addClient(fd_client, '+');
-				else if (args[2][0] == '-')
-					_channel[args[1]].addClient(fd_client, ' ');
-			}
+			if (args[2][0] == '+')
+				_channel[args[1]].addClient(fd_client, '@');
+			else if (args[2][0] == '-')
+				_channel[args[1]].addClient(fd_client, ' ');
 		}
-	
+		else if (args[2][i] == 'v')
+		{
+			if (args[2][0] == '+')
+				_channel[args[1]].addClient(fd_client, '+');
+			else if (args[2][0] == '-')
+				_channel[args[1]].addClient(fd_client, ' ');
+		}
+	}
 }
 
 /*
