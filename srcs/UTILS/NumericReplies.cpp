@@ -16,7 +16,7 @@
 Rep::Rep() {}
 
 void Server::notice(int const &fd, string msg) {
-	msg = ":" + string(SERVER_NAME) + " NOTICE * :*** " + msg + "\r\n";
+	msg = ":" + string(SERVER_NAME) + " NOTICE * :" + msg + "\r\n";
 	if (send(fd, msg.c_str(), msg.length(), 0) == -1)
 		cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
 

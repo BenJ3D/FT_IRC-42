@@ -41,6 +41,7 @@ class Client
 		std::string get_realname() const;
 		bool get_is_auth() const;
 		bool get_pass_confirm() const;
+		int	find_user_by_nick(std::string nick, std::map<int, Client> & clients);
 
 		void set_nick(std::string nick);
 		void set_username(std::string nick);
