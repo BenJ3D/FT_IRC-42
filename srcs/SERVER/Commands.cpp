@@ -214,6 +214,9 @@ void Server::privmsg(vector<string> args, int client_fd) {
 		int dst_fd = Client().find_user_by_nick(args[1], _client);
 		if (dst_fd == -1)
 			return Rep().E401(client_fd, _client[client_fd].get_nick(), args[1]);
+		// string ret = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_username() + "@" + string(SERVER_NAME) + " PRIVMSG " + args[1] + msg + "\r\n";
+		// if (send(dst_fd, ret.c_str(), ret.length(), 0) == -1)
+		// 	cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
 		confirm_to_client(dst_fd, "PRIVMSG " + args[1] + " :" + args[2], _client);
 		confirm_to_client(client_fd, "PRIVMSG " + args[1] + " :" + args[2], _client);
 	}
