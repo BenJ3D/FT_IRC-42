@@ -219,7 +219,6 @@ void Server::topic(vector<string> args, int fd_client)
 			Rep().R331(fd_client, _client.at(fd_client).get_nick(), args[1]);
 		else
 		{
-			cerr << ANSI::green << ANSI::bold << "args[1] = " + args[1] << " getTopic = : " + _channel.at(args[1]).getTopic() << ANSI::reset << endl;
 			Rep().R332(fd_client, _client.at(fd_client).get_nick(),  args[1], ":" + _channel.at(args[1]).getTopic());
 			Rep().R333(fd_client, _client.at(fd_client).get_nick(), _channel.at(args[1]).getName(), \
 			_client.at(fd_client).get_nick() + "!" + _client.at(fd_client).get_username() + "@" + string(SERVER_NAME), time(0));
@@ -229,8 +228,9 @@ void Server::topic(vector<string> args, int fd_client)
 	else if (args.size() == 3)
 	{
 		_channel.at(args[1]).setTopic(args[2].substr(1));
-		cerr << ANSI::green << ANSI::bold << "Args 1 = " + args[1] << " 2 = " + args[2] << ANSI::reset << endl;
-		confirm_to_client(fd_client, "TOPIC " + _channel.at(args[1]).getName() + " :" + args[2], _client);
+		confirm_to_client(fd_client, "TOPIC " + _channel.at(args[1]).getName() + " :" + args[2].substr(1), _client);
+		//TODO:: faire un ft confirm to all client in channel
+		confirm_to_all_channel_client(fd_client, "TOPIC " + _channel.at(args[1]).getName() + " :" + args[2].substr(1), _client, _channel.at(args[1]));
 	}
 	else
 		Rep().E409(fd_client, _client.at(fd_client).get_nick());

@@ -85,6 +85,7 @@ class Server
 };
 
 void confirm_to_client(const int &fd, string msg, map<int, Client>);
+void confirm_to_all_channel_client(int const &fd, string msg, map<int, Client> _client, Channel chan);
 std::ostream &operator<<(std::ostream &o, Server const &i);
 
 

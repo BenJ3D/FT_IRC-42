@@ -57,6 +57,7 @@ class Channel
 		string		 								_name;
 		string										_passwd;
 		string										_topic;
+		int											_topicClientSetter; //save fd du client qui a set le topic
 		vector<int>									_blackList; // fd_client
 		map<int, pair<char, vector<string> > >		_list; // fd_client, mode, flags
 		bool 										_inviteOnly;
