@@ -37,6 +37,8 @@
 using namespace std;
 typedef void (Server::*CmdFunc)(std::vector<std::string>, int);
 # define SERVER_NAME "127.0.0.1"
+# define SERVER_VERSION "1.0.0"
+# define SERVER_DATE "2021-03-29"
 
 class Channel;
 class Server
@@ -65,6 +67,7 @@ class Server
 		void	user(vector<string> args, int cl);
 		void	privmsg(vector<string> args, int cl);
 		void	mode(vector<string> args, int fd_client);
+		
 		void	join_channel(vector<string> args, int fd_client);
 
 

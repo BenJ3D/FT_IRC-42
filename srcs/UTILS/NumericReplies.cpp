@@ -35,7 +35,7 @@ void Rep::send_to_client(string msg, int const &fd) {
 	msg = ":" + string(SERVER_NAME) + " " + msg +"\r\n";
 	if (send(fd, msg.c_str(), msg.length(), 0) == -1)
 		cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
-	
+
 	cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 }
 

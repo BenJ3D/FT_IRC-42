@@ -10,13 +10,12 @@ Channel::Channel()
 
 #include "../UTILS/ANSI.hpp"
 
-Channel::Channel(int fd_client, string const & name, Client client) : _name(name), _mode('=')
+Channel::Channel(int fd_client, string const & name) : _name(name), _mode('=')
 {
 	_list.insert(pair<int, char>(fd_client, '@'));
-	cout << ANSI::green << "Channel " << name << " created by " << client.get_nick() << endl;
 }
 
-Channel::Channel(int fd_client, string const & name, Client client, string const & passwd ) : _passwd(passwd), _name(name),  _mode('=')
+Channel::Channel(int fd_client, string const & name, string const & passwd ) : _name(name), _passwd(passwd), _mode('=')
 {
 	_list.insert(pair<int, char>(fd_client, '@'));
 }
@@ -30,18 +29,16 @@ Channel::~Channel()
 {
 }
 
-string Channel::ListNick(map<int, Client> & clients)
+string Channel::ListNick(map<int, Client> & clients, int fd_client)
 {
 	string list;
 	for (map<int, char>::iterator it = _list.begin(); it != _list.end(); it++)
 	{
-		confirm_to_client(clients[(*it).first].get_id(), "JOIN :" + _name, clients);
-		if (clients[(*it).first].getClientModeInChannel(*this) == '@')
-			list += "@" + clients[(*it).first].get_nick() + " ";
-		else if (clients[(*it).first].getClientModeInChannel(*this) == '+')
-			list += "+" + clients[(*it).first].get_nick() + " ";
-		else
-			list += clients[(*it).first].get_nick() + " ";
+		string msg = ":" + clients[fd_client].get_nick() + "!" + clients[fd_client].get_username() + "@" + string(SERVER_NAME) + " JOIN" + _name + "\r\n";
+		if (send(fd_client, msg.c_str(), msg.length(), 0) == -1)
+			cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+		string prefix = ((*it).second == '@') ? "@" : ((*it).second == '+') ? "+" : "";
+		list += prefix + clients[(*it).first].get_nick() + " ";
 	}
 	return list;
 }
@@ -61,7 +58,7 @@ vector<int>			Channel::getOperators()
 	return operator_list;
 }
 
-void 					Channel::addClient(int fd_client, char mode)
+void	Channel::addClient(int fd_client, char mode)
 {
 	for (map<int, char>::iterator it = _list.begin(); it != _list.end(); it++)
 		if ((*it).first == fd_client)

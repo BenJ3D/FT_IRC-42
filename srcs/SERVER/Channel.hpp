@@ -16,8 +16,8 @@ class Channel
 	public:
 
 		Channel();
-		Channel( int fd_client, string const & name, Client client);
-		Channel( int fd_client, string const & name, Client client, string const & passwd );
+		Channel( int fd_client, string const & name);
+		Channel( int fd_client, string const & name, string const & passwd );
 		~Channel();
 
 		void				addClient(int fd_client, char mode);
@@ -47,15 +47,15 @@ class Channel
 		char				getMode();
 		char				getClientMode(int fd_client);
 
-		string ListNick(map<int, Client> & clients);
+		string ListNick(map<int, Client>& clients, int fd_client);
 
 	private:
 		
 		bool					isOperator(int fd_client);
 
+		string		 		_name;
 		string				_passwd;
 		string				_topic;
-		string		 		_name;
 		vector<int>			_blackList; // fd_client
 		map<int, char>		_list; // fd_client, mode 
 		char				_mode;
