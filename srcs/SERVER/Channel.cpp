@@ -126,7 +126,6 @@ vector<int>	Channel::getBlackList()
 	return this->_blackList;
 }
 
-
 void 					Channel::setPasswd(string const & passwd)
 {
 	_passwd = passwd;
@@ -135,6 +134,11 @@ void 					Channel::setPasswd(string const & passwd)
 void 					Channel::setMode(char const & mode)
 {
 	_mode = mode;
+}
+
+int					Channel::getNbClient()
+{
+	return _list.size();
 }
 
 

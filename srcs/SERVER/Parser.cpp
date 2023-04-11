@@ -20,6 +20,8 @@ void	Server::init_parsing_map()
 	this->commands["PRIVMSG"] = make_pair(1, &Server::privmsg);
 	this->commands["JOIN"] = make_pair(2, &Server::join_channel);
 	this->commands["MODE"] = make_pair(2, &Server::mode);
+	this->commands["LIST"] = make_pair(1, &Server::list);
+	this->commands["TOPIC"] = make_pair(1, &Server::topic);
 	cout << ANSI::yellow << "init PARSING OK" << endl;
 }
 

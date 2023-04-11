@@ -38,6 +38,8 @@ class Channel
 		void				setPasswd(string const & passwd);
 		void				setMode(char const & mode);  // = for public | * for private | @ for secret
 
+		int					getNbClient( void );
+
 		vector<int>									getBlackList();
 		map<int, pair<char, vector<string> > >		getList();
 		vector<int>									getOperators();
@@ -46,12 +48,11 @@ class Channel
 		string										getName();
 		char										getMode();
 		char										getClientMode(int fd_client);
-
-		string ListNick(map<int, Client>& clients, int fd_client);
+		string										ListNick(map<int, Client>& clients, int fd_client);
 
 	private:
 		
-		bool					isOperator(int fd_client);
+		bool										isOperator(int fd_client);
 
 		string		 								_name;
 		string										_passwd;

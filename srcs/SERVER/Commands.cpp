@@ -168,7 +168,6 @@ void Server::mode(vector<string> args, int fd_client) {
 		}
 	}
 }
-
 /*
 :bducrocq!bducrocq@host JOIN #test
 :bducrocq!bducrocq@host MODE #test +o bducrocq
@@ -176,8 +175,50 @@ void Server::mode(vector<string> args, int fd_client) {
 :irc.server.com 366 bducrocq  #test :End of /NAMES list.
 */
 
-void Server::privmsg(vector<string> args, int cl) {
+void	Server::privmsg(vector<string> args, int cl) {
 	cout << ANSI::cyan << cl << " --> " << args[0] << endl;
 	if (args.size() < 3)
+
 		return Rep().E411(cl, _client[cl].get_nick(), args[0]);
 }
+
+void	Server::list(vector<string> args, int fd_client)
+{
+	if (args.size() != 1)
+		return Rep().E409(fd_client, _client.at(fd_client).get_nick());
+	Rep().R321(fd_client, _client.at(fd_client).get_nick());
+	map<string,Channel>::iterator	it = _channel.begin();
+
+	for(; it != _channel.end(); ++it)
+	{
+		Rep().R322(fd_client, _client.at(fd_client).get_nick(), it->second.getNbClient(), it->second.getTopic(), it->second.getName());
+	}
+	Rep().R323(fd_client, _client.at(fd_client).get_nick());
+}
+
+void Server::topic(vector<string> args, int fd_client)
+{
+	if (args.size() == 2)
+	{
+		if (_channel.at(args[1]).getTopic().empty())
+			Rep().R331(fd_client, _client.at(fd_client).get_nick(), args[1]);
+		else
+		{
+			cerr << ANSI::green << ANSI::bold << "args[1] = " + args[1] << " getTopic = : " + _channel.at(args[1]).getTopic() << ANSI::reset << endl;
+			Rep().R332(fd_client, _client.at(fd_client).get_nick(),  args[1], ":" + _channel.at(args[1]).getTopic());
+			Rep().R333(fd_client, _client.at(fd_client).get_nick(), _channel.at(args[1]).getName(), \
+			_client.at(fd_client).get_nick() + "!" + _client.at(fd_client).get_username() + "@" + string(SERVER_NAME), time(0));
+			// ":" + _client[fd].get_nick() + "!" + _client[fd].get_username() + "@" + string(SERVER_NAME)
+		}
+	}
+	else if (args.size() == 3)
+	{
+		_channel.at(args[1]).setTopic(args[2].substr(1));
+		cerr << ANSI::green << ANSI::bold << "Args 1 = " + args[1] << " 2 = " + args[2] << ANSI::reset << endl;
+		confirm_to_client(fd_client, "TOPIC " + _channel.at(args[1]).getName() + " :" + args[2], _client);
+	}
+	else
+		Rep().E409(fd_client, _client.at(fd_client).get_nick());
+}
+
+//TOPIC #tt :BLABLA

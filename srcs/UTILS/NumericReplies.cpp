@@ -309,6 +309,18 @@ void Rep::R319(int const &fd, const string &cNick, const string& queryNick, char
 }
 
 /**
+ * @brief RPL_LISTSTART
+ * @param fd 
+ * @param cNick 
+ */
+void Rep::R321(int const &fd, const string &cNick)
+{
+	output << "321 " << cNick << " Channel :Users Name";
+	send_to_client(output.str(), fd);
+	clearBuffer();
+}
+
+/**
  * @brief RPL_LIST
  * @param fd 
  * @param cNick 
@@ -322,6 +334,13 @@ void	Rep::R322(int const &fd, const string &cNick, int nuser, const string& topi
 	send_to_client(output.str(), fd);
 	clearBuffer();
 }
+/*
+:*.freenode.net 322 ben #shavik-usb 1 :[+nt] 
+:*.freenode.net 323 ben :End of channel list.
+
+*/
+
+
 
 /**
  * @brief RPL_LISTEND
@@ -372,7 +391,7 @@ void Rep::R331(int const &fd, const string &cNick, const string& chanName)
  */
 void Rep::R332(int const &fd, const string &cNick, const string& chanName, const string& topic)
 {
-	output << "332 " << cNick << " " << chanName << " :" << topic;
+	output << "332 " << cNick << " " << chanName << " " << topic;
 	send_to_client(output.str(), fd);
 	clearBuffer();
 }
@@ -387,7 +406,8 @@ void Rep::R332(int const &fd, const string &cNick, const string& chanName, const
  */
 void Rep::R333(int const &fd, const string &cNick, const string& chanName, const string& setterNick, time_t timestamp)
 {
-	output << "333 " << cNick << " " << chanName << " " << setterNick << " " << timestamp;
+	// msg = ":" + _client[fd].get_nick() + "!" + _client[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
+	output << "333 " << cNick << " " << chanName << " " << setterNick << " :" << timestamp;
 	send_to_client(output.str(), fd);
 	clearBuffer();
 }

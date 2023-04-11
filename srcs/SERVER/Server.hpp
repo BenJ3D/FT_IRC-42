@@ -13,9 +13,10 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
+# include <stdlib.h>
 # include <cstdlib>
 # include <cstdio>
-# include <stdlib.h>
+# include <ctime>
 # include <string>
 # include <cstring>
 # include <iostream>
@@ -62,13 +63,14 @@ class Server
 		void notice(int const &fd, string msg);
 
 		/** COMMAND **/
-		void	nick(vector<string> args, int cl);
-		void	ping(vector<string> args, int cl);
-		void	user(vector<string> args, int cl);
-		void	privmsg(vector<string> args, int cl);
-		void	mode(vector<string> args, int fd_client);
-		
-		void	join_channel(vector<string> args, int fd_client);
+		void					nick(vector<string> args, int cl);
+		void					ping(vector<string> args, int cl);
+		void					user(vector<string> args, int cl);
+		void					privmsg(vector<string> args, int cl);
+		void					mode(vector<string> args, int fd_client);
+		void					join_channel(vector<string> args, int fd_client);
+		void					list(vector<string> args, int fd_client);
+		void					topic(vector<string> args, int fd_client);
 
 
 	public:

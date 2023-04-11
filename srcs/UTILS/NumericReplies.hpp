@@ -59,6 +59,7 @@ class Rep
 		void R315(NR_ARG, const std::string& name);
 		void R318(NR_ARG, const std::string& queryList);
 		void R319(NR_ARG, const std::string& queryNick, char prefix, const std::string& chanName);
+		void R321(int const &fd, const std::string &cNick);
 		void R322(NR_ARG, int nuser, const std::string& topic, const std::string& ChanName);
 		void R323(NR_ARG);
 
