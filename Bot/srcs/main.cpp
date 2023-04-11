@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 06:32:57 by amiguez           #+#    #+#             */
-/*   Updated: 2023/04/11 06:03:26 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/11 14:32:22 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,5 +44,6 @@ int main(int ac, char **av){
 	}
 	catch(exception &e){cout << ANSI::red << e.what() << endl; return (1);}
 
-	while (1);
+	Bob.run();
+
 }

@@ -20,7 +20,7 @@ namespace ANSI
 {
 	static const std::string	ansi(		"\033[");
 
-	static const std::string	end(		"\033[0m\n");
+	static const std::string	end(		"\033[0m \n");
 	static const std::string	reset(		"\033[0m");
 	static const std::string	&r(reset);
 
