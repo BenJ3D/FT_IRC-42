@@ -37,7 +37,9 @@ void Server::nick(vector<string> args, int client_fd) {
 		_client[client_fd].now_auth();
 		_client[client_fd].set_nick(new_nick);
 		cout << ANSI::red << "DEBUG TEST" << ANSI::reset << endl;
-		return Rep().R001(client_fd, new_nick);
+		Rep().R001(client_fd, new_nick);
+		Rep().R002(client_fd, new_nick, string(SERVER_NAME), string(SERVER_VERSION));
+		return Rep().R003(client_fd, new_nick ,string(SERVER_DATE));
 	}
 	string confirm_msg = "NICK " + new_nick + "\r\n";
 	confirm_to_client(client_fd, confirm_msg, _client);
@@ -73,7 +75,9 @@ void Server::user(vector<string> args, int cl) {
 		_client[cl].now_auth();
 		this->_client[cl].set_username(username);
 		this->_client[cl].set_realname(realname);
-		return Rep().R001(cl, _client[cl].get_nick());
+		Rep().R001(cl, _client[cl].get_nick());
+		Rep().R002(cl, _client[cl].get_nick(), string(SERVER_NAME), string(SERVER_VERSION));
+		return Rep().R003(cl, _client[cl].get_nick(), string(SERVER_DATE));
 	}
 	this->_client[cl].set_username(username);
 	this->_client[cl].set_realname(realname);
@@ -103,8 +107,8 @@ void	Server::join_channel(vector<string> args, int fd_client) //TODO: gerer le c
 	
 	if (_channel.find(args[1]) == _channel.end())
 	{
-		_channel[args[1]] = Channel(fd_client, args[0], _client[fd_client]);
-		_channel[args[1]].addClient(fd_client, '@');
+		_channel[args[1]] = Channel(fd_client, args[0]);
+		//_channel[args[1]].addClient(fd_client, '@');
 		confirm_to_client(fd_client, "JOIN " + args[1], _client);
 		confirm_to_client(fd_client, "MODE " + args[1] + " +o " + _client[fd_client].get_nick(), _client);
 
@@ -127,7 +131,7 @@ void	Server::join_channel(vector<string> args, int fd_client) //TODO: gerer le c
 }
 
 void Server::mode(vector<string> args, int fd_client) {
-	
+	(void)args;(void)fd_client;
 }
 
 /*

@@ -10,13 +10,12 @@ Channel::Channel()
 
 #include "../UTILS/ANSI.hpp"
 
-Channel::Channel(int fd_client, string const & name, Client client) : _name(name), _mode('=')
+Channel::Channel(int fd_client, string const & name) : _name(name), _mode('=')
 {
 	_list.insert(pair<int, char>(fd_client, '@'));
-	cout << ANSI::green << "Channel " << name << " created by " << client.get_nick() << endl;
 }
 
-Channel::Channel(int fd_client, string const & name, Client client, string const & passwd ) : _name(name), _passwd(passwd), _mode('=')
+Channel::Channel(int fd_client, string const & name, string const & passwd ) : _name(name), _passwd(passwd), _mode('=')
 {
 	_list.insert(pair<int, char>(fd_client, '@'));
 }

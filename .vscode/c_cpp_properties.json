@@ -6,8 +6,8 @@
                 "${workspaceFolder}/**"
             ],
             "defines": [],
-            "compilerPath": "/usr/bin/clang",
-            "cStandard": "c17",
+            "compilerPath": "/usr/bin/clang-11",
+            "cStandard": "c11",
             "cppStandard": "c++98",
             "intelliSenseMode": "linux-clang-x64"
         }
