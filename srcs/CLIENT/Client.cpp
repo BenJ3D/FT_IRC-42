@@ -96,11 +96,6 @@ bool Client::isOperatorInChannel(Channel &channel) const
 	return false;
 }
 
-char Client::getClientModeInChannel(Channel &channel) const
-{
-	return channel.getClientMode(this->get_id());
-}
-
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */

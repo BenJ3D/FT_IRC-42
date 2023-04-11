@@ -34,11 +34,13 @@ string Channel::ListNick(map<int, Client> & clients, int fd_client)
 	string list;
 	for (map<int, char>::iterator it = _list.begin(); it != _list.end(); it++)
 	{
-		string msg = ":" + clients[fd_client].get_nick() + "!" + clients[fd_client].get_username() + "@" + string(SERVER_NAME) + " JOIN" + _name + "\r\n";
-		if (send(fd_client, msg.c_str(), msg.length(), 0) == -1)
+		string msg = ":" + clients[fd_client].get_nick() + "!" + clients[fd_client].get_username() + "@" + string(SERVER_NAME) + " JOIN :" + _name + "\r\n";
+		if (send((*it).first, msg.c_str(), msg.length(), 0) == -1)
 			cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
 		string prefix = ((*it).second == '@') ? "@" : ((*it).second == '+') ? "+" : "";
 		list += prefix + clients[(*it).first].get_nick() + " ";
+
+		cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 	}
 	return list;
 }
@@ -112,16 +114,6 @@ string					Channel::getPasswd()
 char 					Channel::getMode()
 {
 	return _mode;
-}
-
-char Channel::getClientMode(int fd_client)
-{
-	for (map<int, char>::iterator it = _list.begin(); it != _list.end(); it++)
-	{
-		if (it->first == fd_client)
-			return it->second;
-	}
-	return '\0';
 }
 
 bool 					Channel::isInviteOnly()

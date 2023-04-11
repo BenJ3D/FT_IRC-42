@@ -50,7 +50,6 @@ class Client
 		void password_verified();
 
 		bool isOperatorInChannel(Channel & channel) const; // delete if getMod OK
-		char getClientModeInChannel(Channel & channel) const;
 
 		Client &		operator=( Client const & rhs );
 };
