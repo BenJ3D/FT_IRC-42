@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/08 07:50:08 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/11 04:53:52 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ Client::Client( const Client & src )
 
 Client::~Client()
 {
+	this->_pass_confirm = false;
 }
 
 
