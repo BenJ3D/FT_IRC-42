@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/11 15:29:42 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/11 16:31:44 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ std::ostream &			operator<<( std::ostream & o, Client const & i ) {
 	o << "FD = " << i.get_id() << 
 	" | NICK = " << i.get_nick() << 
 	" | FIST_CONNECT = " << i.get_is_auth() << 
-	" | PASS_CONFIRMED = " << i.get_pass_confirm() << std::endl;
+	" | PASS = " << i.get_pass() << std::endl;
 	return o;
 }
 
@@ -104,16 +104,12 @@ std::string Client::get_realname() const {
 }
 
 
-bool Client::is_pass() const {
+bool Client::get_pass() const {
 	return (this->_pass_confirm);
 }
 
 bool Client::get_is_auth() const {
 	return this->_is_auth;
-}
-
-bool Client::get_pass_confirm() const {
-	return this->_pass_confirm;
 }
 
 //######################### SETTER #########################

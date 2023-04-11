@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/11 15:36:09 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/11 15:50:18 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class Client
 		std::string get_realname() const;
 
 		bool get_is_auth() const;
-		bool is_pass() const;
+		bool get_pass() const;
 
 		void comfirm_password();
 		void set_nick(std::string nick);

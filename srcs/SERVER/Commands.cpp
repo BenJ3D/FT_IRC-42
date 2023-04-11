@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 04:46:30 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/11 15:31:30 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/11 16:30:14 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,9 @@ void Server::user(vector<string> args, int cl) {
 	cout << ANSI::cyan << cl << " --> " << args[0] << endl;
 
 	if (args.size() < 5)
-		return Rep().E461(cl, _client[cl].get_nick(), args[0]);
+		return Rep().E461(cl, args[0]);
 	if (_client[cl].get_username() != "")
-		return Rep().E462(cl, _client[cl].get_nick());
+		return Rep().E462(cl);
 	string check("[]\\`_^{|}$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-");
 	for (size_t i = 1; i < args[1].length(); i++)
 		if (check.find(args[1][i]) == string::npos)
@@ -103,7 +103,7 @@ void	Server::join_channel(vector<string> args, int fd_client) //TODO: gerer le c
 {
 	
 	if (args.size() < 2)
-		return Rep().E461(fd_client, _client[fd_client].get_nick(), args[0]);
+		return Rep().E461(fd_client, args[0]);
 	
 	if (_channel.find(args[1]) == _channel.end())
 	{
@@ -134,7 +134,7 @@ void Server::mode(vector<string> args, int fd_client) {
 	cout << ANSI::cyan << fd_client << " --> " << args[0] << endl;
 
 	if (args.size() < 3)
-		return Rep().E461(fd_client, _client[fd_client].get_nick(), args[0]);
+		return Rep().E461(fd_client, args[0]);
 	
 	if (args[1][0] != '#' || _channel.find(args[1]) == _channel.end())
 		return Rep().E403(fd_client, _client[fd_client].get_nick(), args[1]);
@@ -147,7 +147,7 @@ void Server::mode(vector<string> args, int fd_client) {
 		if (check.find(args[2][i]) == string::npos)
 			return Rep().E472(fd_client, _client[fd_client].get_nick(), args[2][i]);
 	if (i != args.size() - 2)
-		return Rep().E461(fd_client, _client[fd_client].get_nick(), args[0]); // OU 401 ?
+		return Rep().E461(fd_client, args[0]); // OU 401 ?
 
 	for (size_t i = 1; i < args[2].length(); i++)
 	{
@@ -184,7 +184,7 @@ void Server::privmsg(vector<string> args, int cl) {
 void	Server::pass(vector<string> args, int cl_fd) {
 	cout << ANSI::cyan << cl_fd << " --> " << args[0] << endl;
 	Rep rep;
-	if (_client[cl_fd].is_pass())
+	if (_client[cl_fd].get_pass())
 		rep.E462(cl_fd);
 	else if (args.size() == 1)
 		rep.E461(cl_fd, "PASS");

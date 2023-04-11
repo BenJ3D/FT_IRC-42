@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 20:39:56 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/11 15:40:23 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/11 15:50:18 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	Server::parser(string cmd, int client_fd) {
 				cout << "Not enough arguments for command " << args[0] << endl;
 				continue;
 			}
-			if (_client[client_fd].is_pass() || args[0] == "PASS") // Check if user gave password
+			if (_client[client_fd].get_pass() || args[0] == "PASS") // Check if user gave password
 				(this->*commands[args[0]].second)(args, client_fd);
 		}
 		else

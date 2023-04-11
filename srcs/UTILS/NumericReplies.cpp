@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/04/11 15:45:34 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/11 15:51:22 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -611,14 +611,14 @@ void Rep::E451(int const &fd, const string &cNick)
 
 void Rep::E461(int const &fd, const string& cmd)
 {
-	output << "461 " << cNick << " " << cmd << " :Not enough parameters";
+	output << "461 " << cmd << " :Not enough parameters";
 	send_to_client(output.str(), fd);
 	clearBuffer();
 }
 
 void Rep::E462(int const &fd)
 {
-	output << "462 " << cNick << " :Unauthorized command (already registered)";
+	output << "462 " << " :Unauthorized command (already registered)";
 	send_to_client(output.str(), fd);
 	clearBuffer();
 }
