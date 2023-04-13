@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/10 20:36:08 by abucia           ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 16:52:09 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # include "./Channel.hpp"
 # include "../CLIENT/Client.hpp"
 # include "../UTILS/NumericReplies.hpp"
+# include "../UTILS/tools.hpp"
 
 using namespace std;
 typedef void (Server::*CmdFunc)(std::vector<std::string>, int);
@@ -68,7 +69,7 @@ class Server
 		void					user(vector<string> args, int cl);
 		void					privmsg(vector<string> args, int cl);
 		void					mode(vector<string> args, int fd_client);
-		void					join_channel(vector<string> args, int fd_client);
+		void					join(vector<string> args, int fd_client);
 		void					list(vector<string> args, int fd_client);
 		void					topic(vector<string> args, int fd_client);
 

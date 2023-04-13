@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 20:39:56 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/10 14:53:50 by abucia           ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 15:42:23 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	Server::init_parsing_map()
 	this->commands["PING"] = make_pair(1, &Server::ping);
 	this->commands["USER"] = make_pair(1, &Server::user);
 	this->commands["PRIVMSG"] = make_pair(1, &Server::privmsg);
-	this->commands["JOIN"] = make_pair(2, &Server::join_channel);
+	this->commands["JOIN"] = make_pair(2, &Server::join);
 	this->commands["MODE"] = make_pair(2, &Server::mode);
 	this->commands["LIST"] = make_pair(1, &Server::list);
 	this->commands["TOPIC"] = make_pair(1, &Server::topic);

@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 04:46:30 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/11 04:52:53 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 15:12:24 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,39 +97,6 @@ void Server::ping(vector<string> args, int cl)
 	confirm_to_client(cl, "PONG " + string(SERVER_NAME) + " :" + args[2], _client);
 }
 
-
-
-void	Server::join_channel(vector<string> args, int fd_client) //TODO: gerer le cas de multi canaux (ex: JOIN #test #test2 #test3 passwd)
-{
-	
-	if (args.size() < 2)
-		return Rep().E461(fd_client, _client[fd_client].get_nick(), args[0]);
-
-	if (_channel.find(args[1]) == _channel.end())
-	{
-		_channel[args[1]] = Channel(fd_client, args[1]);
-		//_channel[args[1]].addClient(fd_client, '@');
-		confirm_to_client(fd_client, "JOIN " + args[1], _client);
-		confirm_to_client(fd_client, "MODE " + args[1] + " +o " + _client[fd_client].get_nick(), _client);
-
-		Rep().R353(fd_client, _client[fd_client].get_nick(), args[1], _client[fd_client].get_nick(), _channel[args[1]].getMode(), _channel[args[1]].getList().at(fd_client).first);
-		Rep().R366(fd_client, _client[fd_client].get_nick(), args[1]);
-	}
-	else
-	{
-		for (vector<int>::iterator it = _channel[args[1]].getBlackList().begin(); it != _channel[args[1]].getBlackList().end(); it++)
-			if ((*it) == fd_client)
-				return Rep().E474(fd_client, _client[fd_client].get_nick(), args[1]);
-
-		_channel[args[1]].addClient(fd_client, ' ');
-		confirm_to_client(fd_client, "JOIN " + args[1], _client);
-		string user_list = _channel[args[1]].ListNick(_client, fd_client);
-		Rep().R353(fd_client, _client[fd_client].get_nick(), args[1], user_list, _channel[args[1]].getMode(), _channel[args[1]].getList().at(fd_client).first);
-		Rep().R366(fd_client, _client[fd_client].get_nick(), args[1]);
-		cerr << ANSI::red << "DEBUG TEST USER LIST = "  << user_list << ANSI::reset << endl;
-	}
-}
-
 void Server::mode(vector<string> args, int fd_client) {
 	cout << ANSI::cyan << fd_client << " --> " << args[0] << endl;
 
@@ -196,44 +163,3 @@ void Server::privmsg(vector<string> args, int client_fd) {
 		confirm_to_client(client_fd, "PRIVMSG " + args[1] + " :" + args[2], _client);
 	}
 }
-
-void	Server::list(vector<string> args, int fd_client)
-{
-	if (args.size() != 1)
-		return Rep().E409(fd_client, _client.at(fd_client).get_nick());
-	Rep().R321(fd_client, _client.at(fd_client).get_nick());
-	map<string,Channel>::iterator	it = _channel.begin();
-
-	for(; it != _channel.end(); ++it)
-	{
-		Rep().R322(fd_client, _client.at(fd_client).get_nick(), it->second.getNbClient(), it->second.getTopic(), it->second.getName());
-	}
-	Rep().R323(fd_client, _client.at(fd_client).get_nick());
-}
-
-void Server::topic(vector<string> args, int fd_client)
-{
-	if (args.size() == 2)
-	{
-		if (_channel.at(args[1]).getTopic().empty())
-			Rep().R331(fd_client, _client.at(fd_client).get_nick(), args[1]);
-		else
-		{
-			Rep().R332(fd_client, _client.at(fd_client).get_nick(),  args[1], ":" + _channel.at(args[1]).getTopic());
-			Rep().R333(fd_client, _client.at(fd_client).get_nick(), _channel.at(args[1]).getName(), \
-			_client.at(fd_client).get_nick() + "!" + _client.at(fd_client).get_username() + "@" + string(SERVER_NAME), time(0));
-			// ":" + _client[fd].get_nick() + "!" + _client[fd].get_username() + "@" + string(SERVER_NAME)
-		}
-	}
-	else if (args.size() == 3)
-	{
-		_channel.at(args[1]).setTopic(args[2].substr(1));
-		confirm_to_client(fd_client, "TOPIC " + _channel.at(args[1]).getName() + " :" + args[2].substr(1), _client);
-		//TODO:: faire un ft confirm to all client in channel
-		confirm_to_all_channel_client(fd_client, "TOPIC " + _channel.at(args[1]).getName() + " :" + args[2].substr(1), _client, _channel.at(args[1]));
-	}
-	else
-		Rep().E409(fd_client, _client.at(fd_client).get_nick());
-}
-
-//TOPIC #tt :BLABLA
