@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/10 20:36:08 by abucia           ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 18:55:12 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ class Server
 		void	user(vector<string> args, int cl);
 		void	privmsg(vector<string> args, int cl);
 		void	mode(vector<string> args, int fd_client);
+		void	kick(vector<string> args, int cl);
 		
 		void	join_channel(vector<string> args, int fd_client);
 
@@ -85,7 +86,7 @@ class Server
 void confirm_to_client(const int &fd, string msg, map<int, Client>);
 std::ostream &operator<<(std::ostream &o, Server const &i);
 
-
+vector<string> split_cmd(const string command, char separator);
 
 #endif /* ********************************************************* SERVER_HPP */
 
