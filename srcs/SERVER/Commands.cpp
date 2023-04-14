@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./Server.hpp"
+#include "Server.hpp"
 
 void Server::nick(vector<string> args, int client_fd) {
 	cout << ANSI::cyan << client_fd << " --> " << args[0] << endl;
@@ -252,7 +252,7 @@ void Server::kick(vector<string> args, int cl){
 			continue;
 		}
 
-		Channel chan_temp = _channel[chan[i]];
+		Channel & chan_temp = _channel[chan[i]];
 		map< int, pair<char, vector<string> > > cl_in_chan = chan_temp.getList();
 		if (cl_in_chan.find(cl) == cl_in_chan.end()){
 			Rep().E442(cl, _client[cl].get_nick(), chan[i]);
@@ -277,7 +277,7 @@ void Server::kick(vector<string> args, int cl){
 				else
 					confirm_to_client((*it).first, "KICK " + chan[i] + " " + _client[(*target).first].get_nick(), _client);
 			}
-			chan_temp.removeClient((*target).first); // TODO: doesn't remove client from list :/ ?  
+			chan_temp.removeClient((*target).first);
 		}
 	}
 }
