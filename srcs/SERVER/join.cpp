@@ -6,38 +6,92 @@
 /*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 15:02:34 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/13 15:47:04 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 01:50:44 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./Server.hpp"
 
-void	Server::join(vector<string> args, int fd_client) //TODO: gerer le cas de multi canaux (ex: JOIN #test,#test2,#test3 passwd)
+/**
+ * @brief verifie si le nom de channel commence par # 
+ * et si il n'y a pas d'espaseen premier char apres #
+ * 
+ * @param name nom du channel
+ * @return true 
+ * @return false 
+ */
+bool	checkNameChannelIsGood( string name )
 {
-	if (args.size() < 2)
-		return Rep().E461(fd_client, _client[fd_client].get_nick(), args[0]);
-
-	if (_channel.find(args[1]) == _channel.end())
+	if (name.size() >= 1 && name[0] == '#')
 	{
-		_channel[args[1]] = Channel(fd_client, args[1]);
-		//_channel[args[1]].addClient(fd_client, '@');
-		confirm_to_client(fd_client, "JOIN " + args[1], _client);
-		confirm_to_client(fd_client, "MODE " + args[1] + " +o " + _client[fd_client].get_nick(), _client);
-
-		Rep().R353(fd_client, _client[fd_client].get_nick(), args[1], _client[fd_client].get_nick(), _channel[args[1]].getMode(), _channel[args[1]].getList().at(fd_client).first);
-		Rep().R366(fd_client, _client[fd_client].get_nick(), args[1]);
+		cerr << ANSI::blue << "checkNameChannelIsGood: true" << ANSI::reset << endl;
+		return true;
 	}
-	else
-	{
-		for (vector<int>::iterator it = _channel[args[1]].getBlackList().begin(); it != _channel[args[1]].getBlackList().end(); it++)
-			if ((*it) == fd_client)
-				return Rep().E474(fd_client, _client[fd_client].get_nick(), args[1]);
+	cerr << ANSI::blue << "checkNameChannelIsGood: false" << ANSI::reset << endl;
+	return false;
+}
 
-		_channel[args[1]].addClient(fd_client, ' ');
-		confirm_to_client(fd_client, "JOIN " + args[1], _client);
-		string user_list = _channel[args[1]].ListNick(_client, fd_client);
-		Rep().R353(fd_client, _client[fd_client].get_nick(), args[1], user_list, _channel[args[1]].getMode(), _channel[args[1]].getList().at(fd_client).first);
-		Rep().R366(fd_client, _client[fd_client].get_nick(), args[1]);
-		cerr << ANSI::red << "DEBUG TEST USER LIST = "  << user_list << ANSI::reset << endl;
+void Server::join(vector<string> args, int fd_client) // TODO: gerer le cas de multi canaux (ex: JOIN #test,#test2,#test3 passwd,passwd2...)
+{
+	string clientNick = _client[fd_client].get_nick();
+	if (args.size() < 2)
+		return Rep().E461(fd_client, clientNick, args[0]); // Pas assez de parametres
+
+	if (args[1].empty())
+		return;
+	vector<string> chan;
+	vector<string> pass;
+	chan = split_sep(args[1], ',');
+	if (args.size() < 3)
+		args.push_back("");
+	pass = split_sep(args[2], ',');
+
+	cerr << ANSI::red << "pass.size = " << pass.size() << endl << ANSI::reset;
+
+	for (size_t i = pass.size(); i < chan.size(); ++i) // remplir de pass vide pour simplifier la suite :}
+		pass.push_back("");
+	vector<string>::const_iterator it_chan = chan.begin();
+	vector<string>::const_iterator it_passwd = pass.begin();
+	for (; it_chan != chan.end(); ++it_chan, ++it_passwd)
+	{
+	
+		if (checkNameChannelIsGood(*it_chan))
+			if (_channel.find(*it_chan) == _channel.end())
+			{
+				_channel[*it_chan] = Channel(fd_client, *it_chan);
+				//_channel[*it_chan].addClient(fd_client, '@');
+				confirm_to_client(fd_client, "JOIN " + *it_chan, _client);
+				confirm_to_client(fd_client, "MODE " + *it_chan + " +o " + clientNick, _client);
+
+				Rep().R353(fd_client, clientNick, *it_chan, clientNick, _channel[*it_chan].getMode(), _channel[*it_chan].getList().at(fd_client).first);
+				Rep().R366(fd_client, clientNick, *it_chan);
+			}
+			else
+			{
+				for (vector<int>::iterator it = _channel[*it_chan].getBlackList().begin(); it != _channel[*it_chan].getBlackList().end(); it++)
+					if ((*it) == fd_client)
+						return Rep().E474(fd_client, clientNick, *it_chan);
+
+				if (_channel.at(*it_chan).requiredPass)					//y a til un passwd de set
+				{
+					if (_channel.at(*it_chan).getPasswd().compare(*it_passwd) != 0) // si oui, est ce le bon passwd en param (si pas de pass channel et un pass en param, ce dernier est ignorer)
+					{
+						Rep().E475(fd_client, clientNick, *it_chan);
+						continue;
+					}
+				}
+				_channel[*it_chan].addClient(fd_client, ' ');
+				confirm_to_client(fd_client, "JOIN " + *it_chan, _client);
+				string user_list = _channel[*it_chan].ListNick(_client, fd_client);
+				Rep().R353(fd_client, clientNick, *it_chan, user_list, _channel[*it_chan].getMode(), _channel[*it_chan].getList().at(fd_client).first);
+				Rep().R366(fd_client, clientNick, *it_chan);
+				cerr << ANSI::red << "DEBUG TEST USER LIST = " << user_list << ANSI::reset << endl;
+					
+				// }
+			}
+		else
+			Rep().E476(fd_client, _client.at(fd_client).get_nick());
+		// if (it_passwd != pass.end())
+		// 	++it_passwd;
 	}
 }

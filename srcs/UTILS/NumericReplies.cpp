@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NumericReplies.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 02:58:43 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/10 20:34:01 by abucia           ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 02:54:31 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -647,6 +647,14 @@ void Rep::E442(int const &fd, const string &cNick, const string& chanName)
 	clearBuffer();
 }
 
+/**
+ * @brief Is already on channel
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param chanName 
+ * @param inputNick 
+ */
 void Rep::E443(int const &fd, const string &cNick, const string& chanName, const string& inputNick)
 {
 	output << "443 " << cNick << " " << inputNick << " " << chanName << " :Is already on channel";
@@ -654,6 +662,12 @@ void Rep::E443(int const &fd, const string &cNick, const string& chanName, const
 	clearBuffer();
 }
 
+/**
+ * @brief :You have not registered
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E451(int const &fd, const string &cNick)
 {
 	output << "451 " << cNick << " :You have not registered";
@@ -661,6 +675,13 @@ void Rep::E451(int const &fd, const string &cNick)
 	clearBuffer();
 }
 
+/**
+ * @brief Not enough parameters
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param cmd 
+ */
 void Rep::E461(int const &fd, const string &cNick, const string& cmd)
 {
 	output << "461 " << cNick << " " << cmd << " :Not enough parameters";
@@ -668,6 +689,12 @@ void Rep::E461(int const &fd, const string &cNick, const string& cmd)
 	clearBuffer();
 }
 
+/**
+ * @brief :Unauthorized command (already registered)
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E462(int const &fd, const string &cNick)
 {
 	output << "462 " << cNick << " :Unauthorized command (already registered)";
@@ -675,6 +702,12 @@ void Rep::E462(int const &fd, const string &cNick)
 	clearBuffer();
 }
 
+/**
+ * @brief :Password incorrect
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E464(int const &fd, const string &cNick)
 {
 	output << "464 " << cNick << " :Password incorrect";
@@ -682,6 +715,12 @@ void Rep::E464(int const &fd, const string &cNick)
 	clearBuffer();
 }
 
+/**
+ * @brief  USER :Your username is not valid
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E468(int const &fd, const string &cNick)
 {
 	output << "468 " << cNick << " USER :Your username is not valid";
@@ -689,6 +728,12 @@ void Rep::E468(int const &fd, const string &cNick)
 	clearBuffer();
 }
 
+/**
+ * @brief You are banned from this server
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E465(int const &fd, const string &cNick)
 {
 	output << "465 " << cNick << " :You are banned from this server";
@@ -696,6 +741,13 @@ void Rep::E465(int const &fd, const string &cNick)
 	clearBuffer();
 }
 
+/**
+ * @brief Cannot join channel
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param chanName 
+ */
 void Rep::E471(int const &fd, const string &cNick, const string& chanName)
 {
 	output << "471 " << cNick << " " << chanName << " :Cannot join channel (<<l)";
@@ -703,6 +755,13 @@ void Rep::E471(int const &fd, const string &cNick, const string& chanName)
 	clearBuffer();
 }
 
+/**
+ * @brief is unknown mode char to me
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param modeChar 
+ */
 void Rep::E472(int const &fd, const string &cNick, const char& modeChar)
 {
 	output << "472 " << cNick << " " << modeChar << " :is unknown mode char to me";
@@ -710,6 +769,13 @@ void Rep::E472(int const &fd, const string &cNick, const char& modeChar)
 	clearBuffer();
 }
 
+/**
+ * @brief :Cannot join channel (+i)
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param chanName 
+ */
 void Rep::E473(int const &fd, const string &cNick, const string& chanName)
 {
 	output << "473 " << cNick << " " << chanName << " :Cannot join channel (+i)";
@@ -717,6 +783,13 @@ void Rep::E473(int const &fd, const string &cNick, const string& chanName)
 	clearBuffer();
 }
 
+/**
+ * @brief Cannot join channel (+b)
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param chanName 
+ */
 void Rep::E474(int const &fd, const string &cNick, const string& chanName)
 {
 	output << "474 " << cNick << " " << chanName << " :Cannot join channel (+b)";
@@ -724,6 +797,13 @@ void Rep::E474(int const &fd, const string &cNick, const string& chanName)
 	clearBuffer();
 }
 
+/**
+ * @brief Cannot join channel (+k)
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param chanName 
+ */
 void Rep::E475(int const &fd, const string &cNick, const string& chanName)
 {
 	output << "475 " << cNick << " " << chanName << " :Cannot join channel (+k)";
@@ -731,6 +811,12 @@ void Rep::E475(int const &fd, const string &cNick, const string& chanName)
 	clearBuffer();
 }
 
+/**
+ * @brief Bad Channel Mask
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E476(int const &fd, const string &cNick)
 {
 	output << "476 " << cNick << " :Bad Channel Mask";
@@ -738,6 +824,12 @@ void Rep::E476(int const &fd, const string &cNick)
 	clearBuffer();
 }
 
+/**
+ * @brief You're not an IRC operator
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E481(int const &fd, const string &cNick)
 {
 	output << "481 " << cNick << " :Permission Denied- You're not an IRC operator";
@@ -745,6 +837,13 @@ void Rep::E481(int const &fd, const string &cNick)
 	clearBuffer();
 }
 
+/**
+ * @brief You're not channel operator
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param chanName 
+ */
 void Rep::E482(int const &fd, const string &cNick, const string& chanName)
 {
 	output << "482 " << cNick << " " << chanName << " :You're not channel operator";
@@ -752,6 +851,13 @@ void Rep::E482(int const &fd, const string &cNick, const string& chanName)
 	clearBuffer();
 }
 
+
+/**
+ * @brief Unknown MODE flag
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E501(int const &fd, const string &cNick)
 {
 	output << "501 " << cNick << " :Unknown MODE flag";
@@ -759,6 +865,12 @@ void Rep::E501(int const &fd, const string &cNick)
 	clearBuffer();
 }
 
+/**
+ * @brief Can't view or change mode for other users
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E502(int const &fd, const string &cNick)
 {
 	output << "502 " << cNick << " :Can't view or change mode for other users";

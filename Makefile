@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+         #
+#    By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/22 02:28:45 by bducrocq          #+#    #+#              #
-#    Updated: 2023/04/10 19:17:08 by abucia           ###   ########lyon.fr    #
+#    Updated: 2023/04/14 00:13:41 by bducrocq         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 

@@ -12,33 +12,32 @@ class Client;
 using namespace std;
 class Channel
 {
-
 	public:
 
 		Channel();
 		Channel( int fd_client, string const & name);
-		Channel( int fd_client, string const & name, string const & passwd );
+		// Channel( int fd_client, string const & name, string const & passwd );
 		~Channel();
 
-		void				addClient(int fd_client, char mode);
-		void				removeClient(int fd_client);
+		void										addClient(int fd_client, char mode);
+		void										removeClient(int fd_client);
 
-		void				addOperator(int fd_client);
-		void				removeOperator(int fd_client);
+		void										addOperator(int fd_client);
+		void										removeOperator(int fd_client);
 
-		void				addBlackList(int fd_client);
-		void				removeBlackList(int fd_client);
+		void										addBlackList(int fd_client);
+		void										removeBlackList(int fd_client);
 
-		bool				isInviteOnly();
+		bool										isInviteOnly();
 
-		void				setInviteOnly(bool const & inviteOnly);
-		void				setModerated(bool const & moderated);
-		void				setLimit(int const & limit);
-		void				setTopic(string const & topic);
-		void				setPasswd(string const & passwd);
-		void				setMode(char const & mode);  // = for public | * for private | @ for secret
+		void										setInviteOnly(bool const & inviteOnly);
+		void										setModerated(bool const & moderated);
+		void										setLimit(int const & limit);
+		void										setTopic(string const & topic);
+		void										setPasswd(string const & passwd);
+		void										setMode(char const & mode);  // = for public | * for private | @ for secret
 
-		int					getNbClient( void );
+		int											getNbClient( void );
 
 		vector<int>									getBlackList();
 		map<int, pair<char, vector<string> > >		getList();
@@ -49,6 +48,9 @@ class Channel
 		char										getMode();
 		char										getClientMode(int fd_client);
 		string										ListNick(map<int, Client>& clients, int fd_client);
+		bool										requiredPass;
+		bool 										isInviteOnly;
+		bool 										isModerated;
 
 	private:
 		
@@ -59,9 +61,8 @@ class Channel
 		string										_topic;
 		int											_topicClientSetter; //save fd du client qui a set le topic
 		vector<int>									_blackList; // fd_client
+		vector<int>									_inviteList; // fd_client -- permet dinviter le client sans besoin de passwd (si mode +k), valable pour une connection
 		map<int, pair<char, vector<string> > >		_list; // fd_client, mode, flags
-		bool 										_inviteOnly;
-		bool 										_moderated;
 		int 										_limit;
 		char										_mode; // = for public | * for private | @ for secret
 };

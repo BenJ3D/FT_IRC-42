@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/05 10:00:00 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 01:13:46 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,19 @@ Server::Server(const Server &src)
 
 Server::Server(string port, string address)
 {
+
+		//DBG SEGFAUT *******/
+
+		// vector<string> test;
+		// test.push_back("JOIN");
+		// test.push_back("#1,#2,#");
+		// test.push_back("44,42,");
+		// join(test, 4);
+		// join(test, 5);
+		// cerr << ANSI::red << "FINNNNNNNN DEBUG" << endl << ANSI::reset;
+	
+		//DBG SEGFAUT *******/
+		
 	(void)address;
 	init_parsing_map();
 	openSocket(atoi(port.c_str())); // fonction TEST pour le moment

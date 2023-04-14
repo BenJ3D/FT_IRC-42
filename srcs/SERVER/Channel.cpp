@@ -10,15 +10,17 @@ Channel::Channel()
 
 #include "../UTILS/ANSI.hpp"
 
-Channel::Channel(int fd_client, string const & name) : _name(name), _mode('=')
+Channel::Channel(int fd_client, string const & name) :  requiredPass(false), _name(name), _mode('=')
 {
+	// setPasswd("42");
 	_list[fd_client] = make_pair('@', vector<string>());
 }
 
-Channel::Channel(int fd_client, string const & name, string const & passwd ) : _name(name), _passwd(passwd), _mode('=')
-{
-	_list[fd_client] = make_pair('@', vector<string>());
-}
+//En faite a priori on ne peux pas creer de channel tout en definissant un passwd
+// Channel::Channel(int fd_client, string const & name, string const & passwd ) : requiredPass(false), _name(name), _mode('=')//TODO: DBG
+// {
+// 	_list[fd_client] = make_pair('@', vector<string>());
+// }
 
 
 /*
@@ -80,7 +82,7 @@ void					Channel::removeClient(int fd_client)
 	}
 }
 
-void					Channel::removeOperator(int fd_client)
+void Channel::removeOperator(int fd_client)
 {
 	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
 	{

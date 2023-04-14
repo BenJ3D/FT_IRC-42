@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 04:46:30 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/13 15:12:24 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 02:46:26 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ void Server::nick(vector<string> args, int client_fd) {
 	_client[client_fd].set_nick(new_nick);
 }
 
-
 void Server::user(vector<string> args, int cl) {
 	cout << ANSI::cyan << cl << " --> " << args[0] << endl;
 
@@ -82,64 +81,6 @@ void Server::user(vector<string> args, int cl) {
 	this->_client[cl].set_username(username);
 	this->_client[cl].set_realname(realname);
 }
-
-void Server::ping(vector<string> args, int cl)
-{
-	cout << ANSI::cyan << cl << " --> " << args[0] << endl;
-	if (args.size() < 2)
-		return Rep().E409(cl, _client[cl].get_nick());
-
-	if (args.size() == 2)
-		return confirm_to_client(cl, "PONG " + string(SERVER_NAME) + " :" + args[1], _client);
-
-	if (args[1] != SERVER_NAME)
-		return Rep().E402(cl, _client[cl].get_nick(), args[1]);
-	confirm_to_client(cl, "PONG " + string(SERVER_NAME) + " :" + args[2], _client);
-}
-
-void Server::mode(vector<string> args, int fd_client) {
-	cout << ANSI::cyan << fd_client << " --> " << args[0] << endl;
-
-	if (args.size() < 3)
-		return Rep().E461(fd_client, _client[fd_client].get_nick(), args[0]);
-	
-	if (args[1][0] != '#' || _channel.find(args[1]) == _channel.end())
-		return Rep().E403(fd_client, _client[fd_client].get_nick(), args[1]);
-	
-	string check = "ov";
-	if (string("+-").find(args[2][0]) == string::npos && args[2].length() < 2)
-		return Rep().E472(fd_client, _client[fd_client].get_nick(), args[2][0]);
-	size_t i = 1;
-	for (; i < args[2].length(); i++)
-		if (check.find(args[2][i]) == string::npos)
-			return Rep().E472(fd_client, _client[fd_client].get_nick(), args[2][i]);
-	if (i != args.size() - 2)
-		return Rep().E461(fd_client, _client[fd_client].get_nick(), args[0]); // OU 401 ?
-
-	for (size_t i = 1; i < args[2].length(); i++)
-	{
-		if (args[2][i] == 'o')
-		{
-			if (args[2][0] == '+')
-				_channel[args[1]].addClient(fd_client, '@');
-			else if (args[2][0] == '-')
-				_channel[args[1]].addClient(fd_client, ' ');
-		}
-		else if (args[2][i] == 'v')
-		{
-			if (args[2][0] == '+')
-				_channel[args[1]].addClient(fd_client, '+');
-			else if (args[2][0] == '-')
-				_channel[args[1]].addClient(fd_client, ' ');
-		}
-	}
-}
-/*
-:bducrocq!bducrocq@host JOIN #test
-:bducrocq!bducrocq@host MODE #test +o bducrocq
-:irc.server.com 353 bducrocq = #test :nickname1 nickname2 nickname3
-:irc.server.com 366 bducrocq  #test :End of /NAMES list.
-*/
 
 void Server::privmsg(vector<string> args, int client_fd) {
 	cout << ANSI::cyan << client_fd << " --> " << args[0] << endl;
