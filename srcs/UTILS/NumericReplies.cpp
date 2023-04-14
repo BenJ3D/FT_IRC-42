@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NumericReplies.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 02:58:43 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/10 20:34:01 by abucia           ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 11:17:19 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -678,9 +678,9 @@ void Rep::E475(int const &fd, const string &cNick, const string& chanName)
 	clearBuffer();
 }
 
-void Rep::E476(int const &fd, const string &cNick)
+void Rep::E476(int const &fd, const string &chanName)
 {
-	output << "476 " << cNick << " :Bad Channel Mask";
+	output << "476 " << chanName << " :Bad Channel Mask";
 	send_to_client(output.str(), fd);
 	clearBuffer();
 }

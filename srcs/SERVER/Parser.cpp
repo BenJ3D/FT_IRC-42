@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abucia <abucia@student.42lyon.fr>          +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 20:39:56 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/10 14:53:50 by abucia           ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 18:54:31 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	Server::init_parsing_map()
 	this->commands["PRIVMSG"] = make_pair(1, &Server::privmsg);
 	this->commands["JOIN"] = make_pair(2, &Server::join_channel);
 	this->commands["MODE"] = make_pair(2, &Server::mode);
+	this->commands["KICK"] = make_pair(1, &Server::kick);
 	cout << ANSI::yellow << "init PARSING OK" << endl;
 }
 

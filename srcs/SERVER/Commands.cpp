@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 04:46:30 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/11 04:52:53 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 18:56:34 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,5 +219,65 @@ void Server::privmsg(vector<string> args, int client_fd) {
 		// 	cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
 		confirm_to_client(dst_fd, "PRIVMSG " + args[1] + " :" + args[2], _client);
 		confirm_to_client(client_fd, "PRIVMSG " + args[1] + " :" + args[2], _client);
+	}
+}
+
+// send to everyone 
+//:blue!~blue@freenode-2on.i6k.qof1pp.IP KICK #4422 target :msg
+/*
+	check channel mask ['&' or '#']
+	check if channel existe
+	check if user in channel
+	check if op
+	check if target on channel
+*/
+void Server::kick(vector<string> args, int cl){
+	cout << ANSI::red << "in kick" << ANSI::r << endl;
+	cout << ANSI::red << ANSI::r << endl;
+	if (args.size() < 3)
+		return Rep().E461(cl, _client[cl].get_nick(), args[0]);
+
+	vector<string> chan = split_cmd(args[1], ',');
+	vector<string> temp_usr = split_cmd(args[2], ',');
+	vector<int> usrs_fd;
+	for(size_t i = 0; i < temp_usr.size(); i++)
+		usrs_fd.push_back(Client().find_user_by_nick(temp_usr[i], _client));
+
+	for (size_t i = 0; i < chan.size(); i++){
+		if (chan[i][0] != '&' && chan[i][0] != '#'){
+			Rep().E476(cl, chan[i]);
+			continue;
+		} if (_channel.find(chan[i]) == _channel.end()){
+			Rep().E403(cl, _client[cl].get_nick(), chan[i]);
+			continue;
+		}
+
+		Channel chan_temp = _channel[chan[i]];
+		map< int, pair<char, vector<string> > > cl_in_chan = chan_temp.getList();
+		if (cl_in_chan.find(cl) == cl_in_chan.end()){
+			Rep().E442(cl, _client[cl].get_nick(), chan[i]);
+			continue;
+		}
+
+		vector<int> chan_op = chan_temp.getOperators();
+		if (find(chan_op.begin(),chan_op.end(), cl) == chan_op.end()){
+				Rep().E482(cl, _client[cl].get_nick(), chan[i]);
+				continue;
+		}
+
+		for(size_t j = 0; j < usrs_fd.size(); j++){
+			map<int, pair<char, vector<string> > >::iterator target = cl_in_chan.find(usrs_fd[j]);
+			if (target == cl_in_chan.end()){
+				Rep().E441(cl, _client[cl].get_nick(), chan[i], temp_usr[j]);
+				continue;
+			}
+			for (map<int, pair<char, vector<string> > >::iterator it = cl_in_chan.begin(); it != cl_in_chan.end(); it++){
+				if (args.size() > 3)
+					confirm_to_client((*it).first, "KICK " + chan[i] + " " + _client[(*target).first].get_nick() + " :" + args[3], _client);
+				else
+					confirm_to_client((*it).first, "KICK " + chan[i] + " " + _client[(*target).first].get_nick(), _client);
+			}
+			chan_temp.removeClient((*target).first); // TODO: doesn't remove client from list :/ ?  
+		}
 	}
 }

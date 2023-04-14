@@ -30,6 +30,7 @@ class Channel
 		void				removeBlackList(int fd_client);
 
 		bool				isInviteOnly();
+		bool				isOperator(int fd_client);
 
 		void				setInviteOnly(bool const & inviteOnly);
 		void				setModerated(bool const & moderated);
@@ -50,8 +51,6 @@ class Channel
 		string ListNick(map<int, Client>& clients, int fd_client);
 
 	private:
-		
-		bool					isOperator(int fd_client);
 
 		string		 								_name;
 		string										_passwd;
