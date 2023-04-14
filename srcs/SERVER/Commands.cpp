@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 04:46:30 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/14 18:56:34 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/14 20:28:54 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -252,7 +252,7 @@ void Server::kick(vector<string> args, int cl){
 			continue;
 		}
 
-		Channel & chan_temp = _channel[chan[i]];
+		Channel& chan_temp = _channel[chan[i]];
 		map< int, pair<char, vector<string> > > cl_in_chan = chan_temp.getList();
 		if (cl_in_chan.find(cl) == cl_in_chan.end()){
 			Rep().E442(cl, _client[cl].get_nick(), chan[i]);
@@ -271,11 +271,15 @@ void Server::kick(vector<string> args, int cl){
 				Rep().E441(cl, _client[cl].get_nick(), chan[i], temp_usr[j]);
 				continue;
 			}
+			string ret = ":" + _client[cl].get_nick() + "!" + _client[cl].get_username() + "@" + string(SERVER_NAME) + " KICK " + chan[i] + " " + _client[(*target).first].get_nick();
+			if (args.size() > 3)
+				ret += " :" + args[3];
+			ret += "\r\n";
+			cout << ANSI::gray << "{send} =>" << ANSI::cmd << ret << ANSI::r << endl; 
 			for (map<int, pair<char, vector<string> > >::iterator it = cl_in_chan.begin(); it != cl_in_chan.end(); it++){
-				if (args.size() > 3)
-					confirm_to_client((*it).first, "KICK " + chan[i] + " " + _client[(*target).first].get_nick() + " :" + args[3], _client);
-				else
-					confirm_to_client((*it).first, "KICK " + chan[i] + " " + _client[(*target).first].get_nick(), _client);
+				if (send((*it).first, ret.c_str(), ret.length(), 0) == -1)
+					cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+
 			}
 			chan_temp.removeClient((*target).first);
 		}
