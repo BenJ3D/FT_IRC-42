@@ -112,7 +112,8 @@ void Server::mode_client(vector<string> args, int fd_client)
 
 void Server::mode_channel(vector<string> args, int fd_client)
 {
-
+	(void)args;
+	(void)fd_client;
 
 }
 

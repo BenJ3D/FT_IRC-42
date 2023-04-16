@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/16 22:39:08 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/14 18:55:12 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,14 @@ class Server
 		void notice(int const &fd, string msg);
 
 		/** COMMAND **/
+
+
+		
+
 		void					nick(vector<string> args, int cl);
 		void					ping(vector<string> args, int cl);
 		void					user(vector<string> args, int cl);
+		void					kick(vector<string> args, int cl);
 		void					privmsg(vector<string> args, int cl);
 		void					mode(vector<string> args, int fd_client);
 		void					join(vector<string> args, int fd_client);
@@ -86,7 +91,9 @@ class Server
 		Server &operator=(Server const &rhs);
 
 		/* --- PARSING --- */
-		void					parser(string command, int client_fd);
+		void			parser(string command, int client_fd);
+		vector<string>	split_to_point(string str);
+		std::string		trim(std::string str);
 
 		bool					isExistChannelName(string const &channelName);
 		int						findClientFdWithNick(string const &nick);
@@ -97,7 +104,7 @@ void confirm_to_client(const int &fd, string msg, map<int, Client>);
 void confirm_to_all_channel_client(int const &fd, string msg, map<int, Client> _client, Channel chan);
 std::ostream &operator<<(std::ostream &o, Server const &i);
 
-
+vector<string> split_cmd(const string command, char separator);
 
 #endif /* ********************************************************* SERVER_HPP */
 

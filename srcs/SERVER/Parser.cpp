@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 20:39:56 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/16 22:40:30 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/14 18:54:31 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,53 @@
 
 void	Server::init_parsing_map()
 {
-	this->commands["NICK"] = make_pair(1, &Server::nick);
-	this->commands["PING"] = make_pair(1, &Server::ping);
-	this->commands["USER"] = make_pair(1, &Server::user);
+	this->commands["NICK"] = make_pair(0, &Server::nick);
+	this->commands["PING"] = make_pair(0, &Server::ping);
+	this->commands["USER"] = make_pair(0, &Server::user);
 	this->commands["PRIVMSG"] = make_pair(1, &Server::privmsg);
-	this->commands["JOIN"] = make_pair(2, &Server::join);
-	this->commands["MODE"] = make_pair(2, &Server::mode);
-	this->commands["LIST"] = make_pair(1, &Server::list);
-	this->commands["TOPIC"] = make_pair(1, &Server::topic);
-	this->commands["PART"] = make_pair(2, &Server::topic);
-	this->commands["QUIT"] = make_pair(2, &Server::topic);
-	
+	this->commands["MODE"] = make_pair(0, &Server::mode);
+	this->commands["KICK"] = make_pair(0, &Server::kick);
+	this->commands["JOIN"] = make_pair(0, &Server::join);
+	this->commands["LIST"] = make_pair(0, &Server::list);
+	this->commands["TOPIC"] = make_pair(0, &Server::topic);
+	this->commands["PART"] = make_pair(0, &Server::topic);
+	this->commands["QUIT"] = make_pair(0, &Server::topic);
+
 	cout << ANSI::yellow << "init PARSING OK" << endl;
+}
+
+std::string Server::trim(std::string str)
+{
+	for (size_t i = 0; i < str.length(); i++)
+	{
+		if (str[i] == ' ')
+			str.erase(i, 1);
+		else
+			break;
+	}
+	for (size_t i = str.length() - 1; i > 0; i--)
+	{
+		if (str[i] == ' ')
+			str.erase(i, 1);
+		else
+			break;
+	}
+	return str;
+}
+
+vector<string> Server::split_to_point(string str)
+{
+	vector<string> args;
+	for (size_t i = 1; i < str.length(); i++)
+	{
+		if (str[i] == ':' && str[i - 1] == ' ')
+		{
+			args.push_back(str.substr(0, i));
+			args.push_back(str.substr(i + 1, str.length() - i));
+			return args;
+		}
+	}
+	return args;
 }
 
 vector<string> split_cmd(const string command, char separator)
@@ -37,12 +72,6 @@ vector<string> split_cmd(const string command, char separator)
 	{
 		if (buffer.length() != 0)
 			args.push_back(buffer);
-		if (args.size() > 0 && args[0] == "PRIVMSG" && buffer[0] == ':')
-		{
-			args.push_back(buffer.substr(1));
-
-			break;
-		}
 		cout << ANSI::purple << "ADD ARG : " << ANSI::red << buffer << endl; // DEBUG
 	}
 	cout << endl; // DEBUG
@@ -59,7 +88,7 @@ string get_cmd(string cmd)
 }
 
 void	Server::parser(string cmd, int client_fd) {
-	string command = get_cmd(cmd);
+	string command = trim(get_cmd(cmd));
 	vector<string> cmds = split_cmd(command, '\r');
 	if (cmds.size() == 0)
 	{
@@ -72,11 +101,8 @@ void	Server::parser(string cmd, int client_fd) {
 		vector<string> args = split_cmd(*it, ' ');
 		if (args.size() != 0 && commands.find(args[0]) != commands.end())
 		{
-			long unsigned int expected_args = commands[args[0]].first;
-			if (args.size() < expected_args) {
-				cout << "Not enough arguments for command " << args[0] << endl;
-				continue;
-			}
+			if (commands[args[0]].first == 1)
+				args.push_back(split_cmd(cmd, '\r')[distance(cmds.begin(), it)]);
 			(this->*commands[args[0]].second)(args, client_fd);
 		}
 		else
