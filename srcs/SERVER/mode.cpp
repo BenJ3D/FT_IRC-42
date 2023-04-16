@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 02:46:29 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/17 00:07:09 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/17 00:41:15 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,57 +19,66 @@ void Server::mode_client(vector<string> args, int fd_client)
 		Rep().E501(fd_client, _client[fd_client].get_nick());
 		return ;
 	}
-	char mod = args[2][0];
-	args[2].substr(1);
+	bool mod = false;
+	if(args[2][0] == '+')
+		mod = true;
+	args[2] = args[2].substr(1);
+	
 	
 	for(string::iterator it = args[2].begin(); it != args[2].end(); it++)
 	{
+		cerr << ANSI::red << "mod =" + mod + *it << endl
+			 << ANSI::reset;
 		switch (*it)
 		{
-		case 'a': //away
-			if (mod == '+')
+		case 'a': // away
+			if (mod)
 			{
-				confirm_to_client(fd_client, "MODE :" + args[2], _client);
+				confirm_to_client(fd_client, "MODE :" + mod + args[2], _client);
 				_client[fd_client].set_mode_a();
-				cerr << ANSI::red << "MODE :" + args[2] << endl << ANSI::reset;
+				cerr << ANSI::red << "MODE :" + mod + args[2] << endl
+					 << ANSI::reset;
 			}
 			else
 			{
-				confirm_to_client(fd_client, "MODE :" + args[2], _client);
+				confirm_to_client(fd_client, "MODE :" + mod + args[2], _client);
 				_client[fd_client].unset_mode_a();
-				cerr << ANSI::red << "MODE :" + args[2] << endl << ANSI::reset;
+				cerr << ANSI::red << "MODE :" + mod + args[2] << endl
+					 << ANSI::reset;
 			}
 			break;
 		case 'i': // invisible
-			if (mod == '+')
+			if (mod)
 			{
-				confirm_to_client(fd_client, "MODE :" + args[2], _client);
+				confirm_to_client(fd_client, "MODE :" + mod + args[2], _client);
 				_client[fd_client].set_mode_i();
-				cerr << ANSI::red << "MODE :" + args[2] << endl << ANSI::reset;
+				cerr << ANSI::red << "MODE :" + mod + args[2] << endl
+					 << ANSI::reset;
 			}
 			else
 			{
 
-				confirm_to_client(fd_client, "MODE :" + args[2], _client);
+				confirm_to_client(fd_client, "MODE :" + mod + args[2], _client);
 				_client[fd_client].unset_mode_i();
-				cerr << ANSI::red << "MODE :" + args[2] << endl << ANSI::reset;
+				cerr << ANSI::red << "MODE :" + mod + args[2] << endl
+					 << ANSI::reset;
 			}
 			break;
 		case 'o': // operator
-			if (mod == '+')
+			if (mod)
 			{
-				confirm_to_client(fd_client, "MODE :" + args[2], _client);
+				confirm_to_client(fd_client, "MODE :" + mod + args[2], _client);
 				_client[fd_client].set_mode_o();
 			}
 			else
 			{
 
-				confirm_to_client(fd_client, "MODE :" + args[2], _client);
+				confirm_to_client(fd_client, "MODE :" + mod + args[2], _client);
 				_client[fd_client].unset_mode_o();
 			}
 			break;
 		// case 'O': // local operator
-		// 	if (mod == '+')
+		// 	if (mod)
 		// 	{
 		// 		confirm_to_client(fd_client, "MODE :" + args[2], _client);
 		// 		_client[fd_client].set_mode_O();
@@ -82,7 +91,7 @@ void Server::mode_client(vector<string> args, int fd_client)
 		// 	}
 		// 	break;
 		case 's': // server notices
-			if (mod == '+')
+			if (mod)
 			{
 				confirm_to_client(fd_client, "MODE :" + args[2], _client);
 				_client[fd_client].set_mode_s();
@@ -94,7 +103,7 @@ void Server::mode_client(vector<string> args, int fd_client)
 				_client[fd_client].unset_mode_s();
 			}
 			break;
-		default: //error
+		default: // error
 			Rep().E472(fd_client, _client[fd_client].get_nick(), *it);
 			break;
 		}
