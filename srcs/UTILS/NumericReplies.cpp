@@ -891,7 +891,7 @@ void Rep::E475(int const &fd, const string &cNick, const string& chanName)
  * @param fd 
  * @param cNick 
  */
-void Rep::E476(int const &fd, const string &cNick)
+void Rep::E476(int const &fd, const string &chanName)
 {
 	output << "476 " << chanName << " :Bad Channel Mask";
 	send_to_client(output.str(), fd);

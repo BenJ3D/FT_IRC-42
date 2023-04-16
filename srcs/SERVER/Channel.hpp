@@ -39,7 +39,7 @@ class Channel
 		int											getNbClient( void );
 
 		vector<int>									getBlackList();
-		const map<int, pair<char, vector<string> > >	&	getList();
+		map<int, pair<char, vector<string> > >	&	getList();
 		vector<int>									getOperators();
 		string										getPasswd();
 		string										getTopic();
