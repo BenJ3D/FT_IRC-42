@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+         #
+#    By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/22 02:28:45 by bducrocq          #+#    #+#              #
-#    Updated: 2023/04/14 00:13:41 by bducrocq         ###   ########lyon.fr    #
+#    Updated: 2023/04/17 00:09:19 by bducrocq         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,7 +48,7 @@ OBJ = $(OBJ_NAME)
 CC = c++ $(STDCPP) $(CFLAGS) $(SANITIZE) $(LLDBFLAG)
 
 CFLAGS = -Wall -Wextra# -Werror
-SANITIZE = -fsanitize=address
+SANITIZE = #-fsanitize=address
 LLDBFLAG = -g3
 STDCPP = -std=c++98
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 20:39:56 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/13 15:42:23 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/16 22:40:30 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,9 @@ void	Server::init_parsing_map()
 	this->commands["MODE"] = make_pair(2, &Server::mode);
 	this->commands["LIST"] = make_pair(1, &Server::list);
 	this->commands["TOPIC"] = make_pair(1, &Server::topic);
+	this->commands["PART"] = make_pair(2, &Server::topic);
+	this->commands["QUIT"] = make_pair(2, &Server::topic);
+	
 	cout << ANSI::yellow << "init PARSING OK" << endl;
 }
 

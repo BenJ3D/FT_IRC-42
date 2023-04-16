@@ -47,6 +47,7 @@ string Channel::ListNick(map<int, Client> & clients, int fd_client)
 	return list;
 }
 
+
 map<int, pair<char, vector<string> > >		Channel::getList()
 {
 	return _list;

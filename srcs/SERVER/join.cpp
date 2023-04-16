@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 15:02:34 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/14 01:50:44 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/17 00:07:03 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ bool	checkNameChannelIsGood( string name )
 	return false;
 }
 
-void Server::join(vector<string> args, int fd_client) // TODO: gerer le cas de multi canaux (ex: JOIN #test,#test2,#test3 passwd,passwd2...)
+void Server::join(vector<string> args, int fd_client) // TODO: check le premier char # &
 {
 	string clientNick = _client[fd_client].get_nick();
 	if (args.size() < 2)

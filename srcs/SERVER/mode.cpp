@@ -3,52 +3,168 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 02:46:29 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/14 03:01:25 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/17 00:07:09 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
-void Server::mode(vector<string> args, int fd_client) {
+void Server::mode_client(vector<string> args, int fd_client)
+{
+	if (args[2][0] != '+' && args[2][0] != '-')
+	{
+		Rep().E501(fd_client, _client[fd_client].get_nick());
+		return ;
+	}
+	char mod = args[2][0];
+	args[2].substr(1);
+	
+	for(string::iterator it = args[2].begin(); it != args[2].end(); it++)
+	{
+		switch (*it)
+		{
+		case 'a': //away
+			if (mod == '+')
+			{
+				confirm_to_client(fd_client, "MODE :" + args[2], _client);
+				_client[fd_client].set_mode_a();
+				cerr << ANSI::red << "MODE :" + args[2] << endl << ANSI::reset;
+			}
+			else
+			{
+				confirm_to_client(fd_client, "MODE :" + args[2], _client);
+				_client[fd_client].unset_mode_a();
+				cerr << ANSI::red << "MODE :" + args[2] << endl << ANSI::reset;
+			}
+			break;
+		case 'i': // invisible
+			if (mod == '+')
+			{
+				confirm_to_client(fd_client, "MODE :" + args[2], _client);
+				_client[fd_client].set_mode_i();
+				cerr << ANSI::red << "MODE :" + args[2] << endl << ANSI::reset;
+			}
+			else
+			{
+
+				confirm_to_client(fd_client, "MODE :" + args[2], _client);
+				_client[fd_client].unset_mode_i();
+				cerr << ANSI::red << "MODE :" + args[2] << endl << ANSI::reset;
+			}
+			break;
+		case 'o': // operator
+			if (mod == '+')
+			{
+				confirm_to_client(fd_client, "MODE :" + args[2], _client);
+				_client[fd_client].set_mode_o();
+			}
+			else
+			{
+
+				confirm_to_client(fd_client, "MODE :" + args[2], _client);
+				_client[fd_client].unset_mode_o();
+			}
+			break;
+		// case 'O': // local operator
+		// 	if (mod == '+')
+		// 	{
+		// 		confirm_to_client(fd_client, "MODE :" + args[2], _client);
+		// 		_client[fd_client].set_mode_O();
+		// 	}
+		// 	else
+		// 	{
+
+		// 		confirm_to_client(fd_client, "MODE :" + args[2], _client);
+		// 		_client[fd_client].unset_mode_O();
+		// 	}
+		// 	break;
+		case 's': // server notices
+			if (mod == '+')
+			{
+				confirm_to_client(fd_client, "MODE :" + args[2], _client);
+				_client[fd_client].set_mode_s();
+			}
+			else
+			{
+
+				confirm_to_client(fd_client, "MODE :" + args[2], _client);
+				_client[fd_client].unset_mode_s();
+			}
+			break;
+		default: //error
+			Rep().E472(fd_client, _client[fd_client].get_nick(), *it);
+			break;
+		}
+	}
+}
+
+void Server::mode_channel(vector<string> args, int fd_client)
+{
+
+
+}
+
+void Server::mode(vector<string> args, int fd_client)
+{
 	cout << ANSI::cyan << fd_client << " --> " << args[0] << endl;
 
 	if (args.size() < 3)
 		return Rep().E461(fd_client, _client[fd_client].get_nick(), args[0]);
-	
-	if (args[1][0] != '#' || _channel.find(args[1]) == _channel.end())
-		return Rep().E403(fd_client, _client[fd_client].get_nick(), args[1]);
-	
-	string check = "ov";
-	if (string("+-").find(args[2][0]) == string::npos && args[2].length() < 2)
-		return Rep().E472(fd_client, _client[fd_client].get_nick(), args[2][0]);
-	size_t i = 1;
-	for (; i < args[2].length(); i++)
-		if (check.find(args[2][i]) == string::npos)
-			return Rep().E472(fd_client, _client[fd_client].get_nick(), args[2][i]);
-	if (i != args.size() - 2)
-		return Rep().E461(fd_client, _client[fd_client].get_nick(), args[0]); // OU 401 ?
-
-	for (size_t i = 1; i < args[2].length(); i++)
+	if (args[1][0] == '#')
 	{
-		if (args[2][i] == 'o')
-		{
-			if (args[2][0] == '+')
-				_channel[args[1]].addClient(fd_client, '@');
-			else if (args[2][0] == '-')
-				_channel[args[1]].addClient(fd_client, ' ');
-		}
-		else if (args[2][i] == 'v')
-		{
-			if (args[2][0] == '+')
-				_channel[args[1]].addClient(fd_client, '+');
-			else if (args[2][0] == '-')
-				_channel[args[1]].addClient(fd_client, ' ');
-		}
+		if (!isExistChannelName(args[1]))
+			return Rep().E403(fd_client, _client[fd_client].get_nick(), args[1]);
+		mode_channel(args, fd_client);
 	}
+	else
+	{
+		if(_client[fd_client].get_nick().compare(args[1]) != 0)
+			return Rep().E502(fd_client, _client[fd_client].get_nick());
+		mode_client(args, fd_client);
+	}
+	
 }
+
+// void Server::mode(vector<string> args, int fd_client) {
+// 	cout << ANSI::cyan << fd_client << " --> " << args[0] << endl;
+
+// 	if (args.size() < 3)
+// 		return Rep().E461(fd_client, _client[fd_client].get_nick(), args[0]);
+	
+// 	if (args[1][0] != '#' || _channel.find(args[1]) == _channel.end())
+// 		return Rep().E403(fd_client, _client[fd_client].get_nick(), args[1]);
+	
+// 	string check = "ov";
+// 	if (string("+-").find(args[2][0]) == string::npos && args[2].length() < 2)
+// 		return Rep().E472(fd_client, _client[fd_client].get_nick(), args[2][0]);
+// 	size_t i = 1;
+// 	for (; i < args[2].length(); i++)
+// 		if (check.find(args[2][i]) == string::npos)
+// 			return Rep().E472(fd_client, _client[fd_client].get_nick(), args[2][i]);
+// 	if (i != args.size() - 2)
+// 		return Rep().E461(fd_client, _client[fd_client].get_nick(), args[0]); // OU 401 ?
+
+// 	for (size_t i = 1; i < args[2].length(); i++)
+// 	{
+// 		if (args[2][i] == 'o')
+// 		{
+// 			if (args[2][0] == '+')
+// 				_channel[args[1]].addClient(fd_client, '@');
+// 			else if (args[2][0] == '-')
+// 				_channel[args[1]].addClient(fd_client, ' ');
+// 		}
+// 		else if (args[2][i] == 'v')
+// 		{
+// 			if (args[2][0] == '+')
+// 				_channel[args[1]].addClient(fd_client, '+');
+// 			else if (args[2][0] == '-')
+// 				_channel[args[1]].addClient(fd_client, ' ');
+// 		}
+// 	}
+// }
 /*
 :bducrocq!bducrocq@host JOIN #test
 :bducrocq!bducrocq@host MODE #test +o bducrocq
@@ -73,7 +189,7 @@ void Server::mode(vector<string> args, int fd_client) {
 
       The available modes are as follows:
 
-           a - user is flagged as away;
+           a - user is flagged as away;    aioOs
            i - marks a users as invisible;
            w - user receives wallops;
            r - restricted user connection;
@@ -151,6 +267,21 @@ du nom d'utilisateur, du signe + ou - pour ajouter ou supprimer le mode, et du m
            RPL_EXCEPTLIST                  RPL_ENDOFEXCEPTLIST
            RPL_INVITELIST                  RPL_ENDOFINVITELIST
            RPL_UNIQOPIS
+
+ERR_NEEDMOREPARAMS : 461
+ERR_KEYSET : 467
+ERR_NOCHANMODES : 477
+ERR_CHANOPRIVSNEEDED : 482
+ERR_USERNOTINCHANNEL : 441
+ERR_UNKNOWNMODE : 472
+RPL_CHANNELMODEIS : 324
+RPL_BANLIST : 367
+RPL_ENDOFBANLIST : 368
+RPL_EXCEPTLIST : 348
+RPL_ENDOFEXCEPTLIST : 349
+RPL_INVITELIST : 346
+RPL_ENDOFINVITELIST : 347
+RPL_UNIQOPIS : 325
 
    The following examples are given to help understanding the syntax of
    the MODE command, but refer to modes defined in "Internet Relay Chat:

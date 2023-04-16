@@ -28,7 +28,6 @@ class Channel
 		void										addBlackList(int fd_client);
 		void										removeBlackList(int fd_client);
 
-		bool										isInviteOnly();
 
 		void										setInviteOnly(bool const & inviteOnly);
 		void										setModerated(bool const & moderated);
@@ -36,7 +35,7 @@ class Channel
 		void										setTopic(string const & topic);
 		void										setPasswd(string const & passwd);
 		void										setMode(char const & mode);  // = for public | * for private | @ for secret
-
+		bool										isInviteOnly( void );
 		int											getNbClient( void );
 
 		vector<int>									getBlackList();
@@ -49,13 +48,18 @@ class Channel
 		char										getClientMode(int fd_client);
 		string										ListNick(map<int, Client>& clients, int fd_client);
 		bool										requiredPass;
-		bool 										isInviteOnly;
-		bool 										isModerated;
+
+		bool										isExistChannelName(string const & channelName);
+
+		// string const &								getMode();
+
 
 	private:
 		
 		bool										isOperator(int fd_client);
 
+		bool 										_isInviteOnly;
+		bool 										_isModerated;
 		string		 								_name;
 		string										_passwd;
 		string										_topic;

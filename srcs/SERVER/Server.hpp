@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/13 23:56:12 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/16 22:39:08 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 # include <ctime>
 # include <string>
 # include <cstring>
-# include <iostream>
 # include <sstream>
+# include <iostream>
 # include <sys/types.h>
 # include <sys/select.h>
 # include <sys/socket.h>
@@ -72,17 +72,25 @@ class Server
 		void					join(vector<string> args, int fd_client);
 		void					list(vector<string> args, int fd_client);
 		void					topic(vector<string> args, int fd_client);
+		void					part(vector<string> args, int fd_client);
+		void					quit(vector<string> args, int fd_client);
 
+		void					mode_channel(vector<string> args, int fd_client);
+		void					mode_client(vector<string> args, int fd_client);
+	
 
 	public:
-		Server(std::string port, std::string address);//adress doit devenir password
+		Server(std::string port, std::string address); //adress doit devenir password
 		~Server();
 
 		Server &operator=(Server const &rhs);
 
 		/* --- PARSING --- */
-		void parser(string command, int client_fd);
+		void					parser(string command, int client_fd);
 
+		bool					isExistChannelName(string const &channelName);
+		int						findClientFdWithNick(string const &nick);
+		bool					isClientOnChannel(int client_fd);
 };
 
 void confirm_to_client(const int &fd, string msg, map<int, Client>);

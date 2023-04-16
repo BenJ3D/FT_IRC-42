@@ -205,8 +205,30 @@ int Server::openSocket(int port)
 	}
 }
 
-/*
-** --------------------------------- ACCESSOR ---------------------------------
-*/
+/**
+ * @brief recherche avec un nickname si le client existe et return son fd, sinon return 0
+ * 
+ * @param nick 
+ * @return int 
+ */
+int	Server::findClientFdWithNick(string const &nick)
+{
+	map<int,Client>::iterator it = _client.begin();
+
+	for(; it != _client.end(); ++it)
+	{
+		if (it->second.get_nick().compare(nick) == 0)
+			return it->first;
+	}
+	return 0;
+}
+
+
+bool Server::isExistChannelName(string const &channelName)
+{
+	if (_channel.find(channelName) != _channel.end())
+		return true;
+	return false;
+}
 
 /* ************************************************************************** */
