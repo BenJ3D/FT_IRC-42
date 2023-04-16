@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 04:46:30 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/14 20:28:54 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/17 00:48:26 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ void Server::privmsg(vector<string> args, int client_fd) {
 void Server::kick(vector<string> args, int cl){
 	cout << ANSI::red << "in kick" << ANSI::r << endl;
 	cout << ANSI::red << ANSI::r << endl;
-	if (args.size() < 3)
+	if (args.size() < 4)
 		return Rep().E461(cl, _client[cl].get_nick(), args[0]);
 
 	vector<string> chan = split_cmd(args[1], ',');
@@ -224,8 +224,11 @@ void Server::kick(vector<string> args, int cl){
 				continue;
 			}
 			string ret = ":" + _client[cl].get_nick() + "!" + _client[cl].get_username() + "@" + string(SERVER_NAME) + " KICK " + chan[i] + " " + _client[(*target).first].get_nick();
-			if (args.size() > 3)
-				ret += " :" + args[3];
+			if (args.size() > 4){
+				vector<string> msg = split_to_point(args.back());
+				if (!msg.empty())
+					ret += " :" + msg.back();
+			}
 			ret += "\r\n";
 			cout << ANSI::gray << "{send} =>" << ANSI::cmd << ret << ANSI::r << endl; 
 			for (map<int, pair<char, vector<string> > >::iterator it = cl_in_chan.begin(); it != cl_in_chan.end(); it++){
