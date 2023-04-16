@@ -142,28 +142,8 @@ bool Client::get_pass_confirm() const {
 	return this->_pass_confirm;
 }
 
-void Client::set_mode_a() {
-	this->_is_away = true;
-}
-
-void Client::set_mode_i() {
-	this->_is_invisible = true;
-}
-
-void Client::set_mode_o() {
-	this->_is_operator = true;
-}
-
-// void Client::set_mode_O() {
-// 	this->_is_reciving_server_notices = true;
-// }
-
-void Client::set_mode_s() {
-	this->_is_reciving_server_notices = true;
-}
-
-void Client::set_mode_w() {
-	this->_is_wallops = true;
+string Client::get_away_message() const {
+	return this->_away_message;
 }
 
 void Client::unset_mode_a() {
@@ -220,6 +200,30 @@ bool Client::get_mode_w() const {
 
 
 //######################### SETTER #########################
+
+void Client::set_mode_a() {
+	this->_is_away = true;
+}
+
+void Client::set_mode_i() {
+	this->_is_invisible = true;
+}
+
+void Client::set_mode_o() {
+	this->_is_operator = true;
+}
+
+// void Client::set_mode_O() {
+// 	this->_is_reciving_server_notices = true;
+// }
+
+void Client::set_mode_s() {
+	this->_is_reciving_server_notices = true;
+}
+
+void Client::set_mode_w() {
+	this->_is_wallops = true;
+}
 
 /**
  * @brief set the nick of the client

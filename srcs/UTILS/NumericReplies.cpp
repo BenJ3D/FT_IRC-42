@@ -270,6 +270,20 @@ void Rep::R266(int const &fd, const string &cNick, int users)
 }
 
 /**
+ * @brief RPL_AWAY
+ * @param fd
+ * @param cNick
+ * @param queryNick
+ * @param awayMessage
+ */
+void Rep::R301(int const &fd, const string &cNick, const string& queryNick, const string& awayMessage)
+{
+	output << "301 " << cNick << " " << queryNick << " :" << awayMessage;
+	send_to_client(output.str(), fd);
+	clearBuffer();
+}
+
+/**
  * @brief RPL_WHOISUSER
  * @param fd 
  * @param cNick 

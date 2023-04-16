@@ -140,7 +140,7 @@ void Server::cmd_notice(vector<string> args, int client_fd) {
 			for (map<int, pair<char, vector<string> > >::const_iterator it = _channel[target_list[i]].getList().begin(); it != _channel[target_list[i]].getList().end(); it++)
 			{
 				cout << ANSI::red << "DEBUG TEST PRIVMSG = " << target_list[i] << ANSI::reset << endl;
-				if (it->first != client_fd)
+				if (it->first != client_fd && !_client[it->first].get_mode_s())
 				{
 					string ret = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_username() + "@" + string(SERVER_NAME) + " NOTICE " + target_list[i] + " " + res[2] + "\r\n";
 					if (send((*it).first, ret.c_str(), ret.length(), 0) == -1)
@@ -152,7 +152,7 @@ void Server::cmd_notice(vector<string> args, int client_fd) {
 		else
 		{
 			int dst_fd = Client().find_user_by_nick(target_list[i], _client);
-			if (dst_fd == -1)
+			if (dst_fd == -1 || !_client[dst_fd].get_mode_s())
 				continue;
 			string ret = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_username() + "@" + string(SERVER_NAME) + " NOTICE " + target_list[i] + " " + res[2] + "\r\n";
 			if (send(dst_fd, ret.c_str(), ret.length(), 0) == -1)
@@ -199,6 +199,8 @@ void Server::privmsg(vector<string> args, int client_fd) {
 				cout << ANSI::red << "DEBUG TEST PRIVMSG = " << target_list[i] << ANSI::reset << endl;
 				if (it->first != client_fd)
 				{
+					if (_client[it->first].get_mode_a())
+						Rep().R301(client_fd, _client[client_fd].get_nick(), target_list[i], _client[it->first].get_away_message());
 					string ret = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_username() + "@" + string(SERVER_NAME) + " PRIVMSG " + target_list[i] + " " + res[2] + "\r\n";
 					if (send((*it).first, ret.c_str(), ret.length(), 0) == -1)
 						cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
@@ -217,6 +219,8 @@ void Server::privmsg(vector<string> args, int client_fd) {
 			string ret = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_username() + "@" + string(SERVER_NAME) + " PRIVMSG " + target_list[i] + " " + res[2] + "\r\n";
 			if (send(dst_fd, ret.c_str(), ret.length(), 0) == -1)
 				cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+			if (_client[dst_fd].get_mode_a())
+				Rep().R301(client_fd, _client[client_fd].get_nick(), target_list[i], _client[dst_fd].get_away_message());
 			cout << ANSI::gray << "{send} => " << ANSI::purple << ret << endl;
 		}
 	}
