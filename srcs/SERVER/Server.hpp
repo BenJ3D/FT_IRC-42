@@ -13,13 +13,14 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
+# include <stdlib.h>
 # include <cstdlib>
 # include <cstdio>
-# include <stdlib.h>
+# include <ctime>
 # include <string>
 # include <cstring>
-# include <iostream>
 # include <sstream>
+# include <iostream>
 # include <sys/types.h>
 # include <sys/select.h>
 # include <sys/socket.h>
@@ -33,6 +34,7 @@
 # include "./Channel.hpp"
 # include "../CLIENT/Client.hpp"
 # include "../UTILS/NumericReplies.hpp"
+# include "../UTILS/tools.hpp"
 
 using namespace std;
 typedef void (Server::*CmdFunc)(std::vector<std::string>, int);
@@ -62,18 +64,28 @@ class Server
 		void notice(int const &fd, string msg);
 
 		/** COMMAND **/
-		void	nick(vector<string> args, int cl);
-		void	ping(vector<string> args, int cl);
-		void	user(vector<string> args, int cl);
-		void	privmsg(vector<string> args, int cl);
-		void	mode(vector<string> args, int fd_client);
-		void	kick(vector<string> args, int cl);
-		
-		void	join_channel(vector<string> args, int fd_client);
 
+
+		
+
+		void					nick(vector<string> args, int cl);
+		void					ping(vector<string> args, int cl);
+		void					user(vector<string> args, int cl);
+		void					kick(vector<string> args, int cl);
+		void					privmsg(vector<string> args, int cl);
+		void					mode(vector<string> args, int fd_client);
+		void					join(vector<string> args, int fd_client);
+		void					list(vector<string> args, int fd_client);
+		void					topic(vector<string> args, int fd_client);
+		void					part(vector<string> args, int fd_client);
+		void					quit(vector<string> args, int fd_client);
+
+		void					mode_channel(vector<string> args, int fd_client);
+		void					mode_client(vector<string> args, int fd_client);
+	
 
 	public:
-		Server(std::string port, std::string address);//adress doit devenir password
+		Server(std::string port, std::string address); //adress doit devenir password
 		~Server();
 
 		Server &operator=(Server const &rhs);
@@ -83,9 +95,13 @@ class Server
 		vector<string>	split_to_point(string str);
 		std::string		trim(std::string str);
 
+		bool					isExistChannelName(string const &channelName);
+		int						findClientFdWithNick(string const &nick);
+		bool					isClientOnChannel(int client_fd);
 };
 
 void confirm_to_client(const int &fd, string msg, map<int, Client>);
+void confirm_to_all_channel_client(int const &fd, string msg, map<int, Client> _client, Channel chan);
 std::ostream &operator<<(std::ostream &o, Server const &i);
 
 vector<string> split_cmd(const string command, char separator);

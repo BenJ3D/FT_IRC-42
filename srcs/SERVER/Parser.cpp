@@ -18,9 +18,14 @@ void	Server::init_parsing_map()
 	this->commands["PING"] = make_pair(0, &Server::ping);
 	this->commands["USER"] = make_pair(0, &Server::user);
 	this->commands["PRIVMSG"] = make_pair(1, &Server::privmsg);
-	this->commands["JOIN"] = make_pair(0, &Server::join_channel);
 	this->commands["MODE"] = make_pair(0, &Server::mode);
 	this->commands["KICK"] = make_pair(0, &Server::kick);
+	this->commands["JOIN"] = make_pair(0, &Server::join);
+	this->commands["LIST"] = make_pair(0, &Server::list);
+	this->commands["TOPIC"] = make_pair(0, &Server::topic);
+	this->commands["PART"] = make_pair(0, &Server::topic);
+	this->commands["QUIT"] = make_pair(0, &Server::topic);
+
 	cout << ANSI::yellow << "init PARSING OK" << endl;
 }
 

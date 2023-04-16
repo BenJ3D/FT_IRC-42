@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/11 04:30:09 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/16 23:51:35 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,83 @@ bool Client::get_is_auth() const {
 bool Client::get_pass_confirm() const {
 	return this->_pass_confirm;
 }
+
+void Client::set_mode_a() {
+	this->_is_away = true;
+}
+
+void Client::set_mode_i() {
+	this->_is_invisible = true;
+}
+
+void Client::set_mode_o() {
+	this->_is_operator = true;
+}
+
+// void Client::set_mode_O() {
+// 	this->_is_reciving_server_notices = true;
+// }
+
+void Client::set_mode_s() {
+	this->_is_reciving_server_notices = true;
+}
+
+void Client::set_mode_w() {
+	this->_is_wallops = true;
+}
+
+void Client::unset_mode_a() {
+	this->_is_away = false;
+}
+
+void Client::unset_mode_i() {
+	this->_is_invisible = false;
+}
+
+void Client::unset_mode_o() {
+	this->_is_operator = false;
+}
+
+// void Client::unset_mode_O() {
+// 	this->_is_reciving_server_notices = false;
+// }
+
+void Client::unset_mode_s() {
+	this->_is_reciving_server_notices = false;
+}
+
+void Client::unset_mode_w() {
+	this->_is_wallops = false;
+}
+
+bool Client::get_mode_a() const {
+	return this->_is_away;
+}
+
+bool Client::get_mode_i() const {
+	return this->_is_invisible;
+}
+
+bool Client::get_mode_o() const {
+	return this->_is_operator;
+}
+
+// bool Client::get_mode_O() const
+// {
+// 	return false;
+// }
+
+bool Client::get_mode_s() const {
+	return this->_is_reciving_server_notices;
+}
+
+bool Client::get_mode_w() const {
+	return this->_is_wallops;
+}
+
+
+
+
 
 //######################### SETTER #########################
 

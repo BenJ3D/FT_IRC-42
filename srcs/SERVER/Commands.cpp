@@ -46,7 +46,6 @@ void Server::nick(vector<string> args, int client_fd) {
 	_client[client_fd].set_nick(new_nick);
 }
 
-
 void Server::user(vector<string> args, int cl) {
 	cout << ANSI::cyan << cl << " --> " << args[0] << endl;
 

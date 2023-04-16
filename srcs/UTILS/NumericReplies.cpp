@@ -23,6 +23,39 @@ void Server::notice(int const &fd, string msg) {
 	cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 }
 
+void confirm_to_all_channel_client(int const &fd, string msg, map<int, Client> _client, Channel chan) {
+	
+	// map<int, Client>::iterator it = _client.begin();
+	map<int, std::pair<char, std::vector<std::string> > > list = chan.getList();
+	map<int, std::pair<char, std::vector<std::string> > >::const_iterator it2 = list.begin();
+	for(; it2 != list.end(); ++it2)
+	{
+			msg = ":" + _client[fd].get_nick() + "!" + _client[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
+			if (send(it2->first, msg.c_str(), msg.length(), 0) == -1)
+				cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+			
+			cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
+	}
+
+	// for (; it != _client.end(); it++)
+	// {
+	// 	if (it-> != fd)
+	// 	{
+	// 		msg = ":" + _client[fd].get_nick() + "!" + _client[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
+	// 		if (send(it->first, msg.c_str(), msg.length(), 0) == -1)
+	// 			cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+			
+	// 		cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
+	// 	}
+	// }
+
+	// msg = ":" + _client[fd].get_nick() + "!" + _client[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
+	// if (send(fd, msg.c_str(), msg.length(), 0) == -1)
+	// 	cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+	
+	// cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
+}
+
 void confirm_to_client(int const &fd, string msg, map<int, Client> _client) {
 	msg = ":" + _client[fd].get_nick() + "!" + _client[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
 	if (send(fd, msg.c_str(), msg.length(), 0) == -1)
@@ -309,6 +342,18 @@ void Rep::R319(int const &fd, const string &cNick, const string& queryNick, char
 }
 
 /**
+ * @brief RPL_LISTSTART
+ * @param fd 
+ * @param cNick 
+ */
+void Rep::R321(int const &fd, const string &cNick)
+{
+	output << "321 " << cNick << " Channel :Users Name";
+	send_to_client(output.str(), fd);
+	clearBuffer();
+}
+
+/**
  * @brief RPL_LIST
  * @param fd 
  * @param cNick 
@@ -322,6 +367,13 @@ void	Rep::R322(int const &fd, const string &cNick, int nuser, const string& topi
 	send_to_client(output.str(), fd);
 	clearBuffer();
 }
+/*
+:*.freenode.net 322 ben #shavik-usb 1 :[+nt] 
+:*.freenode.net 323 ben :End of channel list.
+
+*/
+
+
 
 /**
  * @brief RPL_LISTEND
@@ -372,7 +424,7 @@ void Rep::R331(int const &fd, const string &cNick, const string& chanName)
  */
 void Rep::R332(int const &fd, const string &cNick, const string& chanName, const string& topic)
 {
-	output << "332 " << cNick << " " << chanName << " :" << topic;
+	output << "332 " << cNick << " " << chanName << " " << topic;
 	send_to_client(output.str(), fd);
 	clearBuffer();
 }
@@ -387,7 +439,8 @@ void Rep::R332(int const &fd, const string &cNick, const string& chanName, const
  */
 void Rep::R333(int const &fd, const string &cNick, const string& chanName, const string& setterNick, time_t timestamp)
 {
-	output << "333 " << cNick << " " << chanName << " " << setterNick << " " << timestamp;
+	// msg = ":" + _client[fd].get_nick() + "!" + _client[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
+	output << "333 " << cNick << " " << chanName << " " << setterNick << " :" << timestamp;
 	send_to_client(output.str(), fd);
 	clearBuffer();
 }
@@ -489,6 +542,14 @@ void Rep::R391(int const &fd, const string &cNick, const string& servName)
 }
 
 /* Errors */
+
+/**
+ * @brief No such nick/channel
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param inputNick 
+ */
 void Rep::E401(int const &fd, const string &cNick, const string& inputNick)
 {
 	output << "401 " << cNick << " " << inputNick << " :No such nick/channel";
@@ -503,6 +564,13 @@ void Rep::E402(int const &fd, const string &cNick, const string& servName)
 	clearBuffer();
 }
 
+/**
+ * @brief No such channel
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param chanName 
+ */
 void Rep::E403(int const &fd, const string &cNick, const string& chanName)
 {
 	output << "403 " << cNick << " " << chanName << " :No such channel";
@@ -510,6 +578,13 @@ void Rep::E403(int const &fd, const string &cNick, const string& chanName)
 	clearBuffer();
 }
 
+/**
+ * @brief :Cannot send to channel
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param chanName 
+ */
 void Rep::E404(int const &fd, const string &cNick, const string& chanName)
 {
 	output << "404 " << cNick << " " << chanName << " :Cannot send to channel";
@@ -517,6 +592,13 @@ void Rep::E404(int const &fd, const string &cNick, const string& chanName)
 	clearBuffer();
 }
 
+/**
+ * @brief You have joined too many channels
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param chanName 
+ */
 void Rep::E405(int const &fd, const string &cNick, const string& chanName)
 {
 	output << "405 " << cNick << " " << chanName <<  " :You have joined too many channels";	
@@ -524,6 +606,12 @@ void Rep::E405(int const &fd, const string &cNick, const string& chanName)
 	clearBuffer();
 }
 
+/**
+ * @brief No origin specified
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E409(int const &fd, const string &cNick)
 {
 	output << "409 " << cNick << " :No origin specified";
@@ -531,6 +619,13 @@ void Rep::E409(int const &fd, const string &cNick)
 	clearBuffer();
 }
 
+/**
+ * @brief No recipient given
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param cmd 
+ */
 void Rep::E411(int const &fd, const string &cNick, const string& cmd)
 {
 	output << "411 " << cNick << " :No recipient given (" << cmd << ")";
@@ -538,6 +633,12 @@ void Rep::E411(int const &fd, const string &cNick, const string& cmd)
 	clearBuffer();
 }
 
+/**
+ * @brief No text to send
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E412(int const &fd, const string &cNick)
 {
 	output << "412 " << cNick << " :No text to send";
@@ -545,6 +646,13 @@ void Rep::E412(int const &fd, const string &cNick)
 	clearBuffer();
 }
 
+/**
+ * @brief Unknown command
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param cmd 
+ */
 void Rep::E421(int const &fd, const string &cNick, const string& cmd)
 {
 	output << "421 " << cNick << " " << cmd << " :Unknown command";
@@ -552,6 +660,12 @@ void Rep::E421(int const &fd, const string &cNick, const string& cmd)
 	clearBuffer();
 }
 
+/**
+ * @brief No MOTD in config File
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E422(int const &fd, const string &cNick)
 {
 	output << "422 " << cNick << " :No MOTD in config File";
@@ -559,6 +673,12 @@ void Rep::E422(int const &fd, const string &cNick)
 	clearBuffer();
 }
 
+/**
+ * @brief No nickname given
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E431(int const &fd, const string &cNick)
 {
 	output << "431 " << cNick << " :No nickname given";
@@ -566,6 +686,13 @@ void Rep::E431(int const &fd, const string &cNick)
 	clearBuffer();
 }
 
+/**
+ * @brief Erronous nickname
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param badNick 
+ */
 void Rep::E432(int const &fd, const string &cNick, const string& badNick)
 {
 	output << "432 " << cNick << " " << badNick << " :Erronous nickname";
@@ -594,6 +721,14 @@ void Rep::E442(int const &fd, const string &cNick, const string& chanName)
 	clearBuffer();
 }
 
+/**
+ * @brief Is already on channel
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param chanName 
+ * @param inputNick 
+ */
 void Rep::E443(int const &fd, const string &cNick, const string& chanName, const string& inputNick)
 {
 	output << "443 " << cNick << " " << inputNick << " " << chanName << " :Is already on channel";
@@ -601,6 +736,12 @@ void Rep::E443(int const &fd, const string &cNick, const string& chanName, const
 	clearBuffer();
 }
 
+/**
+ * @brief :You have not registered
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E451(int const &fd, const string &cNick)
 {
 	output << "451 " << cNick << " :You have not registered";
@@ -608,6 +749,13 @@ void Rep::E451(int const &fd, const string &cNick)
 	clearBuffer();
 }
 
+/**
+ * @brief Not enough parameters
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param cmd 
+ */
 void Rep::E461(int const &fd, const string &cNick, const string& cmd)
 {
 	output << "461 " << cNick << " " << cmd << " :Not enough parameters";
@@ -615,6 +763,12 @@ void Rep::E461(int const &fd, const string &cNick, const string& cmd)
 	clearBuffer();
 }
 
+/**
+ * @brief :Unauthorized command (already registered)
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E462(int const &fd, const string &cNick)
 {
 	output << "462 " << cNick << " :Unauthorized command (already registered)";
@@ -622,6 +776,12 @@ void Rep::E462(int const &fd, const string &cNick)
 	clearBuffer();
 }
 
+/**
+ * @brief :Password incorrect
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E464(int const &fd, const string &cNick)
 {
 	output << "464 " << cNick << " :Password incorrect";
@@ -629,6 +789,12 @@ void Rep::E464(int const &fd, const string &cNick)
 	clearBuffer();
 }
 
+/**
+ * @brief  USER :Your username is not valid
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E468(int const &fd, const string &cNick)
 {
 	output << "468 " << cNick << " USER :Your username is not valid";
@@ -636,6 +802,12 @@ void Rep::E468(int const &fd, const string &cNick)
 	clearBuffer();
 }
 
+/**
+ * @brief You are banned from this server
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E465(int const &fd, const string &cNick)
 {
 	output << "465 " << cNick << " :You are banned from this server";
@@ -643,6 +815,13 @@ void Rep::E465(int const &fd, const string &cNick)
 	clearBuffer();
 }
 
+/**
+ * @brief Cannot join channel
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param chanName 
+ */
 void Rep::E471(int const &fd, const string &cNick, const string& chanName)
 {
 	output << "471 " << cNick << " " << chanName << " :Cannot join channel (<<l)";
@@ -650,6 +829,13 @@ void Rep::E471(int const &fd, const string &cNick, const string& chanName)
 	clearBuffer();
 }
 
+/**
+ * @brief is unknown mode char to me
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param modeChar 
+ */
 void Rep::E472(int const &fd, const string &cNick, const char& modeChar)
 {
 	output << "472 " << cNick << " " << modeChar << " :is unknown mode char to me";
@@ -657,6 +843,13 @@ void Rep::E472(int const &fd, const string &cNick, const char& modeChar)
 	clearBuffer();
 }
 
+/**
+ * @brief :Cannot join channel (+i)
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param chanName 
+ */
 void Rep::E473(int const &fd, const string &cNick, const string& chanName)
 {
 	output << "473 " << cNick << " " << chanName << " :Cannot join channel (+i)";
@@ -664,6 +857,13 @@ void Rep::E473(int const &fd, const string &cNick, const string& chanName)
 	clearBuffer();
 }
 
+/**
+ * @brief Cannot join channel (+b)
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param chanName 
+ */
 void Rep::E474(int const &fd, const string &cNick, const string& chanName)
 {
 	output << "474 " << cNick << " " << chanName << " :Cannot join channel (+b)";
@@ -671,6 +871,13 @@ void Rep::E474(int const &fd, const string &cNick, const string& chanName)
 	clearBuffer();
 }
 
+/**
+ * @brief Cannot join channel (+k)
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param chanName 
+ */
 void Rep::E475(int const &fd, const string &cNick, const string& chanName)
 {
 	output << "475 " << cNick << " " << chanName << " :Cannot join channel (+k)";
@@ -678,13 +885,25 @@ void Rep::E475(int const &fd, const string &cNick, const string& chanName)
 	clearBuffer();
 }
 
-void Rep::E476(int const &fd, const string &chanName)
+/**
+ * @brief Bad Channel Mask
+ * 
+ * @param fd 
+ * @param cNick 
+ */
+void Rep::E476(int const &fd, const string &cNick)
 {
 	output << "476 " << chanName << " :Bad Channel Mask";
 	send_to_client(output.str(), fd);
 	clearBuffer();
 }
 
+/**
+ * @brief You're not an IRC operator
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E481(int const &fd, const string &cNick)
 {
 	output << "481 " << cNick << " :Permission Denied- You're not an IRC operator";
@@ -692,6 +911,13 @@ void Rep::E481(int const &fd, const string &cNick)
 	clearBuffer();
 }
 
+/**
+ * @brief You're not channel operator
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param chanName 
+ */
 void Rep::E482(int const &fd, const string &cNick, const string& chanName)
 {
 	output << "482 " << cNick << " " << chanName << " :You're not channel operator";
@@ -699,6 +925,13 @@ void Rep::E482(int const &fd, const string &cNick, const string& chanName)
 	clearBuffer();
 }
 
+
+/**
+ * @brief Unknown MODE flag
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E501(int const &fd, const string &cNick)
 {
 	output << "501 " << cNick << " :Unknown MODE flag";
@@ -706,6 +939,12 @@ void Rep::E501(int const &fd, const string &cNick)
 	clearBuffer();
 }
 
+/**
+ * @brief Can't view or change mode for other users
+ * 
+ * @param fd 
+ * @param cNick 
+ */
 void Rep::E502(int const &fd, const string &cNick)
 {
 	output << "502 " << cNick << " :Can't view or change mode for other users";
