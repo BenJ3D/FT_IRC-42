@@ -83,7 +83,7 @@ string get_cmd(string cmd)
 }
 
 void	Server::parser(string cmd, int client_fd) {
-	string command = get_cmd(cmd);
+	string command = trim(get_cmd(cmd));
 	vector<string> cmds = split_cmd(command, '\r');
 	if (cmds.size() == 0)
 	{

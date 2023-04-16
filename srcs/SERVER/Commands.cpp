@@ -175,6 +175,30 @@ void Server::mode(vector<string> args, int fd_client) {
 :irc.server.com 366 bducrocq  #test :End of /NAMES list.
 */
 
+vector<string> super_split(string cmd, int nb_arg)
+{
+	vector<string> res;
+	string tmp;
+	unsigned long int i = 0;
+	while (i < cmd.length() && nb_arg != 0)
+	{
+		if (cmd[i] == ' ' && nb_arg > 0)
+		{
+			res.push_back(tmp);
+			tmp = "";
+			nb_arg--;
+			while (cmd[i] == ' ')
+				i++;
+		}
+		else
+			tmp += cmd[i++];
+	}
+	if (i == cmd.length())
+		return res;
+	res.push_back(cmd.substr(i));
+	return res;
+}
+
 void Server::privmsg(vector<string> args, int client_fd) {
 	if (args[args.size() - 1][0] == '\n')
 		args[args.size() - 1] = args[args.size() - 1].substr(1);
@@ -182,18 +206,20 @@ void Server::privmsg(vector<string> args, int client_fd) {
 	for (size_t i = 0; i < args.size(); i++)
 		cerr << ANSI::red << "ARGS[" << i << "] = " << args[i] << ANSI::reset << endl;
 
-	if (args.size() < 4)
-		return Rep().E461(client_fd, _client[client_fd].get_nick(), args[0]);
-	
 	string msg = " ";
+	vector<string> res = super_split(args[args.size() - 1], 2); // <CMD> <TARGET> :<MSG>
+	cerr << res.size() << endl;
+	if (res.size() < 3)
+	{
+		if (res.size() == 2)
+			Rep().E412(client_fd, _client[client_fd].get_nick());
+		else
+			Rep().E411(client_fd, _client[client_fd].get_nick(), args[0]);
+	}
 
-	vector<string> res = split_to_point(args[args.size() - 1]);
-	if (res.size() < 2)
-		return Rep().E411(client_fd, _client[client_fd].get_nick(), args[0]);
-	res[0] = res[0].substr(args[0].length() + 1);
-	vector<string> target_list = split_cmd(res[0], ',');
+	vector<string> target_list = split_cmd(res[1], ',');
 	if (target_list.size() == 0)
-		target_list.push_back(args[1]);
+		target_list.push_back(res[1]);
 
 	for (unsigned long int i = 0; i < target_list.size(); i++)
 	{
@@ -201,27 +227,34 @@ void Server::privmsg(vector<string> args, int client_fd) {
 		if (target_list[i][0] == '#')
 		{
 			if (_channel.find(target_list[i]) == _channel.end())
-				return Rep().E403(client_fd, _client[client_fd].get_nick(), target_list[i]);
+			{
+				Rep().E403(client_fd, _client[client_fd].get_nick(), target_list[i]);
+				continue;
+			}
 			for (map<int, pair<char, vector<string> > >::const_iterator it = _channel[target_list[i]].getList().begin(); it != _channel[target_list[i]].getList().end(); it++)
 			{
+				cout << ANSI::red << "DEBUG TEST PRIVMSG = " << target_list[i] << ANSI::reset << endl;
 				if (it->first != client_fd)
 				{
-					string ret = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_username() + "@" + string(SERVER_NAME) + " PRIVMSG " + target_list[i] + ":" + res[1] + "\r\n";
+					string ret = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_username() + "@" + string(SERVER_NAME) + " PRIVMSG " + target_list[i] + " " + res[2] + "\r\n";
 					if (send((*it).first, ret.c_str(), ret.length(), 0) == -1)
 						cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+					cout << ANSI::gray << "{send} => " << ANSI::purple << ret << endl;
 				}
-				cout << ANSI::red << "DEBUG TEST PRIVMSG = " << args[args.size() - 1] << ANSI::reset << endl;
 			}
 		}
 		else
 		{
 			int dst_fd = Client().find_user_by_nick(target_list[i], _client);
 			if (dst_fd == -1)
-				return Rep().E401(client_fd, _client[client_fd].get_nick(), target_list[i]);
-			string ret = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_username() + "@" + string(SERVER_NAME) + " PRIVMSG " + target_list[i] + ":" + res[1] + "\r\n";
-			if (send(client_fd, ret.c_str(), ret.length(), 0) == -1 && \
-				send(dst_fd, ret.c_str(), ret.length(), 0) == -1)
+			{
+				Rep().E401(client_fd, _client[client_fd].get_nick(), target_list[i]);
+				continue;
+			}
+			string ret = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_username() + "@" + string(SERVER_NAME) + " PRIVMSG " + target_list[i] + " " + res[2] + "\r\n";
+			if (send(dst_fd, ret.c_str(), ret.length(), 0) == -1)
 				cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+			cout << ANSI::gray << "{send} => " << ANSI::purple << ret << endl;
 		}
 	}
 	
