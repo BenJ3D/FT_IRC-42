@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 02:46:29 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/17 01:03:40 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/17 01:21:46 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,19 +77,6 @@ void Server::mode_client(vector<string> args, int fd_client)
 				_client[fd_client].unset_mode_o();
 			}
 			break;
-		// case 'O': // local operator
-		// 	if (mod)
-		// 	{
-		// 		confirm_to_client(fd_client, "MODE :" + args[2], _client);
-		// 		_client[fd_client].set_mode_O();
-		// 	}
-		// 	else
-		// 	{
-
-		// 		confirm_to_client(fd_client, "MODE :" + args[2], _client);
-		// 		_client[fd_client].unset_mode_O();
-		// 	}
-		// 	break;
 		case 's': // server notices
 			if (mod)
 			{

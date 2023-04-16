@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/16 23:50:54 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/17 01:22:16 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,19 +61,18 @@ class Client
 		void			set_mode_a();
 		void			set_mode_i();
 		void			set_mode_o();
-		// void			set_mode_O();
 		void			set_mode_s();
 		void			set_mode_w();
+
 		void			unset_mode_a();
 		void			unset_mode_i();
 		void			unset_mode_o();
-		// void			unset_mode_O();
 		void			unset_mode_s();
 		void			unset_mode_w();
+
 		bool			get_mode_a() const;
 		bool			get_mode_i() const;
 		bool			get_mode_o() const;
-		// bool			get_mode_O() const;
 		bool			get_mode_s() const;
 		bool			get_mode_w() const;
 		
