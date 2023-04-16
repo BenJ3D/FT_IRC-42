@@ -176,50 +176,55 @@ void Server::mode(vector<string> args, int fd_client) {
 */
 
 void Server::privmsg(vector<string> args, int client_fd) {
+	if (args[args.size() - 1][0] == '\n')
+		args[args.size() - 1] = args[args.size() - 1].substr(1);
 	cout << ANSI::cyan << client_fd << " --> " << args[0] << endl;
 	for (size_t i = 0; i < args.size(); i++)
 		cerr << ANSI::red << "ARGS[" << i << "] = " << args[i] << ANSI::reset << endl;
 
-	if (args.size() < 3)
-		return Rep().E411(client_fd, _client[client_fd].get_nick(), args[0]);
+	if (args.size() < 4)
+		return Rep().E461(client_fd, _client[client_fd].get_nick(), args[0]);
 	
 	string msg = " ";
 
-	if (args[1][0] == '#')
-	{
-		for (size_t i = 2; i < args.size(); i++)
-			msg += args[i] + " ";
-		msg = msg.substr(0, msg.length() - 1);
-		if (_channel.find(args[1]) == _channel.end())
-			return Rep().E403(client_fd, _client[client_fd].get_nick(), args[1]);
-		for (map<int, pair<char, vector<string> > >::const_iterator it = _channel[args[1]].getList().begin(); it != _channel[args[1]].getList().end(); it++)
-		{
-			if (args[2][0] == ':')
-				args[2] = args[2].substr(1);
-			if (it->first != client_fd)
-			{
-				string ret = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_username() + "@" + string(SERVER_NAME) + " PRIVMSG " + args[1] + msg + "\r\n";
-				if (send((*it).first, ret.c_str(), ret.length(), 0) == -1)
-					cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
-				// confirm_to_client(it->first, "PRIVMSG " + args[1] + " :" + msg, _client);
-			}
-			
-			
+	vector<string> res = split_to_point(args[args.size() - 1]);
+	if (res.size() < 2)
+		return Rep().E411(client_fd, _client[client_fd].get_nick(), args[0]);
+	res[0] = res[0].substr(args[0].length() + 1);
+	vector<string> target_list = split_cmd(res[0], ',');
+	if (target_list.size() == 0)
+		target_list.push_back(args[1]);
 
-			cout << ANSI::red << "DEBUG TEST PRIVMSG = " << msg << ANSI::reset << endl;
+	for (unsigned long int i = 0; i < target_list.size(); i++)
+	{
+		target_list[i] = trim(target_list[i]);
+		if (target_list[i][0] == '#')
+		{
+			if (_channel.find(target_list[i]) == _channel.end())
+				return Rep().E403(client_fd, _client[client_fd].get_nick(), target_list[i]);
+			for (map<int, pair<char, vector<string> > >::const_iterator it = _channel[target_list[i]].getList().begin(); it != _channel[target_list[i]].getList().end(); it++)
+			{
+				if (it->first != client_fd)
+				{
+					string ret = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_username() + "@" + string(SERVER_NAME) + " PRIVMSG " + target_list[i] + ":" + res[1] + "\r\n";
+					if (send((*it).first, ret.c_str(), ret.length(), 0) == -1)
+						cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+				}
+				cout << ANSI::red << "DEBUG TEST PRIVMSG = " << args[args.size() - 1] << ANSI::reset << endl;
+			}
+		}
+		else
+		{
+			int dst_fd = Client().find_user_by_nick(target_list[i], _client);
+			if (dst_fd == -1)
+				return Rep().E401(client_fd, _client[client_fd].get_nick(), target_list[i]);
+			string ret = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_username() + "@" + string(SERVER_NAME) + " PRIVMSG " + target_list[i] + ":" + res[1] + "\r\n";
+			if (send(client_fd, ret.c_str(), ret.length(), 0) == -1 && \
+				send(dst_fd, ret.c_str(), ret.length(), 0) == -1)
+				cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
 		}
 	}
-	else
-	{
-		int dst_fd = Client().find_user_by_nick(args[1], _client);
-		if (dst_fd == -1)
-			return Rep().E401(client_fd, _client[client_fd].get_nick(), args[1]);
-		// string ret = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_username() + "@" + string(SERVER_NAME) + " PRIVMSG " + args[1] + msg + "\r\n";
-		// if (send(dst_fd, ret.c_str(), ret.length(), 0) == -1)
-		// 	cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
-		confirm_to_client(dst_fd, "PRIVMSG " + args[1] + " :" + args[2], _client);
-		confirm_to_client(client_fd, "PRIVMSG " + args[1] + " :" + args[2], _client);
-	}
+	
 }
 
 // send to everyone 

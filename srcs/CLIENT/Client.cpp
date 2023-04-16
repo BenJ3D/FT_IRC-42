@@ -96,6 +96,12 @@ bool Client::isOperatorInChannel(Channel &channel) const
 	return false;
 }
 
+/**
+ * @brief return the client id if the nick is found in the clients map, else return -1
+ * @param nick 
+ * @param clients 
+ * @return 
+ */
 int Client::find_user_by_nick(std::string nick, std::map<int, Client> &clients)
 {
 	for (std::map<int, Client>::iterator it = clients.begin(); it != clients.end(); it++)

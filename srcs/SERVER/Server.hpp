@@ -79,7 +79,9 @@ class Server
 		Server &operator=(Server const &rhs);
 
 		/* --- PARSING --- */
-		void parser(string command, int client_fd);
+		void			parser(string command, int client_fd);
+		vector<string>	split_to_point(string str);
+		std::string		trim(std::string str);
 
 };
 

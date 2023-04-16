@@ -14,14 +14,48 @@
 
 void	Server::init_parsing_map()
 {
-	this->commands["NICK"] = make_pair(1, &Server::nick);
-	this->commands["PING"] = make_pair(1, &Server::ping);
-	this->commands["USER"] = make_pair(1, &Server::user);
+	this->commands["NICK"] = make_pair(0, &Server::nick);
+	this->commands["PING"] = make_pair(0, &Server::ping);
+	this->commands["USER"] = make_pair(0, &Server::user);
 	this->commands["PRIVMSG"] = make_pair(1, &Server::privmsg);
-	this->commands["JOIN"] = make_pair(2, &Server::join_channel);
-	this->commands["MODE"] = make_pair(2, &Server::mode);
-	this->commands["KICK"] = make_pair(1, &Server::kick);
+	this->commands["JOIN"] = make_pair(0, &Server::join_channel);
+	this->commands["MODE"] = make_pair(0, &Server::mode);
+	this->commands["KICK"] = make_pair(0, &Server::kick);
 	cout << ANSI::yellow << "init PARSING OK" << endl;
+}
+
+std::string Server::trim(std::string str)
+{
+	for (size_t i = 0; i < str.length(); i++)
+	{
+		if (str[i] == ' ')
+			str.erase(i, 1);
+		else
+			break;
+	}
+	for (size_t i = str.length() - 1; i > 0; i--)
+	{
+		if (str[i] == ' ')
+			str.erase(i, 1);
+		else
+			break;
+	}
+	return str;
+}
+
+vector<string> Server::split_to_point(string str)
+{
+	vector<string> args;
+	for (size_t i = 1; i < str.length(); i++)
+	{
+		if (str[i] == ':' && str[i - 1] == ' ')
+		{
+			args.push_back(str.substr(0, i));
+			args.push_back(str.substr(i + 1, str.length() - i));
+			return args;
+		}
+	}
+	return args;
 }
 
 vector<string> split_cmd(const string command, char separator)
@@ -62,11 +96,8 @@ void	Server::parser(string cmd, int client_fd) {
 		vector<string> args = split_cmd(*it, ' ');
 		if (args.size() != 0 && commands.find(args[0]) != commands.end())
 		{
-			long unsigned int expected_args = commands[args[0]].first;
-			if (args.size() < expected_args) {
-				cout << "Not enough arguments for command " << args[0] << endl;
-				continue;
-			}
+			if (commands[args[0]].first == 1)
+				args.push_back(split_cmd(cmd, '\r')[distance(cmds.begin(), it)]);
 			(this->*commands[args[0]].second)(args, client_fd);
 		}
 		else
