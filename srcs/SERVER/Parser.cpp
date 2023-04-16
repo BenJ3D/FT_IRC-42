@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 20:39:56 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/14 18:54:31 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/17 01:17:07 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	Server::init_parsing_map()
 	this->commands["TOPIC"] = make_pair(0, &Server::topic);
 	this->commands["PART"] = make_pair(0, &Server::part);
 	this->commands["QUIT"] = make_pair(0, &Server::quit);
-
+	this->commands["OPER"] = make_pair(0, &Server::oper);
 	cout << ANSI::yellow << "init PARSING OK" << endl;
 }
 

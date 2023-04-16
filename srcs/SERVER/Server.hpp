@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/14 18:55:12 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/17 01:21:43 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 # include <netinet/in.h>
 # include <arpa/inet.h>
 # include <unistd.h>
+# include <fstream>
 # include <vector>
 # include <map>
 
@@ -54,6 +55,9 @@ class Server
 
 		string					_server_name;
 		string					_pass_word;
+		string					_oper_passw;
+		string					_oper_user;
+		string					_motd;
 		fd_set					_read_fds;
 		int						_max_fd;
 		vector<int>				_client_fds;
@@ -80,10 +84,12 @@ class Server
 		void					topic(vector<string> args, int fd_client);
 		void					part(vector<string> args, int fd_client);
 		void					quit(vector<string> args, int fd_client);
+		void					oper(vector<string> args, int fd_client);
 
 		void					mode_channel(vector<string> args, int fd_client);
 		void					mode_client(vector<string> args, int fd_client);
 	
+		void	config();
 
 	public:
 		Server(std::string port, std::string address); //adress doit devenir password

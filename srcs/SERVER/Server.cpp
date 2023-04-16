@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/14 01:13:46 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/17 01:23:44 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ Server::Server(string port, string address)
 		
 	(void)address;
 	init_parsing_map();
+	config();
 	openSocket(atoi(port.c_str())); // fonction TEST pour le moment
 }
 
@@ -229,6 +230,70 @@ bool Server::isExistChannelName(string const &channelName)
 	if (_channel.find(channelName) != _channel.end())
 		return true;
 	return false;
+}
+
+void	Server::config(){
+	std::ifstream conf(".config", ios_base::in);
+	string line;
+	int pwd = 0;
+	int motd = 0;
+	int usr = 0;
+	_motd = string();
+	_oper_passw = string();
+
+	while(getline(conf,line)){
+		if (line.find("PASSWORD_OPER:") == 0){
+			if (pwd == 0){
+				_oper_passw = line.substr(14);
+				pwd = 1;
+			}
+			else if (pwd == 1){
+				pwd = 2;
+				cout << ANSI::back_red << ANSI::black << "Error:" << ANSI::r << ANSI::red << " Multiple definition of PASSWORD_OPER (set password to empty)" << endl;
+				_oper_passw = string();
+			}
+		}
+		else if (line.find("USERNAME_OPER:") == 0){
+			if (usr == 0){
+				_oper_user = line.substr(14);
+				usr = 1;
+			}
+			else if (usr == 1){
+				usr = 2;
+				cout << ANSI::back_red << ANSI::black << "Error:" << ANSI::r << ANSI::red << " Multiple definition of MOTD (set motd to empty)" << endl;
+				_oper_user = string();
+			}
+		}
+		else if (line.find("MOTD:") == 0){
+			if (motd == 0){
+				_motd = line.substr(5);
+				motd = 1;
+			}
+			else if (motd == 1){
+				motd = 2;
+				cout << ANSI::back_red << ANSI::black << "Error:" << ANSI::r << ANSI::red << " Multiple definition of MOTD (set motd to empty)" << endl;
+				_motd = string();
+			}
+		}
+	}
+	string passw_set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJklMNOPQRSTUVWXYZ0123456789");
+	for (size_t i = 0; i < _oper_passw.size(); i++){
+		if (passw_set.find(_oper_passw[i]) == string::npos){
+			cout << ANSI::back_red << ANSI::black << "Error:" << ANSI::r << ANSI::red << " Invalid char of PASSWORD_OPER (set motd to empty)" << endl;
+			_oper_passw = string();
+		}
+	}
+	for (size_t i = 0; i < _oper_user.size(); i++){
+		if (passw_set.find(_oper_user[i]) == string::npos){
+			cout << ANSI::back_red << ANSI::black << "Error:" << ANSI::r << ANSI::red << " Invalid char of PASSWORD_OPER (set motd to empty)" << endl;
+			_oper_user = string();
+		}
+	}
+	cout << ANSI::green << "_operPassWord - = '" << _oper_passw << "'" << endl;
+	cout << ANSI::green << "_operUserName - = '" << _oper_user << "'" << endl;
+	cout << ANSI::green << "_motd - - - - - = '" << _motd << "'" << endl;
+
+
 }
 
 /* ************************************************************************** */

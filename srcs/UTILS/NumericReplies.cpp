@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 02:58:43 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/14 11:17:19 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/17 01:47:43 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -925,6 +925,19 @@ void Rep::E482(int const &fd, const string &cNick, const string& chanName)
 	clearBuffer();
 }
 
+/**
+ * @brief There is no Operator allowed
+ * 
+ * @param fd 
+ * @param cNick 
+ * @param chanName 
+ */
+void Rep::E491(int const &fd, const string &cNick)
+{
+	output << "491 " << cNick  << " :No O-lines for your host";
+	send_to_client(output.str(), fd);
+	clearBuffer();
+}
 
 /**
  * @brief Unknown MODE flag
