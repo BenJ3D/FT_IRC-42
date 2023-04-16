@@ -73,6 +73,7 @@ class Server
 		void					user(vector<string> args, int cl);
 		void					kick(vector<string> args, int cl);
 		void					privmsg(vector<string> args, int cl);
+		void					cmd_notice(vector<string> args, int client_fd);
 		void					mode(vector<string> args, int fd_client);
 		void					join(vector<string> args, int fd_client);
 		void					list(vector<string> args, int fd_client);
