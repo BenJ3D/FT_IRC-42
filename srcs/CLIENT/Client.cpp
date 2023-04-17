@@ -16,19 +16,17 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Client::Client()
-{
+Client::Client() : _pass_confirm(false) {
 }
 
 Client::Client(int fd) : _id(fd), _nick("*"), _is_auth(false), _pass_confirm(false), _is_away(false), _away_message("is away")
 {
-	
 }
 
-Client::Client( const Client & src )
-{
+Client::Client( const Client & src ){
 	this->_id = src._id;
 	this->_nick = src._nick;
+	this->_pass_confirm = src._pass_confirm;
 	this->_is_auth = src._is_auth;
 }
 
@@ -37,8 +35,7 @@ Client::Client( const Client & src )
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
 
-Client::~Client()
-{
+Client::~Client() {
 }
 
 
@@ -46,8 +43,7 @@ Client::~Client()
 ** --------------------------------- OVERLOAD ---------------------------------
 */
 
-Client &				Client::operator=( Client const & rhs )
-{
+Client &				Client::operator=( Client const & rhs ) {
 	if ( this != &rhs )
 	{
 		this->_id = rhs._id;
@@ -57,12 +53,11 @@ Client &				Client::operator=( Client const & rhs )
 	return *this;
 }
 
-std::ostream &			operator<<( std::ostream & o, Client const & i )
-{
+std::ostream &			operator<<( std::ostream & o, Client const & i ) {
 	o << "FD = " << i.get_id() << 
 	" | NICK = " << i.get_nick() << 
 	" | FIST_CONNECT = " << i.get_is_auth() << 
-	" | PASS_CONFIRMED = " << i.get_pass_confirm() << std::endl;
+	" | PASS = " << i.get_pass() << std::endl;
 	return o;
 }
 
@@ -134,12 +129,16 @@ std::string Client::get_realname() const {
 	return this->_realname;
 }
 
-bool Client::get_is_auth() const {
-	return this->_is_auth;
+/**
+ * @brief set the client password verified (PASS command)
+ * @param connect 
+ */
+bool Client::get_pass() const {
+	return this->_pass_confirm;
 }
 
-bool Client::get_pass_confirm() const {
-	return this->_pass_confirm;
+bool Client::get_is_auth() const {
+	return this->_is_auth;
 }
 
 string Client::get_away_message() const {
@@ -232,6 +231,14 @@ void Client::set_mode_w() {
 void Client::set_nick(std::string nick) {
 	this->_nick = nick;
 }
+
+void Client::comfirm_password() {
+	this->_pass_confirm = true;
+}
+
+/*
+** --------------------------------- ACCESSOR ---------------------------------
+*/
 
 /**
  * @brief set the username of the client

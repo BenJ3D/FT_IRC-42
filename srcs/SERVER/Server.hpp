@@ -54,7 +54,7 @@ class Server
 		void	init_parsing_map();
 
 		string					_server_name;
-		string					_pass_word;
+		const string		_pass_word;
 		string					_oper_passw;
 		string					_oper_user;
 		string					_motd;
@@ -69,9 +69,7 @@ class Server
 
 		/** COMMAND **/
 
-
-		
-
+    void	        pass(vector<string> args, int cl);
 		void					nick(vector<string> args, int cl);
 		void					ping(vector<string> args, int cl);
 		void					user(vector<string> args, int cl);
@@ -93,7 +91,7 @@ class Server
 		void	config();
 
 	public:
-		Server(std::string port, std::string address); //adress doit devenir password
+		Server(std::string port, std::string password);
 		~Server();
 
 		Server &operator=(Server const &rhs);

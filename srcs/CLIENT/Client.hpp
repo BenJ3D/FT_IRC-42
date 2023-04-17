@@ -42,15 +42,15 @@ class Client
 		Client( Client const & src );
 		~Client();
 
+
 		int				get_id() const;
 		std::string		get_nick() const;
 		std::string		get_username() const;
 		std::string		get_realname() const;
 		bool			get_is_auth() const;
-		bool			get_pass_confirm() const;
 		std::string		get_away_message() const;
 		int				find_user_by_nick(std::string nick, std::map<int, Client> & clients);
-
+		void      comfirm_password();
 		void			set_nick(std::string nick);
 		void			set_username(std::string nick);
 		void			set_realname(std::string nick);
@@ -79,8 +79,6 @@ class Client
 		bool			get_mode_w() const;
 		
 		
-
-
 
 
 		Client &		operator=( Client const & rhs );

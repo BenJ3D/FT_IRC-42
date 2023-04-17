@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 20:39:56 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/17 01:17:07 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/11 15:50:18 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	Server::init_parsing_map()
 	this->commands["PING"] = make_pair(0, &Server::ping);
 	this->commands["USER"] = make_pair(0, &Server::user);
 	this->commands["PRIVMSG"] = make_pair(1, &Server::privmsg);
+	this->commands["PASS"] = make_pair(1, &Server::pass);
 	this->commands["NOTICE"] = make_pair(1, &Server::cmd_notice);
 	this->commands["MODE"] = make_pair(0, &Server::mode);
 	this->commands["KICK"] = make_pair(0, &Server::kick);
@@ -103,9 +104,11 @@ void	Server::parser(string cmd, int client_fd) {
 		vector<string> args = split_cmd(*it, ' ');
 		if (args.size() != 0 && commands.find(args[0]) != commands.end())
 		{
-			if (commands[args[0]].first == 1)
-				args.push_back(split_cmd(cmd, '\r')[distance(cmds.begin(), it)]);
-			(this->*commands[args[0]].second)(args, client_fd);
+			if (_client[client_fd].get_pass() || args[0] == "PASS"){ // Check if user gave password
+	  		if (commands[args[0]].first == 1)
+				  args.push_back(split_cmd(cmd, '\r')[distance(cmds.begin(), it)]);
+			  (this->*commands[args[0]].second)(args, client_fd);
+      }
 		}
 		else
 		{

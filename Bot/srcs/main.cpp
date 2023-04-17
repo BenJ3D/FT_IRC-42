@@ -5,27 +5,45 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/22 01:27:56 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/08 06:38:37 by amiguez          ###   ########.fr       */
+/*   Created: 2023/04/09 06:32:57 by amiguez           #+#    #+#             */
+/*   Updated: 2023/04/11 18:50:06 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "SERVER/Server.hpp"
+#include "../includes/Bot.hpp"
 
-int	main( int ac, char **av)
-{
-	(void)ac;
-	cout << ANSI::purple << "₩ΞŁϾØΜΞ ŦØ ƑṲϾӃ_ḮŘϾ" << ANSI::white << endl;
+int main(int ac, char **av){
 
-	//*******provisoire, pour DEBUG****************/
-	if (ac == 3)								/**/
-		Server irc(av[1], av[2]);				/**/
-	else if (ac == 2)							/**/
-		Server irc(av[1], "password");			/**/
-	else										/**/
-		Server irc("6667", "password");			/**/
-	//*********************************************/
-	//*****passage sur branch server***************/
+	Bot Bob;
 
-	return 0;
+	char **po = av;
+	try{
+		switch (ac)
+		{
+		case 1:{
+			throw(runtime_error(USAGE));
+			break;
+			}
+		case 2:{
+			Bob.init();
+			break;
+			}
+		case 3:{
+			Bob.init(string (av[2]));
+			break;
+			}
+		case 4:{
+			Bob.init(string (av[2]), string (po[3]));
+			break;
+			}
+		default :{
+			throw(runtime_error(USAGE));
+			}
+		}
+		Bob.auth(av[1]);
+	}
+	catch(exception &e){cout << ANSI::red << e.what() << endl; return (1);}
+
+	Bob.run();
+
 }

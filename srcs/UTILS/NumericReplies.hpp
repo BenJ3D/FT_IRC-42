@@ -113,8 +113,8 @@ class Rep
 		void E443(NR_ARG, const std::string& chanName, const std::string& inputNick);
 
 		void E451(NR_ARG);
-		void E461(NR_ARG, const std::string& cmd);
-		void E462(NR_ARG);
+		void E461(const int &fd, const std::string& cmd);
+		void E462(const int &fd);
 		void E464(NR_ARG);
 		void E465(NR_ARG);
 

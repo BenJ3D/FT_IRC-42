@@ -50,9 +50,9 @@ void Server::user(vector<string> args, int cl) {
 	cout << ANSI::cyan << cl << " --> " << args[0] << endl;
 
 	if (args.size() < 5)
-		return Rep().E461(cl, _client[cl].get_nick(), args[0]);
+		return Rep().E461(cl, args[0]);
 	if (_client[cl].get_username() != "")
-		return Rep().E462(cl, _client[cl].get_nick());
+		return Rep().E462(cl);
 	string check("[]\\`_^{|}$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-");
 	for (size_t i = 1; i < args[1].length(); i++)
 		if (check.find(args[1][i]) == string::npos)
