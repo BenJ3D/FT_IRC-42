@@ -20,7 +20,7 @@ Client::Client()
 {
 }
 
-Client::Client(int fd) : _id(fd), _nick("*"), _is_auth(false), _pass_confirm(false)
+Client::Client(int fd) : _id(fd), _nick("*"), _is_auth(false), _pass_confirm(false), _is_away(false), _away_message("is away")
 {
 	
 }

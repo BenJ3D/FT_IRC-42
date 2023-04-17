@@ -21,6 +21,7 @@ class Channel
 
 		void										addClient(int fd_client, char mode);
 		void										removeClient(int fd_client);
+		void 										ClientPart(int fd_client, map<int, Client> & _client, string const & msg);
 
 		void										addOperator(int fd_client);
 		void										removeOperator(int fd_client);

@@ -64,12 +64,17 @@ string	Channel::list_all_nick(map<int, Client> & _client)
 	return list;
 }
 
+/**
+ * @brief get the mode of a client in the channel, if the client is not in the channel, return '0'
+ * @param fd_client 
+ * @return 
+ */
 char	Channel::getClientMode(int fd_client)
 {
 	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
 		if ((*it).first == fd_client)
 			return (*it).second.first;
-	return ' ';
+	return '0';
 }
 
 vector<int>			Channel::getOperators()
@@ -100,6 +105,18 @@ void					Channel::removeClient(int fd_client)
 			break;
 		}
 	}
+}
+
+void	Channel::ClientPart(int fd_client, map<int, Client> & _client, string const & msg)
+{
+	string ret = ":" + _client[fd_client].get_nick() + "!" + _client[fd_client].get_username() + "@" + string(SERVER_NAME) + " PART " + _name + " " + msg + "\r\n";
+	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
+	{
+		if (send((*it).first, ret.c_str(), ret.length(), 0) == -1)
+			cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+		cout << ANSI::gray << "{send} => " << ANSI::purple << ret << endl;
+	}
+	this->_list.erase(fd_client);
 }
 
 void Channel::removeOperator(int fd_client)
