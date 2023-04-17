@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ANSI.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 01:04:31 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/03/29 01:24:27 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/17 19:43:03 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,11 @@ namespace ANSI
 	static const std::string	green(		"\033[32m");
 	static const std::string	yellow(		"\033[33m");
 	static const std::string	blue(		"\033[34m");
-	static const std::string	purple(	"\033[35m");
+	static const std::string	purple(		"\033[35m");
 	static const std::string	cyan(		"\033[36m");
 	static const std::string	white(		"\033[37m");
 	static const std::string	gray(		"\033[90m");
+	static const std::string	pink(		"\033[91m");
 
 	static const std::string	back_black(	"\033[40m");
 	static const std::string	back_red(	"\033[41m");

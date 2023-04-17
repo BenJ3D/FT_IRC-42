@@ -76,7 +76,8 @@ void Server::user(vector<string> args, int cl) {
 		this->_client[cl].set_realname(realname);
 		Rep().R001(cl, _client[cl].get_nick());
 		Rep().R002(cl, _client[cl].get_nick(), string(SERVER_NAME), string(SERVER_VERSION));
-		return Rep().R003(cl, _client[cl].get_nick(), string(SERVER_DATE));
+		Rep().R003(cl, _client[cl].get_nick(), string(SERVER_DATE));
+		return motd_auth(cl);
 	}
 	this->_client[cl].set_username(username);
 	this->_client[cl].set_realname(realname);
