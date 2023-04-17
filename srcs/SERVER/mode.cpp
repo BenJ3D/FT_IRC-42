@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 02:46:29 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/17 01:21:46 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/17 05:49:46 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,91 +22,106 @@ void Server::mode_client(vector<string> args, int fd_client)
 	bool mod = false;
 	if(args[2][0] == '+')
 		mod = true;
-	args[2] = args[2].substr(1);
-	
-	
+	set<char> newMode = _client[fd_client].get_modes();
 	for(string::iterator it = args[2].begin(); it != args[2].end(); it++)
 	{
-		cerr << ANSI::red << "mod =" + mod + *it << endl
-			 << ANSI::reset;
+		
+		// cerr << ANSI::red << "mod =" + mod + *it << endl << ANSI::reset;
 		switch (*it)
 		{
+		case '+': // away
+			mod = true;
+			break;
+		case '-': // away
+			mod = false;
+			break;
 		case 'a': // away
 			if (mod)
 			{
-				confirm_to_client(fd_client, "MODE " + _client[fd_client].get_nick() + " :+" + args[2], _client);
+				newMode.insert('a');
 				_client[fd_client].set_mode_a();
-				cerr << ANSI::red << "MODE : +" + args[2] << endl
-					 << ANSI::reset;
 			}
 			else
 			{
-				confirm_to_client(fd_client, "MODE " + _client[fd_client].get_nick() + " :-" + args[2], _client);
+				newMode.erase('a');
 				_client[fd_client].unset_mode_a();
-				cerr << ANSI::red << "MODE :" + mod + args[2] << endl
-					 << ANSI::reset;
 			}
 			break;
 		case 'i': // invisible
 			if (mod)
 			{
-				confirm_to_client(fd_client, "MODE " + _client[fd_client].get_nick() + " :+" + args[2], _client);
+				newMode.insert('i');
 				_client[fd_client].set_mode_i();
-				cerr << ANSI::red << "MODE :" + mod + args[2] << endl
-					 << ANSI::reset;
 			}
 			else
 			{
-
-				confirm_to_client(fd_client, "MODE " + _client[fd_client].get_nick() + " :-" + args[2], _client);
+				newMode.erase('i');
 				_client[fd_client].unset_mode_i();
-				cerr << ANSI::red << "MODE :" + mod + args[2] << endl
-					 << ANSI::reset;
 			}
 			break;
 		case 'o': // operator
 			if (mod)
 			{
-				confirm_to_client(fd_client, "MODE " + _client[fd_client].get_nick() + " :+" + args[2], _client);
-				_client[fd_client].set_mode_o();
+
 			}
 			else
 			{
-
-				confirm_to_client(fd_client, "MODE " + _client[fd_client].get_nick() + " :-" + args[2], _client);
+				
+				newMode.erase('o');
 				_client[fd_client].unset_mode_o();
 			}
 			break;
 		case 's': // server notices
 			if (mod)
 			{
-				confirm_to_client(fd_client, "MODE " + _client[fd_client].get_nick() + " :+" + args[2], _client);
+				newMode.insert('s');
 				_client[fd_client].set_mode_s();
 			}
 			else
 			{
-
-				confirm_to_client(fd_client, "MODE " + _client[fd_client].get_nick() + " :-" + args[2], _client);
+				newMode.erase('s');
 				_client[fd_client].unset_mode_s();
+			}
+			break;
+		case 'w': // wallops
+			if (mod)
+			{
+				newMode.insert('w');
+				_client[fd_client].set_mode_w();
+			}
+			else
+			{
+				newMode.erase('w');
+				_client[fd_client].unset_mode_w();
 			}
 			break;
 		default: // error
 			Rep().E472(fd_client, _client[fd_client].get_nick(), *it);
 			break;
 		}
+		
 	}
+	Rep().R221(fd_client, _client[fd_client].get_nick(), _client[fd_client].get_modes_str());
 }
 
 void Server::mode_channel(vector<string> args, int fd_client)
 {
 	(void)args;
 	(void)fd_client;
-
 }
 
-void Server::mode(vector<string> args, int fd_client)
+void Server::mode(vector<string> args, int fd_client) 
 {
 	cout << ANSI::cyan << fd_client << " --> " << args[0] << endl;
+	if (args.size() == 2)
+	{
+		if (args[1][0] == '#')
+		{
+			if (!isExistChannelName(args[1]))
+				return Rep().E403(fd_client, _client[fd_client].get_nick(), args[1]);
+			// Rep().R324(fd_client, _client[fd_client].get_nick(), args[1], _channel[args[1]].get_modes_str(), ""); //TODO:
+		}
+	}
 
 	if (args.size() < 3)
 		return Rep().E461(fd_client, _client[fd_client].get_nick(), args[0]);
@@ -122,7 +137,6 @@ void Server::mode(vector<string> args, int fd_client)
 			return Rep().E502(fd_client, _client[fd_client].get_nick());
 		mode_client(args, fd_client);
 	}
-	
 }
 
 // void Server::mode(vector<string> args, int fd_client) {
@@ -238,6 +252,27 @@ L'utilisateur est marqué pour recevoir des avis de serveur. Les avis de serveur
 Ces modes utilisateur peuvent être activés ou désactivés en utilisant la commande /mode suivie 
 du nom d'utilisateur, du signe + ou - pour ajouter ou supprimer le mode, et du mode correspondant 
 (par exemple, /mode JohnDoe +i pour marquer l'utilisateur JohnDoe comme invisible).
+ * 
+ * 
+ * Voici les numéros de réponses numériques IRC correspondant aux messages suivants :
+
+ERR_NEEDMOREPARAMS : 461
+ERR_USERSDONTMATCH : 502
+ERR_UMODEUNKNOWNFLAG : 501
+RPL_UMODEIS : 221
+Ces numéros de réponse sont également définis dans la spécification IRC RFC 1459. Voici une brève 
+explication de ces messages :
+
+ERR_NEEDMOREPARAMS (461) : ce message est renvoyé par le serveur IRC lorsqu'une commande est 
+reçue avec un nombre insuffisant de paramètres.
+ERR_USERSDONTMATCH (502) : ce message est renvoyé par le serveur IRC lorsqu'une tentative de 
+changement de mode utilisateur échoue car l'utilisateur spécifié n'est pas le même que celui 
+qui a émis la commande.
+ERR_UMODEUNKNOWNFLAG (501) : ce message est renvoyé par le serveur IRC lorsqu'une commande pour
+ modifier le mode utilisateur est reçue avec un drapeau inconnu.
+RPL_UMODEIS (221) : ce message est renvoyé par le serveur IRC en réponse à la commande MODE lorsque 
+l'utilisateur demande ses propres modes.
+ * 
  * 
  * 
  * 

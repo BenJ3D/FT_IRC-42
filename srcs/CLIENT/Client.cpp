@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/16 23:51:35 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/17 05:35:20 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,15 @@ Client::Client()
 {
 }
 
-Client::Client(int fd) : _id(fd), _nick("*"), _is_auth(false), _pass_confirm(false)
+Client::Client(int fd) : _id(fd), _nick("*"), _is_auth(false), _pass_confirm(false), _away_message("is away")
 {
 	
 }
 
 Client::Client( const Client & src )
 {
-	this->_id = src._id;
-	this->_nick = src._nick;
-	this->_is_auth = src._is_auth;
+	*this = src;
 }
-
 
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
@@ -118,6 +115,22 @@ int Client::find_user_by_nick(std::string nick, std::map<int, Client> &clients)
 
 //######################### GETTER #########################
 
+set<char> Client::get_modes() const {
+	return this->_modes;
+}
+
+string			Client::get_modes_str() const
+{
+	std::string modesStr;
+
+	for (std::set<char>::const_iterator it = _modes.begin(); it != _modes.end(); ++it)
+	{
+		modesStr += *it;
+	}
+
+	return modesStr;
+}
+
 int Client::get_id() const {
 	return this->_id;
 }
@@ -140,54 +153,6 @@ bool Client::get_is_auth() const {
 
 bool Client::get_pass_confirm() const {
 	return this->_pass_confirm;
-}
-
-void Client::set_mode_a() {
-	this->_is_away = true;
-}
-
-void Client::set_mode_i() {
-	this->_is_invisible = true;
-}
-
-void Client::set_mode_o() {
-	this->_is_operator = true;
-}
-
-// void Client::set_mode_O() {
-// 	this->_is_reciving_server_notices = true;
-// }
-
-void Client::set_mode_s() {
-	this->_is_reciving_server_notices = true;
-}
-
-void Client::set_mode_w() {
-	this->_is_wallops = true;
-}
-
-void Client::unset_mode_a() {
-	this->_is_away = false;
-}
-
-void Client::unset_mode_i() {
-	this->_is_invisible = false;
-}
-
-void Client::unset_mode_o() {
-	this->_is_operator = false;
-}
-
-// void Client::unset_mode_O() {
-// 	this->_is_reciving_server_notices = false;
-// }
-
-void Client::unset_mode_s() {
-	this->_is_reciving_server_notices = false;
-}
-
-void Client::unset_mode_w() {
-	this->_is_wallops = false;
 }
 
 bool Client::get_mode_a() const {
@@ -217,9 +182,39 @@ bool Client::get_mode_w() const {
 
 
 
-
-
 //######################### SETTER #########################
+
+/**
+ * @brief set the mode of the client
+ * @param mode 
+ */
+void Client::set_modes_str(string const &mode)
+{
+	bool addMode = true;
+
+	for (size_t i = 0; i < mode.length(); ++i)
+	{
+		char c = mode[i];
+
+		if (c == '+')
+			addMode = true;
+		else if (c == '-')
+			addMode = false;
+		else
+		{
+			if (addMode)
+				_modes.insert(c);
+			else
+				_modes.erase(c);
+		}
+	}
+}
+
+void	Client::set_modes(set<char> newMode)
+{
+	_modes.clear();
+	_modes = newMode;
+}
 
 /**
  * @brief set the nick of the client
@@ -244,5 +239,76 @@ void Client::set_username(std::string username) {
 void Client::set_realname(std::string realname) {
 	this->_realname = realname;
 }
+
+
+void Client::set_mode_a() {
+	_modes.insert('a');
+	this->_is_away = true;
+}
+
+void Client::set_mode_i() {
+	_modes.insert('i');
+	this->_is_invisible = true;
+}
+
+void Client::set_mode_o() {
+	_modes.insert('o');
+	this->_is_operator = true;
+}
+
+// void Client::set_mode_O() {
+	// _modes.insert('O');
+// 	this->_is_reciving_server_notices = true;
+// }
+
+void Client::set_mode_s() {
+	_modes.insert('s');
+	this->_is_reciving_server_notices = true;
+}
+
+void Client::set_mode_w() {
+	_modes.insert('w');
+	this->_is_wallops = true;
+}
+
+
+//######################### UNSETTER #########################
+
+// void Client::unset_mode(string const &mode)
+// {
+// 	this->_modes = mode;
+// }
+
+
+void Client::unset_mode_a() {
+	this->_is_away = false;
+	_modes.erase('a');
+}
+
+void Client::unset_mode_i() {
+	_modes.erase('i');
+	this->_is_invisible = false;
+}
+
+void Client::unset_mode_o() {
+	_modes.erase('o');
+	this->_is_operator = false;
+}
+
+// void Client::unset_mode_O() {
+	// _modes.erase('O');
+// 	this->_is_reciving_server_notices = false;
+// }
+
+void Client::unset_mode_s() {
+	_modes.erase('s');
+	this->_is_reciving_server_notices = false;
+}
+
+void Client::unset_mode_w() {
+	_modes.erase('w');
+	this->_is_wallops = false;
+}
+
 
 /* ************************************************************************** */
