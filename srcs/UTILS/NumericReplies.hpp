@@ -54,7 +54,7 @@ class Rep
 		void R255(NR_ARG, const std::string& infostr);
 		void R266(NR_ARG, int users);
 
-		void R301(int const &fd, const string &cNick, const string& queryNick, const string& awayMessage);
+		void R301(int const &fd, const std::string &cNick, const std::string& queryNick, const std::string& awayMessage);
 		void R311(NR_ARG, const std::string& queryNick, const std::string& queryName, const std::string& queryRealName);
 		void R313(NR_ARG, const std::string& queryNick);
 		void R315(NR_ARG, const std::string& name);
@@ -99,6 +99,7 @@ class Rep
 		void E411(NR_ARG, const std::string& cmd);
 		void E412(NR_ARG);
 
+		void E416(NR_ARG, const std::string& cmd);
 		void E421(NR_ARG, const std::string& cmd);
 
 		void E422(NR_ARG);

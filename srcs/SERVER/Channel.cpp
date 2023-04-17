@@ -53,6 +53,25 @@ map<int, pair<char, vector<string> > >	&	Channel::getList()
 	return _list;
 }
 
+string	Channel::list_all_nick(map<int, Client> & _client)
+{
+	string list;
+	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
+	{
+		string prefix = ((*it).second.first == '@') ? "@" : ((*it).second.first == '+') ? "+" : "";
+		list += prefix + _client[(*it).first].get_nick() + " ";
+	}
+	return list;
+}
+
+char	Channel::getClientMode(int fd_client)
+{
+	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
+		if ((*it).first == fd_client)
+			return (*it).second.first;
+	return ' ';
+}
+
 vector<int>			Channel::getOperators()
 {
 	vector<int>		operator_list;

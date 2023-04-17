@@ -661,6 +661,20 @@ void Rep::E412(int const &fd, const string &cNick)
 }
 
 /**
+ * @brief ERR_TOOMANYMATCHES
+ * 
+ * @param fd
+ * @param cNick
+ * @param cmd
+ */
+void Rep::E416(int const &fd, const string &cNick, const string& cmd)
+{
+	output << "416 " << cNick << " " << cmd << " :Too many matches";
+	send_to_client(output.str(), fd);
+	clearBuffer();
+}
+
+/**
  * @brief Unknown command
  * 
  * @param fd 

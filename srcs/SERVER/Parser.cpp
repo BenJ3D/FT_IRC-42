@@ -27,6 +27,7 @@ void	Server::init_parsing_map()
 	this->commands["PART"] = make_pair(0, &Server::part);
 	this->commands["QUIT"] = make_pair(0, &Server::quit);
 	this->commands["OPER"] = make_pair(0, &Server::oper);
+	this->commands["NAMES"] = make_pair(0, &Server::names);
 	cout << ANSI::yellow << "init PARSING OK" << endl;
 }
 

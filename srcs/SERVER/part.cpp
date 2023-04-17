@@ -13,5 +13,6 @@
 #include "Server.hpp"
 
 void	Server::part(vector<string> args, int fd_client) {
-	
+	(void)args;
+	(void)fd_client;
 }

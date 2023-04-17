@@ -89,7 +89,7 @@ void Server::user(vector<string> args, int cl) {
 :irc.server.com 366 bducrocq  #test :End of /NAMES list.
 */
 
-vector<string> super_split(string cmd, int nb_arg)
+vector<string> Server::super_split(string cmd, int nb_arg)
 {
 	vector<string> res;
 	string tmp;

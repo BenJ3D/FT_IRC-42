@@ -47,6 +47,7 @@ class Channel
 		char										getMode();
 		char										getClientMode(int fd_client);
 		string										ListNick(map<int, Client>& clients, int fd_client);
+		string										list_all_nick(map<int, Client>& clients);
 		bool										requiredPass;
 
 		bool										isExistChannelName(string const & channelName);

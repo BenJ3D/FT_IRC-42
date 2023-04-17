@@ -85,6 +85,7 @@ class Server
 		void					part(vector<string> args, int fd_client);
 		void					quit(vector<string> args, int fd_client);
 		void					oper(vector<string> args, int fd_client);
+		void					names(vector<string> args, int fd_client);
 
 		void					mode_channel(vector<string> args, int fd_client);
 		void					mode_client(vector<string> args, int fd_client);
@@ -101,6 +102,7 @@ class Server
 		void			parser(string command, int client_fd);
 		vector<string>	split_to_point(string str);
 		std::string		trim(std::string str);
+		vector<string> super_split(string cmd, int nb_arg);
 
 		bool					isExistChannelName(string const &channelName);
 		int						findClientFdWithNick(string const &nick);
