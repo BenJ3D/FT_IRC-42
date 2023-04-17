@@ -101,14 +101,16 @@ void	Server::parser(string cmd, int client_fd) {
 	}
 	for (vector<string>::iterator it = cmds.begin(); it != cmds.end(); it++)
 	{
+	
 		vector<string> args = split_cmd(*it, ' ');
-		if (args.size() != 0 && commands.find(args[0]) != commands.end())
+		if (!args.empty()&& !(_client[client_fd].get_pass() || args[0] == "PASS"))
+			continue;
+		if (commands.find(args[0]) != commands.end())
 		{
-			if (_client[client_fd].get_pass() || args[0] == "PASS"){ // Check if user gave password
-	  		if (commands[args[0]].first == 1)
-				  args.push_back(split_cmd(cmd, '\r')[distance(cmds.begin(), it)]);
-			  (this->*commands[args[0]].second)(args, client_fd);
-      }
+			cout << ANSI::back_cyan << ANSI::red << "pars" << args[0] << ANSI::r << endl;
+				if (commands[args[0]].first == 1)
+					args.push_back(split_cmd(cmd, '\r')[distance(cmds.begin(), it)]);
+				(this->*commands[args[0]].second)(args, client_fd);
 		}
 		else
 		{

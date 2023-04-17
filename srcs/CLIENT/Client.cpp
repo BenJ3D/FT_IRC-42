@@ -16,17 +16,17 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Client::Client() : _pass_confirm(false) {
+Client::Client() : _is_pass(false) {
 }
 
-Client::Client(int fd) : _id(fd), _nick("*"), _is_auth(false), _pass_confirm(false), _is_away(false), _away_message("is away")
+Client::Client(int fd) : _id(fd), _nick("*"), _is_auth(false), _is_pass(false), _is_away(false), _away_message("is away")
 {
 }
 
 Client::Client( const Client & src ){
 	this->_id = src._id;
 	this->_nick = src._nick;
-	this->_pass_confirm = src._pass_confirm;
+	this->_is_pass = src._is_pass;
 	this->_is_auth = src._is_auth;
 }
 
@@ -75,11 +75,11 @@ void Client::now_auth() {
 }
 
 /**
- * @brief set the client password verified (PASS command)
+ * @brief set the client has validate password (PASS command)
  * @param connect 
  */
-void Client::password_verified() {
-	this->_pass_confirm = true;
+void Client::now_pass() {
+	this->_is_pass = true;
 }
 
 bool Client::isOperatorInChannel(Channel &channel) const
@@ -134,7 +134,7 @@ std::string Client::get_realname() const {
  * @param connect 
  */
 bool Client::get_pass() const {
-	return this->_pass_confirm;
+	return this->_is_pass;
 }
 
 bool Client::get_is_auth() const {
@@ -233,7 +233,7 @@ void Client::set_nick(std::string nick) {
 }
 
 void Client::comfirm_password() {
-	this->_pass_confirm = true;
+	this->_is_pass = true;
 }
 
 /*
