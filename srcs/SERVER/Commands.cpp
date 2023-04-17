@@ -180,16 +180,3 @@ void Server::privmsg(vector<string> args, int cl) {
 	if (args.size() < 3)
 		return Rep().E411(cl, _client[cl].get_nick(), args[0]);
 }
-
-void	Server::pass(vector<string> args, int cl_fd) {
-	cout << ANSI::cyan << cl_fd << " --> " << args[0] << endl;
-	Rep rep;
-	if (_client[cl_fd].get_pass())
-		rep.E462(cl_fd);
-	else if (args.size() == 1)
-		rep.E461(cl_fd, "PASS");
-	else {
-		if (args[1] == this->_pass_word)
-			_client[cl_fd].comfirm_password();
-	}
-}
