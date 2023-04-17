@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 02:57:54 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/08 07:35:52 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/17 01:08:52 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,13 @@ class Rep
 		void R255(NR_ARG, const std::string& infostr);
 		void R266(NR_ARG, int users);
 
+		void R301(int const &fd, const std::string &cNick, const std::string& queryNick, const std::string& awayMessage);
 		void R311(NR_ARG, const std::string& queryNick, const std::string& queryName, const std::string& queryRealName);
 		void R313(NR_ARG, const std::string& queryNick);
 		void R315(NR_ARG, const std::string& name);
 		void R318(NR_ARG, const std::string& queryList);
 		void R319(NR_ARG, const std::string& queryNick, char prefix, const std::string& chanName);
+		void R321(int const &fd, const std::string &cNick);
 		void R322(NR_ARG, int nuser, const std::string& topic, const std::string& ChanName);
 		void R323(NR_ARG);
 
@@ -97,6 +99,7 @@ class Rep
 		void E411(NR_ARG, const std::string& cmd);
 		void E412(NR_ARG);
 
+		void E416(NR_ARG, const std::string& cmd);
 		void E421(NR_ARG, const std::string& cmd);
 
 		void E422(NR_ARG);
@@ -126,6 +129,7 @@ class Rep
 		void E476(NR_ARG);
 		void E481(NR_ARG);
 		void E482(NR_ARG, const std::string& chanName);
+		void E491(NR_ARG);
 
 		void E501(NR_ARG);
 		void E502(NR_ARG);

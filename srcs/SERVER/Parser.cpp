@@ -14,14 +14,56 @@
 
 void	Server::init_parsing_map()
 {
-	this->commands["NICK"] = make_pair(1, &Server::nick);
-	this->commands["PING"] = make_pair(1, &Server::ping);
-	this->commands["USER"] = make_pair(1, &Server::user);
+	this->commands["NICK"] = make_pair(0, &Server::nick);
+	this->commands["PING"] = make_pair(0, &Server::ping);
+	this->commands["USER"] = make_pair(0, &Server::user);
 	this->commands["PRIVMSG"] = make_pair(1, &Server::privmsg);
-	this->commands["JOIN"] = make_pair(2, &Server::join_channel);
-	this->commands["MODE"] = make_pair(2, &Server::mode);
 	this->commands["PASS"] = make_pair(1, &Server::pass);
+	this->commands["NOTICE"] = make_pair(1, &Server::cmd_notice);
+	this->commands["MODE"] = make_pair(0, &Server::mode);
+	this->commands["KICK"] = make_pair(0, &Server::kick);
+	this->commands["JOIN"] = make_pair(0, &Server::join);
+	this->commands["LIST"] = make_pair(0, &Server::list);
+	this->commands["TOPIC"] = make_pair(0, &Server::topic);
+	this->commands["PART"] = make_pair(1, &Server::part);
+	this->commands["QUIT"] = make_pair(0, &Server::quit);
+	this->commands["OPER"] = make_pair(0, &Server::oper);
+	this->commands["NAMES"] = make_pair(0, &Server::names);
 	cout << ANSI::yellow << "init PARSING OK" << endl;
+}
+
+std::string Server::trim(std::string str)
+{
+	for (size_t i = 0; i < str.length(); i++)
+	{
+		if (str[i] == ' ')
+			str.erase(i, 1);
+		else
+			break;
+	}
+	for (size_t i = str.length() - 1; i > 0; i--)
+	{
+		if (str[i] == ' ')
+			str.erase(i, 1);
+		else
+			break;
+	}
+	return str;
+}
+
+vector<string> Server::split_to_point(string str)
+{
+	vector<string> args;
+	for (size_t i = 1; i < str.length(); i++)
+	{
+		if (str[i] == ':' && str[i - 1] == ' ')
+		{
+			args.push_back(str.substr(0, i));
+			args.push_back(str.substr(i + 1, str.length() - i));
+			return args;
+		}
+	}
+	return args;
 }
 
 vector<string> split_cmd(const string command, char separator)
@@ -49,28 +91,31 @@ string get_cmd(string cmd)
 }
 
 void	Server::parser(string cmd, int client_fd) {
-	string command = get_cmd(cmd);
+	string command = trim(get_cmd(cmd));
 	vector<string> cmds = split_cmd(command, '\r');
 	if (cmds.size() == 0)
 	{
-		Rep().E421(client_fd ,_client[client_fd].get_nick(), command);
-		return;
+		if (_client.find(client_fd) == _client.end())
+			return Rep().E421(client_fd ,"*", command);
+		return Rep().E421(client_fd ,_client[client_fd].get_nick(), command);
 	}
 	for (vector<string>::iterator it = cmds.begin(); it != cmds.end(); it++)
 	{
 		vector<string> args = split_cmd(*it, ' ');
-		if (args[0].length() != 0 && commands.find(args[0]) != commands.end())
+		if (args.size() != 0 && commands.find(args[0]) != commands.end())
 		{
-			long unsigned int expected_args = commands[args[0]].first;
-			if (args.size() < expected_args) {
-				cout << "Not enough arguments for command " << args[0] << endl;
-				continue;
-			}
-			if (_client[client_fd].get_pass() || args[0] == "PASS") // Check if user gave password
-				(this->*commands[args[0]].second)(args, client_fd);
+			if (_client[client_fd].get_pass() || args[0] == "PASS"){ // Check if user gave password
+	  		if (commands[args[0]].first == 1)
+				  args.push_back(split_cmd(cmd, '\r')[distance(cmds.begin(), it)]);
+			  (this->*commands[args[0]].second)(args, client_fd);
+      }
 		}
 		else
 		{
+			if (_client.find(client_fd) == _client.end())
+				return Rep().E421(client_fd ,"*", command);
+			if (args.size() == 0)
+				return Rep().E421(client_fd ,_client[client_fd].get_nick(), command);
 			Rep().E421(client_fd ,_client[client_fd].get_nick(), args[0]);
 			cout << ANSI::red << "Command not found for " << args[0] << endl;
 		}
