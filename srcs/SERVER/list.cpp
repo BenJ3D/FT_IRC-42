@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   list.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 15:12:15 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/16 23:19:46 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/18 23:27:39 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,22 @@
 
 void	Server::list(vector<string> args, int fd_client)
 {
+	vector<string>target;
 	if (args.size() != 1)
-		return Rep().E409(fd_client, _client.at(fd_client).get_nick());
-	Rep().R321(fd_client, _client.at(fd_client).get_nick());
+		target = split_cmd(args[1], ',');
+	// Rep().R321(fd_client, _client.at(fd_client).get_nick()); // deprecated
+	
 	map<string,Channel>::iterator	it = _channel.begin();
-
-	for(; it != _channel.end(); ++it)
-	{
-		Rep().R322(fd_client, _client.at(fd_client).get_nick(), it->second.getNbClient(), it->second.getTopic(), it->second.getName());
+	if (target.empty())
+		for(; it != _channel.end(); ++it)
+			Rep().R322(fd_client, _client.at(fd_client).get_nick(), it->second.getNbClient(), it->second.getTopic(), it->second.getName());
+	else{
+		for(; it != _channel.end(); ++it)
+			for(size_t i = 0; i < target.size(); i++)
+				if ((*it).second.getName().find(target[i]) != string::npos){
+					Rep().R322(fd_client, _client.at(fd_client).get_nick(), it->second.getNbClient(), it->second.getTopic(), it->second.getName());
+					break;
+				}
 	}
 	Rep().R323(fd_client, _client.at(fd_client).get_nick());
 }
