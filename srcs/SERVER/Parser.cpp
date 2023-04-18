@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 20:39:56 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/17 01:17:07 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/11 15:50:18 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	Server::init_parsing_map()
 	this->commands["PING"] = make_pair(0, &Server::ping);
 	this->commands["USER"] = make_pair(0, &Server::user);
 	this->commands["PRIVMSG"] = make_pair(1, &Server::privmsg);
+	this->commands["PASS"] = make_pair(1, &Server::pass);
 	this->commands["NOTICE"] = make_pair(1, &Server::cmd_notice);
 	this->commands["MODE"] = make_pair(0, &Server::mode);
 	this->commands["KICK"] = make_pair(0, &Server::kick);
@@ -27,6 +28,7 @@ void	Server::init_parsing_map()
 	this->commands["PART"] = make_pair(1, &Server::part);
 	this->commands["QUIT"] = make_pair(0, &Server::quit);
 	this->commands["OPER"] = make_pair(0, &Server::oper);
+	this->commands["MOTD"] = make_pair(0, &Server::motd);
 	this->commands["NAMES"] = make_pair(0, &Server::names);
 	cout << ANSI::yellow << "init PARSING OK" << endl;
 }
@@ -100,12 +102,16 @@ void	Server::parser(string cmd, int client_fd) {
 	}
 	for (vector<string>::iterator it = cmds.begin(); it != cmds.end(); it++)
 	{
+	
 		vector<string> args = split_cmd(*it, ' ');
-		if (args.size() != 0 && commands.find(args[0]) != commands.end())
+		if (!args.empty()&& !(_client[client_fd].get_pass() || args[0] == "PASS"))
+			continue;
+		if (commands.find(args[0]) != commands.end())
 		{
-			if (commands[args[0]].first == 1)
-				args.push_back(split_cmd(cmd, '\r')[distance(cmds.begin(), it)]);
-			(this->*commands[args[0]].second)(args, client_fd);
+			cout << ANSI::back_cyan << ANSI::red << "pars" << args[0] << ANSI::r << endl;
+				if (commands[args[0]].first == 1)
+					args.push_back(split_cmd(cmd, '\r')[distance(cmds.begin(), it)]);
+				(this->*commands[args[0]].second)(args, client_fd);
 		}
 		else
 		{

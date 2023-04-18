@@ -784,7 +784,7 @@ void Rep::E451(int const &fd, const string &cNick)
  * @param cNick 
  * @param cmd 
  */
-void Rep::E461(int const &fd, const string &cNick, const string& cmd)
+void Rep::E461(int const &fd, const string &cNick,const string& cmd)
 {
 	output << "461 " << cNick << " " << cmd << " :Not enough parameters";
 	send_to_client(output.str(), fd);
@@ -799,7 +799,7 @@ void Rep::E461(int const &fd, const string &cNick, const string& cmd)
  */
 void Rep::E462(int const &fd, const string &cNick)
 {
-	output << "462 " << cNick << " :Unauthorized command (already registered)";
+	output << "462 " << cNick << " " << " :Unauthorized command (already registered)";
 	send_to_client(output.str(), fd);
 	clearBuffer();
 }

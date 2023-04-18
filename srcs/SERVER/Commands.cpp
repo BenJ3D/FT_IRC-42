@@ -76,7 +76,8 @@ void Server::user(vector<string> args, int cl) {
 		this->_client[cl].set_realname(realname);
 		Rep().R001(cl, _client[cl].get_nick());
 		Rep().R002(cl, _client[cl].get_nick(), string(SERVER_NAME), string(SERVER_VERSION));
-		return Rep().R003(cl, _client[cl].get_nick(), string(SERVER_DATE));
+		Rep().R003(cl, _client[cl].get_nick(), string(SERVER_DATE));
+		return motd_auth(cl);
 	}
 	this->_client[cl].set_username(username);
 	this->_client[cl].set_realname(realname);
@@ -236,8 +237,6 @@ void Server::privmsg(vector<string> args, int client_fd) {
 	check if target on channel
 */
 void Server::kick(vector<string> args, int cl){
-	cout << ANSI::red << "in kick" << ANSI::r << endl;
-	cout << ANSI::red << ANSI::r << endl;
 	if (args.size() < 4)
 		return Rep().E461(cl, _client[cl].get_nick(), args[0]);
 

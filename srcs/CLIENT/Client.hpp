@@ -27,7 +27,7 @@ class Client
 		std::string			_username;
 		std::string			_realname;
 		bool				_is_auth;
-		bool				_pass_confirm;
+		bool				_is_pass;
 		bool				_is_operator; //o
 		bool				_is_away; //a
 		std::string			_away_message;
@@ -42,21 +42,22 @@ class Client
 		Client( Client const & src );
 		~Client();
 
+
 		int				get_id() const;
 		std::string		get_nick() const;
 		std::string		get_username() const;
 		std::string		get_realname() const;
 		bool			get_is_auth() const;
-		bool			get_pass_confirm() const;
+		bool			get_pass() const;
 		std::string		get_away_message() const;
 		int				find_user_by_nick(std::string nick, std::map<int, Client> & clients);
-
+		void     		comfirm_password();
 		void			set_nick(std::string nick);
 		void			set_username(std::string nick);
 		void			set_realname(std::string nick);
 
 		void			now_auth();
-		void			password_verified();
+		void			now_pass();
 
 		bool			isOperatorInChannel(Channel & channel) const; // delete if getMod OK
 		void			set_mode_a();
@@ -79,8 +80,6 @@ class Client
 		bool			get_mode_w() const;
 		
 		
-
-
 
 
 		Client &		operator=( Client const & rhs );

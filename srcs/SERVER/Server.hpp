@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/17 01:21:43 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/17 21:06:48 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ class Server
 		void	init_parsing_map();
 
 		string					_server_name;
-		string					_pass_word;
+		const string			_pass_word;
 		string					_oper_passw;
 		string					_oper_user;
 		string					_motd;
@@ -65,20 +65,23 @@ class Server
 		map<string,Channel>		_channel;
 
 		std::map<std::string, std::pair<long unsigned int, CmdFunc> > commands;
-		void notice(int const &fd, string msg);
 
+		void		config();
+		void		notice(int const &fd, string msg);
 		/** COMMAND **/
 
-
-		
-
+		void					pass(vector<string> args, int cl);
 		void					nick(vector<string> args, int cl);
 		void					ping(vector<string> args, int cl);
 		void					user(vector<string> args, int cl);
 		void					kick(vector<string> args, int cl);
 		void					privmsg(vector<string> args, int cl);
+		void					motd(vector<string> args, int cl);
+		void						motd_auth(int cl);
 		void					cmd_notice(vector<string> args, int client_fd);
 		void					mode(vector<string> args, int fd_client);
+		void						mode_channel(vector<string> args, int fd_client);
+		void						mode_client(vector<string> args, int fd_client);
 		void					join(vector<string> args, int fd_client);
 		void					list(vector<string> args, int fd_client);
 		void					topic(vector<string> args, int fd_client);
@@ -87,13 +90,9 @@ class Server
 		void					oper(vector<string> args, int fd_client);
 		void					names(vector<string> args, int fd_client);
 
-		void					mode_channel(vector<string> args, int fd_client);
-		void					mode_client(vector<string> args, int fd_client);
-	
-		void	config();
-
 	public:
-		Server(std::string port, std::string address); //adress doit devenir password
+
+		Server(std::string port, std::string password);
 		~Server();
 
 		Server &operator=(Server const &rhs);
@@ -102,7 +101,7 @@ class Server
 		void			parser(string command, int client_fd);
 		vector<string>	split_to_point(string str);
 		std::string		trim(std::string str);
-		vector<string> super_split(string cmd, int nb_arg);
+		vector<string>	super_split(string cmd, int nb_arg);
 
 		bool					isExistChannelName(string const &channelName);
 		int						findClientFdWithNick(string const &nick);
