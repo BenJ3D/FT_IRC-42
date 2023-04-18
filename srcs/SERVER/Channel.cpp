@@ -107,9 +107,13 @@ void					Channel::removeClient(int fd_client)
 	}
 }
 
-void	Channel::ClientPart(int fd_client, map<int, Client> & _client, string const & msg)
+void	Channel::ClientLeave(int fd_client, map<int, Client> & _client, string const & msg, bool isQuit)
 {
-	string ret = ":" + _client[fd_client].get_nick() + "!" + _client[fd_client].get_username() + "@" + string(SERVER_NAME) + " PART " + _name + " " + msg + "\r\n";
+	string ret = ":" + _client[fd_client].get_nick() + "!" + _client[fd_client].get_username() + "@" + string(SERVER_NAME);
+	if (isQuit)
+		ret = " QUIT " + _name + " " + msg + "\r\n";
+	else
+		ret = " PART " + _name + " " + msg + "\r\n";
 	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
 	{
 		if (send((*it).first, ret.c_str(), ret.length(), 0) == -1)
