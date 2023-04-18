@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 02:46:29 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/17 05:49:46 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/18 19:21:40 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ void Server::mode_client(vector<string> args, int fd_client)
 	if(args[2][0] == '+')
 		mod = true;
 	set<char> newMode = _client[fd_client].get_modes();
+	set<char> addMode;
+	set<char> delMode;
 	for(string::iterator it = args[2].begin(); it != args[2].end(); it++)
 	{
 		
@@ -31,20 +33,26 @@ void Server::mode_client(vector<string> args, int fd_client)
 		{
 		case '+': // away
 			mod = true;
+			addMode.insert('+');
 			break;
 		case '-': // away
 			mod = false;
+			delMode.insert('-');
 			break;
 		case 'a': // away
 			if (mod)
 			{
 				newMode.insert('a');
 				_client[fd_client].set_mode_a();
+				
+				addMode.insert('a');
 			}
 			else
 			{
 				newMode.erase('a');
 				_client[fd_client].unset_mode_a();
+				
+				delMode.insert('a');
 			}
 			break;
 		case 'i': // invisible
@@ -52,23 +60,25 @@ void Server::mode_client(vector<string> args, int fd_client)
 			{
 				newMode.insert('i');
 				_client[fd_client].set_mode_i();
+				addMode.insert('i');
 			}
 			else
 			{
 				newMode.erase('i');
 				_client[fd_client].unset_mode_i();
+				delMode.insert('i');
 			}
 			break;
 		case 'o': // operator
 			if (mod)
 			{
-
+				Rep().E481(fd_client, _client[fd_client].get_nick());
 			}
 			else
 			{
-				
 				newMode.erase('o');
 				_client[fd_client].unset_mode_o();
+				delMode.insert('o');
 			}
 			break;
 		case 's': // server notices
@@ -76,11 +86,13 @@ void Server::mode_client(vector<string> args, int fd_client)
 			{
 				newMode.insert('s');
 				_client[fd_client].set_mode_s();
+				addMode.insert('s');
 			}
 			else
 			{
 				newMode.erase('s');
 				_client[fd_client].unset_mode_s();
+				delMode.insert('s');
 			}
 			break;
 		case 'w': // wallops
@@ -88,11 +100,13 @@ void Server::mode_client(vector<string> args, int fd_client)
 			{
 				newMode.insert('w');
 				_client[fd_client].set_mode_w();
+				addMode.insert('w');
 			}
 			else
 			{
 				newMode.erase('w');
 				_client[fd_client].unset_mode_w();
+				delMode.insert('w');
 			}
 			break;
 		default: // error
@@ -101,7 +115,22 @@ void Server::mode_client(vector<string> args, int fd_client)
 		}
 		
 	}
-	Rep().R221(fd_client, _client[fd_client].get_nick(), _client[fd_client].get_modes_str());
+	string appendFullCmdMod;
+	if (addMode.size() > 1)
+		for(set<char>::iterator it = addMode.begin(); it != addMode.end(); it++)
+			appendFullCmdMod += *it;
+	if (delMode.size() > 1)
+		for(set<char>::iterator it = delMode.begin(); it != delMode.end(); it++)
+			appendFullCmdMod += *it;
+
+	// if(appendFullCmdMod.size() > 0)
+	// 	_client[fd_client].set_modes_str(appendFullCmdMod);
+
+	if (!appendFullCmdMod.empty())
+		Rep().R221(fd_client, _client[fd_client].get_nick(), appendFullCmdMod);
+	newMode.clear();
+	addMode.clear();
+	delMode.clear();
 }
 
 void Server::mode_channel(vector<string> args, int fd_client)

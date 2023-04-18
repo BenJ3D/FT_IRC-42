@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/17 05:35:20 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/17 06:23:22 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,7 +213,10 @@ void Client::set_modes_str(string const &mode)
 void	Client::set_modes(set<char> newMode)
 {
 	_modes.clear();
-	_modes = newMode;
+	if (newMode.size() > 0)
+		_modes = newMode;
+	else
+		_modes.insert(' ');
 }
 
 /**
