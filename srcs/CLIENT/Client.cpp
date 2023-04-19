@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/17 06:23:22 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/18 23:27:13 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,9 @@ bool Client::get_mode_w() const {
 	return this->_is_wallops;
 }
 
+string const & Client::get_away_message() const {
+	return this->_away_message;
+}
 
 
 //######################### SETTER #########################

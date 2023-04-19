@@ -34,7 +34,7 @@ class Channel
 		void										setLimit(int const & limit);
 		void										setTopic(string const & topic);
 		void										setPasswd(string const & passwd);
-		void										setMode(char const & mode);  // = for public | * for private | @ for secret
+		void										setVisibilityMode(char const & mode);  // = for public | * for private | @ for secret
 		bool										isInviteOnly( void );
 		int											getNbClient( void );
 
@@ -44,12 +44,10 @@ class Channel
 		string										getPasswd();
 		string										getTopic();
 		string										getName();
-		char										getMode();
-		char										getClientMode(int fd_client);
+		set<char>									getModes();
+		char										getVisibilityMode();
+		// char										getClientMode(int fd_client);
 		string										ListNick(map<int, Client>& clients, int fd_client);
-		bool										requiredPass;
-
-		bool										isExistChannelName(string const & channelName);
 
 		// string const &								getMode();
 
@@ -57,6 +55,7 @@ class Channel
 	private:
 		
 		bool										isOperator(int fd_client);
+		bool										_requiredPass;
 
 		bool 										_isInviteOnly;
 		bool 										_isModerated;
@@ -68,7 +67,8 @@ class Channel
 		vector<int>									_inviteList; // fd_client -- permet dinviter le client sans besoin de passwd (si mode +k), valable pour une connection
 		map<int, pair<char, vector<string> > >		_list; // fd_client, mode, flags
 		int 										_limit;
-		char										_mode; // = for public | * for private | @ for secret
+		char										_visibilityMode; // = for public | * for private | @ for secret
+		set<char>									_modes;
 };
 
 #endif /* ********************************************************* CHANNEL_H */
