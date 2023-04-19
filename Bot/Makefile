@@ -6,7 +6,7 @@
 #    By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/22 02:28:45 by bducrocq          #+#    #+#              #
-#    Updated: 2023/04/11 14:45:49 by amiguez          ###   ########.fr        #
+#    Updated: 2023/04/19 01:40:00 by amiguez          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ PATH_INCLUDES	:=	includes
 
 LST_SRCS	 :=	main.cpp\
 				bot.cpp\
+				utils.cpp\
 				commands.cpp
 SRCS_SRCS	 :=	$(addprefix $(PATH_SRCS)/,$(LST_SRCS))
 OBJS_SRCS	 :=	$(addprefix $(PATH_OBJS)/,$(LST_SRCS:.cpp=.o))

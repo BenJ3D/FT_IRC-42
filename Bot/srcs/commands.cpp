@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 09:11:21 by amiguez           #+#    #+#             */
-/*   Updated: 2023/04/12 18:27:27 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/18 16:30:12 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,16 +49,18 @@ void Bot::ping(string input){
 }
 
 void Bot::rps(string input){
-	string sending();
+	string sending("");
 	if (input.find("paper\r\n") != string::npos)
-		sending = "PRIVMSG " + _channel + " :Ahah I took Cissors!\r\n"
+		sending = "PRIVMSG " + _channel + " :Ahah I took Cissors!\r\n";
 	else if (input.find("rock\r\n") != string::npos)
-		sending = "PRIVMSG " + _channel + " :Ahah I took Paper!\r\n"
+		sending = "PRIVMSG " + _channel + " :Ahah I took Paper!\r\n";
 	else if (input.find("cissors\r\n") != string::npos)
-		sending = "PRIVMSG " + _channel + " :Ahah I took Rock ( & STONE )!\r\n"
+		sending = "PRIVMSG " + _channel + " :Ahah I took Rock ( & STONE )!\r\n";
 	else
-		sending = "PRIVMSG " + _channel + " :You need to say 'paper' 'cissors' or 'rock' to play :(\r\n"
+		sending = "PRIVMSG " + _channel + " :You need to say 'paper' 'cissors' or 'rock' to play :(\r\n";
 	if (send_serv(sending) == -1)
 		throw(runtime_error("Error: couldnt send rps message to server"));
 }
-void Bot::quit(string input){}
+void Bot::quit(string input){
+	(void) input;
+}

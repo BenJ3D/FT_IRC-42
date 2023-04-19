@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 06:32:18 by amiguez           #+#    #+#             */
-/*   Updated: 2023/04/11 18:58:24 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/19 02:50:24 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,8 @@ class Bot{
 			void quit(string input);
 			void bj_bob(string input);
 
-			void join(string input);
 			void leave(string input);
-			void join();
+			void join(string chan = "");
 
 		int send_serv(string input);
 		string recv_serv();
@@ -70,5 +69,7 @@ class Bot{
 		void run();
 
 };
+
+	vector<string> split_cmd(const string command, char separator);
 
 #endif

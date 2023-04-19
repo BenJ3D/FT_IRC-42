@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 06:32:53 by amiguez           #+#    #+#             */
-/*   Updated: 2023/04/12 15:40:51 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/19 03:03:41 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,27 +46,91 @@ void Bot::auth(string pasw) throw(exception){
 	if (send_serv(s_nick) == -1 )
 		throw(runtime_error("Couldn t send nick command"));
 	string ret_nick = recv_serv();
-	cout << cmd << ret_nick << "'" << end;
-	if (ret_nick.find(":*!@Minitel-Rose NICK Bob\r\n"))
+	if (ret_nick != ":*!@minitel_rose NICK Bob\r\n")
 		throw(runtime_error("Couldn't chose my NickName"));
 	string s_user("USER " + _nick_name + " 0 * :" + _real_name + "\r\n");  //  Check USER
 	if (send_serv(s_user) == -1 )
 		throw(runtime_error("Couldn t send the USER command"));
+	bool done = true;
+	string input("");
+	vector<string> inputs;
+	while (done){
+		input = recv_serv();
+		if (input.find(":minitel_rose 003 Bob :") != string::npos)
+			done = false;
+	} cout <<bold << green << "Authentification Done !" << endl;
 }
 
 void Bot::run() {
 	string input;
 	init_cmds();
+	cout << trailing << back_green << input << end;
 	while (1){
-		input = recv_serv();
-		cout << trailing << back_green << input << end;
-		// ping(input);
-		// help(input);
-		rps(input);
+		if (!_channel.empty()){
+			// ping(input);
+			// help(input);
+			// rps(input);
+		}
+		else
+			join();
 	}
 }
 
 
+void Bot::join(string chan){
+	send_serv("LIST\r\n");
+	string input_serv ("");
+	input_serv = recv_serv();
+	vector<string> line;
+	while (input_serv.find(":minitel_rose 323 Bob :End of LIST\r\n") == string::npos)
+		input_serv += recv_serv();
+	line = split_cmd(input_serv, '\n');
+	for (size_t i = 0; i < line.size(); i++)
+		line[i].erase(line[i].end()-1);
+	vector<string>::iterator it = line.begin();
+	for (; it != line.end();){
+		if ((*it).find("minitel_rose 322 Bob") == string::npos)
+			line.erase(it);
+		else
+			it++;
+	}
+			//========================//
+	for (size_t i = 0; i < line.size(); i++){
+		line[i].erase(0, 22);
+		line[i].erase(line[i].find(" "), line[i].size()-1);
+	}
+	if (!chan.empty()){
+		int c = 0;
+		for (size_t i = 0; i < line.size(); i++){
+			if (chan == line[i]){
+				if (send_serv("JOIN " + chan) == -1)
+					cout << red << bold << "ERROR :" << r
+						 << red << "Couldn't send Join msg, please retry" << end;
+				else {
+					_channel = line[i];
+					return ;
+				}
+			}
+			else c++;
+		if (c == line.size())
+			cout << red << bold << "ERROR :" << r
+				 << red << "Couldn't Join the channel " << gray << "(it doesn t exist anymore :( )" << endl << end;
+		}
+	}
+	
+	cout << bold << red << " === " << r << cyan << "Channel List" << bold << red << " === " << end << end;
+	for (size_t i = 0; i < line.size(); i++)
+		cout << bold << arg << " -- " << gray << i + 1 << " " << blue << line[i] << r << end;
+	while (_channel.empty()){
+		cout << white << "  Choose a channel to join (1 ~ n)" << end; 
+		size_t c;
+		cin >> c;
+		if (c != 0 && c < line.size() )
+			join(line[c]);
+		else 
+			cout << gray << "input out of range" << end;
+	}
+}
 
 //--------------------------- Misc ----------------------------------------
 
