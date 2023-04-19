@@ -38,7 +38,7 @@ string Channel::ListNick(map<int, Client> & clients, int fd_client)
 	{
 		string msg = ":" + clients[fd_client].get_nick() + "!" + clients[fd_client].get_username() + "@" + string(SERVER_NAME) + " JOIN :" + _name + "\r\n";
 		if (send((*it).first, msg.c_str(), msg.length(), 0) == -1)
-			cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+			cerr << ANSI::red << "Erreur lors de l'envoi des données au client " << it->first << endl;
 		string prefix = ((*it).second.first == '@') ? "@" : ((*it).second.first == '+') ? "+" : "";
 		list += prefix + clients[(*it).first].get_nick() + " ";
 
@@ -117,7 +117,7 @@ void	Channel::ClientLeave(int fd_client, map<int, Client> & _client, string cons
 	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
 	{
 		if (send((*it).first, ret.c_str(), ret.length(), 0) == -1)
-			cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+			cerr << ANSI::red << "Erreur lors de l'envoi des données au client " << it->first << endl;
 		cout << ANSI::gray << "{send} => " << ANSI::purple << ret << endl;
 	}
 	this->_list.erase(fd_client);

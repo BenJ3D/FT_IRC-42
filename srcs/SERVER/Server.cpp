@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/11 15:40:00 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/19 21:00:11 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ int Server::openSocket(int port)
 			cout << ANSI::green << ANSI::bold << "Nouvelle connexion entrante sur le socket " << new_client_fd << endl;
 			if (send(new_client_fd, "", 0, MSG_CONFIRM) == -1)
 			{
-				cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+				cerr << ANSI::red << "Erreur lors de l'envoi des données au client " << new_client_fd << endl;
 				return 1;
 			}
 		}
@@ -186,8 +186,16 @@ int Server::openSocket(int port)
 				else if (!bytes_received)
 				{
 					cout << ANSI::red << "Connexion fermée par le client n°" << (*it).first << endl;
-					close((*it).first);
-					_client.erase(it);
+					vector<string> quit;
+					quit.push_back("ctrl");
+					quit.push_back(":Client Quit");
+					int temp_fd = it->first;
+					this->quit(quit, temp_fd);
+					// close(temp_fd);
+					// _client.erase(it);
+					// for (map<string,Channel>::iterator itt = _channel.begin(); itt != _channel.end(); itt++){ // TODO: prorper exit if CTRL+C
+						// itt->second.ClientLeave(it->first, _client, "Client Quit", true);
+					// }
 					break;
 				}
 				else

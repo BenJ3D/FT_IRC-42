@@ -18,7 +18,7 @@ Rep::Rep() {}
 void Server::notice(int const &fd, string msg) {
 	msg = ":" + string(SERVER_NAME) + " NOTICE * :" + msg + "\r\n";
 	if (send(fd, msg.c_str(), msg.length(), 0) == -1)
-		cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+		cerr << ANSI::red << "Erreur lors de l'envoi des données au client " << fd << endl;
 
 	cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 }
@@ -32,7 +32,7 @@ void confirm_to_all_channel_client(int const &fd, string msg, map<int, Client> _
 	{
 			msg = ":" + _client[fd].get_nick() + "!" + _client[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
 			if (send(it2->first, msg.c_str(), msg.length(), 0) == -1)
-				cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+				cerr << ANSI::red << "Erreur lors de l'envoi des données au client " << it2->first << endl;
 			
 			cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 	}
@@ -59,7 +59,7 @@ void confirm_to_all_channel_client(int const &fd, string msg, map<int, Client> _
 void confirm_to_client(int const &fd, string msg, map<int, Client> _client) {
 	msg = ":" + _client[fd].get_nick() + "!" + _client[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
 	if (send(fd, msg.c_str(), msg.length(), 0) == -1)
-		cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+		cerr << ANSI::red << "Erreur lors de l'envoi des données au client " << fd << endl;
 	
 	cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 }
@@ -67,7 +67,7 @@ void confirm_to_client(int const &fd, string msg, map<int, Client> _client) {
 void Rep::send_to_client(string msg, int const &fd) {
 	msg = ":" + string(SERVER_NAME) + " " + msg +"\r\n";
 	if (send(fd, msg.c_str(), msg.length(), 0) == -1)
-		cerr << ANSI::red << "Erreur lors de l'envoi des données au client" << endl;
+		cerr << ANSI::red << "Erreur lors de l'envoi des données au client " << fd << endl;
 
 	cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 }

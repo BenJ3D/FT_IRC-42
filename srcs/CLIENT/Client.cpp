@@ -16,7 +16,8 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Client::Client() : _is_pass(false) {
+Client::Client() : _id(-1), _nick("*"), _is_auth(false), _is_pass(false), _is_away(false), _away_message("is away")
+{
 }
 
 Client::Client(int fd) : _id(fd), _nick("*"), _is_auth(false), _is_pass(false), _is_away(false), _away_message("is away")

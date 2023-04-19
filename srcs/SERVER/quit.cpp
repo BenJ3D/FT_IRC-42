@@ -1,19 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   quit.c                                             :+:      :+:    :+:   */
+/*   quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/16 22:38:14 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/16 22:44:35 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/19 20:57:49 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
 void	Server::quit(vector<string> args, int fd_client) {
-	send(fd_client, "ERROR\r\n", 13, 0);
+	
+	if (args[0] != "ctrl")
+		send(fd_client, "ERROR\r\n", 13, 0);
+	// try {send(fd_client, "ERROR\r\n", 13, 0);}
+	// catch (exception &e){cout << e.what() << endl;}
 	vector<string> res = super_split(args[args.size() - 1], 1);
 	cout << "res[0] = " << res[0] << " res1 = " << res[1]<< " res2 = " << res[2] << endl;
 	string msg = res[1];
