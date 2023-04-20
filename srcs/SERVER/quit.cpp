@@ -16,7 +16,7 @@ void	Server::quit(vector<string> args, int fd_client) {
 	if (args[0] != "ctrl")
 		send(fd_client, "ERROR\r\n", 13, 0);
 	vector<string> res = super_split(args[args.size() - 1], 1);
-	cout << "res[0] = " << res[0] << " res1 = " << res[1]<< " res2 = " << res[2] << endl;
+	cout << "res[0] = " << res[0] << " res1 = " << res[1] << endl;
 	string msg = res[1];
 	if (msg == "")
 		msg = "Client Quit";

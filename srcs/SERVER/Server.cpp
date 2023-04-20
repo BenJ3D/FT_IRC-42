@@ -93,8 +93,10 @@ ostream &operator<<(ostream &o, Server const &i)
 
 void	Server::send_error(int fd_client)
 {
+	vector<string> res(1, "QUIT");
+	res.push_back("QUIT :");
 	if (_client.find(fd_client) != _client.end())
-		(this->*commands["QUIT"].second)(vector<string>(1, "QUIT"), fd_client);
+		(this->*commands["QUIT"].second)(res, fd_client);
 	else
 		cerr << ANSI::red << "ERROR: Undefined Client" << endl;
 }
@@ -194,16 +196,7 @@ int Server::openSocket(int port)
 				else if (!bytes_received)
 				{
 					cout << ANSI::red << "Connexion fermée par le client n°" << (*it).first << endl;
-					vector<string> quit;
-					quit.push_back("ctrl");
-					quit.push_back(":Client Quit");
-					int temp_fd = it->first;
-					this->quit(quit, temp_fd);
-					// close(temp_fd);
-					// _client.erase(it);
-					// for (map<string,Channel>::iterator itt = _channel.begin(); itt != _channel.end(); itt++){ // TODO: prorper exit if CTRL+C
-						// itt->second.ClientLeave(it->first, _client, "Client Quit", true);
-					// }
+					send_error((*it).first);
 					break;
 				}
 				else
