@@ -37,6 +37,8 @@ class Channel
 		void										setVisibilityMode(char const & mode);  // = for public | * for private | @ for secret
 		bool										isInviteOnly( void );
 		int											getNbClient( void );
+		void										setOwner(int fd_client);
+
 
 		vector<int>									getBlackList();
 		map<int, pair<char, vector<string> > >	&	getList();
@@ -45,9 +47,11 @@ class Channel
 		string										getTopic();
 		string										getName();
 		set<char>									getModes();
+		string										getModesStr();
 		char										getVisibilityMode();
 		// char										getClientMode(int fd_client);
 		string										ListNick(map<int, Client>& clients, int fd_client);
+		int											getOwner();
 
 		// string const &								getMode();
 
@@ -69,6 +73,7 @@ class Channel
 		int 										_limit;
 		char										_visibilityMode; // = for public | * for private | @ for secret
 		set<char>									_modes;
+		int											_owner;
 };
 
 #endif /* ********************************************************* CHANNEL_H */

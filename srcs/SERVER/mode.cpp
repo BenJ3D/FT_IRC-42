@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 02:46:29 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/19 02:09:27 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/20 01:54:04 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,17 +92,17 @@ void Server::mode_client(vector<string> args, int fd_client)
 		}
 	}
 	string appendFullCmdMod;//
-	if (addMode.size() > 1)
+	if (addMode.size() > 1) // si on a des modes a ajouter
 		for(set<char>::iterator it = addMode.begin(); it != addMode.end(); it++)
 			appendFullCmdMod += *it;
-	if (delMode.size() > 1)
+	if (delMode.size() > 1) //	si on a des modes a supprimer
 		for(set<char>::iterator it = delMode.begin(); it != delMode.end(); it++)
 			appendFullCmdMod += *it;
 
 	// if(appendFullCmdMod.size() > 0)
 	// 	_client[fd_client].set_modes_str(appendFullCmdMod);
 
-	if (!appendFullCmdMod.empty())
+	if (!appendFullCmdMod.empty())	// si on a des modes a ajouter ou supprimer, envoie tout les modes + et - valide au client
 		Rep().R221(fd_client, _client[fd_client].get_nick(), appendFullCmdMod);
 	addMode.clear();
 	delMode.clear();
@@ -137,7 +137,7 @@ void Server::mode_channel(vector<string> args, int fd_client)
 	//TODO: remplir modeParams avec des "" pour avoir la meme tail que args[2].size() // correspondance <modes> <modeParams>
 	for (int i = 0; i < countNbrMode(args[2]) - modeParams.size(); i++)
 		modeParams.push_back("");
-	map<char, string> modeParamsMap; //for une map, plsu simple en faite TODO: WIP WIP WIP WIP
+	map<char, string> modeParamsMap; //for une map, plus simple en faite TODO: WIP WIP WIP WIP
 	//boucle for pour remplir la map avec tous les mode (char) de args[2] mais attention au segfault si on a pas de parametre pour un mode,, si pas de parametre, on met un string vide
 	for (int i = 0; i < args[2].size(); i++)
 	{
@@ -172,51 +172,171 @@ void Server::mode_channel(vector<string> args, int fd_client)
 		case 'o': // operator channel
 			if (mod)
 			{
-
+				if (modeParamsMap[*it].empty())
+				{
+					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
+					return ;
+				}
+				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
+					return ;
+				}
+				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					_channel[args[1]].addOperator(*it);
+					addMode.insert('o');
+				}
 			}
 			else
 			{
-
+				if (modeParamsMap[*it].empty())
+				{
+					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
+					return ;
+				}
+				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
+					return ;
+				}
+				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					_channel[args[1]].removeOperator(*it);
+					delMode.insert('o');
+				}
 			}
 			break;
 		case 'k': // key
 			if (mod)
 			{
-
+				if (modeParamsMap[*it].empty())
+				{
+					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
+					return ;
+				}
+				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
+					return ;
+				}
+				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					_channel[args[1]].setPasswd(modeParamsMap[*it]);
+					addMode.insert('k');
+				}
 			}
 			else
 			{
-
+				if (modeParamsMap[*it].empty())
+				{
+					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
+					return ;
+				}
+				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
+					return ;
+				}
+				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					_channel[args[1]].setPasswd("");
+					delMode.insert('k');
+				}
 			}
 			break;
 		case 'l': // limit number of users
 			if (mod)
 			{
-
+				if (modeParamsMap[*it].empty())
+				{
+					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
+					return ;
+				}
+				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
+					return ;
+				}
+				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					_channel[args[1]].setLimit(atoi(modeParamsMap[*it].c_str()));
+					addMode.insert('l');
+				}
 			}
 			else
 			{
-
+				if (modeParamsMap[*it].empty())
+				{
+					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
+					return ;
+				}
+				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
+					return ;
+				}
+				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					_channel[args[1]].setLimit(0);
+					delMode.insert('l');
+				}
 			}
 			break;
 		case 'i': // invite only
 			if (mod)
 			{
-
+				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
+					return ;
+				}
+				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					_channel[args[1]].setInviteOnly(true);
+					addMode.insert('i');
+				}
 			}
 			else
 			{
-
+				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
+					return ;
+				}
+				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					_channel[args[1]].setInviteOnly(false);
+					delMode.insert('i');
+				}
 			}
 			break;
-		case 'p': // private
+		case 'p': // private // = for public | * for private | @ for secret
 			if (mod)
 			{
-
+				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
+					return ;
+				}
+				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					_channel[args[1]].setVisibilityMode('*');
+					addMode.insert('p');
+				}
 			}
 			else
 			{
-
+				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
+					return ;
+				}
+				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					_channel[args[1]].setVisibilityMode('=');
+					delMode.insert('p');
+				}
 			}
 			break;
 		case 's': // secret

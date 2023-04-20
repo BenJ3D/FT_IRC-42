@@ -14,6 +14,7 @@ Channel::Channel(int fd_client, string const & name) :  _requiredPass(false), _n
 {
 	// setPasswd("42");
 	_list[fd_client] = make_pair('@', vector<string>());
+	setOwner(fd_client);
 }
 
 //En faite a priori on ne peux pas creer de channel tout en definissant un passwd
@@ -45,6 +46,14 @@ string Channel::ListNick(map<int, Client> & clients, int fd_client)
 		cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 	}
 	return list;
+}
+
+int Channel::getOwner() //TODO: check if working
+{
+	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
+		if ((*it).second.first == '@')
+			return (*it).first;
+	return 0;
 }
 
 bool Channel::isOperator(int fd_client)
@@ -170,6 +179,14 @@ set<char> Channel::getModes()
 	return set<char>();
 }
 
+string Channel::getModesStr()
+{
+	string modes;
+	for (set<char>::iterator it = _modes.begin(); it != _modes.end(); it++)
+		modes += (*it);
+	return modes;
+}
+
 string					Channel::getPasswd()
 {
 	return _passwd;
@@ -213,6 +230,10 @@ int					Channel::getNbClient()
 	return _list.size();
 }
 
+void Channel::setOwner(int fd_client)
+{
+	_owner = fd_client;
+}
 
 /*
 ** --------------------------------- OVERLOAD ---------------------------------
