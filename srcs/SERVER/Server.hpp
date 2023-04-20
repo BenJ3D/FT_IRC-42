@@ -97,19 +97,27 @@ class Server
 
 		Server &operator=(Server const &rhs);
 
+		/* --- GETTER --- */
+		map<int, Client>		&get_client();
+		map<string, Channel>	&get_channel();
+
+		void					send_error(int fd);
+
 		/* --- PARSING --- */
 		void			parser(string command, int client_fd);
 		vector<string>	split_to_point(string str);
 		std::string		trim(std::string str);
 		vector<string>	super_split(string cmd, int nb_arg);
+		void 			confirm_to_all_channel_client(int const &fd, string msg, Server &serv, Channel chan);
 
+		/* --- SERVER --- */
 		bool					isExistChannelName(string const &channelName);
 		int						findClientFdWithNick(string const &nick);
 		bool					isClientOnChannel(int client_fd);
 };
 
-void confirm_to_client(const int &fd, string msg, map<int, Client>);
-void confirm_to_all_channel_client(int const &fd, string msg, map<int, Client> _client, Channel chan);
+void confirm_to_client(const int &fd, string msg, Server &serv);
+void confirm_to_all_channel_client(int const &fd, string msg, Server &serv, Channel chan);
 std::ostream &operator<<(std::ostream &o, Server const &i);
 
 vector<string> split_cmd(const string command, char separator);

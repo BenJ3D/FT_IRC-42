@@ -60,8 +60,8 @@ void Server::join(vector<string> args, int fd_client) // TODO: check le premier 
 			{
 				_channel[*it_chan] = Channel(fd_client, *it_chan);
 				//_channel[*it_chan].addClient(fd_client, '@');
-				confirm_to_client(fd_client, "JOIN " + *it_chan, _client);
-				confirm_to_client(fd_client, "MODE " + *it_chan + " +o " + clientNick, _client);
+				confirm_to_client(fd_client, "JOIN " + *it_chan, *this);
+				confirm_to_client(fd_client, "MODE " + *it_chan + " +o " + clientNick, *this);
 
 				Rep().R353(fd_client, clientNick, *it_chan, clientNick, _channel[*it_chan].getMode(), _channel[*it_chan].getList().at(fd_client).first);
 				Rep().R366(fd_client, clientNick, *it_chan);
@@ -81,8 +81,8 @@ void Server::join(vector<string> args, int fd_client) // TODO: check le premier 
 					}
 				}
 				_channel[*it_chan].addClient(fd_client, ' ');
-				confirm_to_client(fd_client, "JOIN " + *it_chan, _client);
-				string user_list = _channel[*it_chan].ListNick(_client, fd_client);
+				confirm_to_client(fd_client, "JOIN " + *it_chan, *this);
+				string user_list = _channel[*it_chan].ListNick(*this, fd_client);
 				Rep().R353(fd_client, clientNick, *it_chan, user_list, _channel[*it_chan].getMode(), _channel[*it_chan].getList().at(fd_client).first);
 				Rep().R366(fd_client, clientNick, *it_chan);
 				cerr << ANSI::red << "DEBUG TEST USER LIST = " << user_list << ANSI::reset << endl;

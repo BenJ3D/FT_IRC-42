@@ -42,7 +42,7 @@ void Server::nick(vector<string> args, int client_fd) {
 		return Rep().R003(client_fd, new_nick ,string(SERVER_DATE));
 	}
 	string confirm_msg = "NICK " + new_nick;
-	confirm_to_client(client_fd, confirm_msg, _client);
+	confirm_to_client(client_fd, confirm_msg, *this);
 	_client[client_fd].set_nick(new_nick);
 }
 

@@ -91,6 +91,14 @@ ostream &operator<<(ostream &o, Server const &i)
 ** --------------------------------- METHODS ----------------------------------
 */
 
+void	Server::send_error(int fd_client)
+{
+	if (_client.find(fd_client) != _client.end())
+		(this->*commands["QUIT"].second)(vector<string>(1, "QUIT"), fd_client);
+	else
+		cerr << ANSI::red << "ERROR: Undefined Client" << endl;
+}
+
 int Server::openSocket(int port)
 {
 	// création du socket
@@ -164,7 +172,7 @@ int Server::openSocket(int port)
 			cout << ANSI::green << ANSI::bold << "Nouvelle connexion entrante sur le socket " << new_client_fd << endl;
 			if (send(new_client_fd, "", 0, MSG_CONFIRM) == -1)
 			{
-				cerr << ANSI::red << "Erreur lors de l'envoi des données au client " << new_client_fd << endl;
+				send_error(new_client_fd);
 				return 1;
 			}
 		}
@@ -208,7 +216,12 @@ int Server::openSocket(int port)
 						continue;
 
 					// parsing...
-					this->parser(str_buff, (*it).first);
+					try {
+						this->parser(str_buff, (*it).first);
+					}
+					catch (std::exception &ex) {
+						send_error((*it).first);
+					}
 				}
 			}
 		} 
@@ -303,6 +316,16 @@ void	Server::config(){
 	cout << ANSI::green << "_motd - - - - - = '" << _motd << "'" << endl;
 
 
+}
+
+//GETTER
+map<int, Client> &Server::get_client()
+{
+	return _client;
+}
+map<string, Channel> &Server::get_channel()
+{
+	return _channel;
 }
 
 /* ************************************************************************** */

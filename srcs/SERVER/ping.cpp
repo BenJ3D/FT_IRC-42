@@ -19,9 +19,9 @@ void Server::ping(vector<string> args, int cl)
 		return Rep().E409(cl, _client[cl].get_nick());
 
 	if (args.size() == 2)
-		return confirm_to_client(cl, "PONG " + string(SERVER_NAME) + " :" + args[1], _client);
+		return confirm_to_client(cl, "PONG " + string(SERVER_NAME) + " :" + args[1], *this);
 
 	if (args[1] != SERVER_NAME)
 		return Rep().E402(cl, _client[cl].get_nick(), args[1]);
-	confirm_to_client(cl, "PONG " + string(SERVER_NAME) + " :" + args[2], _client);
+	confirm_to_client(cl, "PONG " + string(SERVER_NAME) + " :" + args[2], *this);
 }

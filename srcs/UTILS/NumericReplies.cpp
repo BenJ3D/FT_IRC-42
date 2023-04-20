@@ -18,21 +18,21 @@ Rep::Rep() {}
 void Server::notice(int const &fd, string msg) {
 	msg = ":" + string(SERVER_NAME) + " NOTICE * :" + msg + "\r\n";
 	if (send(fd, msg.c_str(), msg.length(), 0) == -1)
-		cerr << ANSI::red << "Erreur lors de l'envoi des données au client " << fd << endl;
+		send_error(fd);
 
 	cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 }
 
-void confirm_to_all_channel_client(int const &fd, string msg, map<int, Client> _client, Channel chan) {
+void Server::confirm_to_all_channel_client(int const &fd, string msg, Server &serv, Channel chan) {
 	
 	// map<int, Client>::iterator it = _client.begin();
 	map<int, std::pair<char, std::vector<std::string> > > list = chan.getList();
 	map<int, std::pair<char, std::vector<std::string> > >::const_iterator it2 = list.begin();
 	for(; it2 != list.end(); ++it2)
 	{
-			msg = ":" + _client[fd].get_nick() + "!" + _client[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
+			msg = ":" + serv.get_client()[fd].get_nick() + "!" + serv.get_client()[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
 			if (send(it2->first, msg.c_str(), msg.length(), 0) == -1)
-				cerr << ANSI::red << "Erreur lors de l'envoi des données au client " << it2->first << endl;
+				send_error(fd);
 			
 			cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 	}
@@ -56,10 +56,10 @@ void confirm_to_all_channel_client(int const &fd, string msg, map<int, Client> _
 	// cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 }
 
-void confirm_to_client(int const &fd, string msg, map<int, Client> _client) {
-	msg = ":" + _client[fd].get_nick() + "!" + _client[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
+void confirm_to_client(int const &fd, string msg, Server &serv) {
+	msg = ":" + serv.get_client()[fd].get_nick() + "!" + serv.get_client()[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
 	if (send(fd, msg.c_str(), msg.length(), 0) == -1)
-		cerr << ANSI::red << "Erreur lors de l'envoi des données au client " << fd << endl;
+		serv.send_error(fd);
 	
 	cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 }
@@ -67,7 +67,7 @@ void confirm_to_client(int const &fd, string msg, map<int, Client> _client) {
 void Rep::send_to_client(string msg, int const &fd) {
 	msg = ":" + string(SERVER_NAME) + " " + msg +"\r\n";
 	if (send(fd, msg.c_str(), msg.length(), 0) == -1)
-		cerr << ANSI::red << "Erreur lors de l'envoi des données au client " << fd << endl;
+		throw ;
 
 	cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 }

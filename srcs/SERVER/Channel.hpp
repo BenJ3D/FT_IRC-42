@@ -8,6 +8,7 @@
 # include "../CLIENT/Client.hpp"
 
 class Client;
+class Server;
 
 using namespace std;
 class Channel
@@ -21,7 +22,7 @@ class Channel
 
 		void										addClient(int fd_client, char mode);
 		void										removeClient(int fd_client);
-		void 										ClientLeave(int fd_client, map<int, Client> & _client, string const & msg, bool isQuit);
+		void 										ClientLeave(int fd_client, Server &serv, string const & msg, bool isQuit);
 
 		void										addOperator(int fd_client);
 		void										removeOperator(int fd_client);
@@ -47,7 +48,7 @@ class Channel
 		string										getName();
 		char										getMode();
 		char										getClientMode(int fd_client);
-		string										ListNick(map<int, Client>& clients, int fd_client);
+		string										ListNick(Server &serv, int fd_client);
 		string										list_all_nick(map<int, Client>& clients);
 		bool										requiredPass;
 

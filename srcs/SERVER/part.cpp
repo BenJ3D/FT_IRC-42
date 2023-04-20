@@ -33,8 +33,8 @@ void	Server::part(vector<string> args, int fd_client) {
 			continue ;
 		}
 		if (res.size() == 2)
-			_channel[listChan[i]].ClientLeave(fd_client, _client, "", false);
+			_channel[listChan[i]].ClientLeave(fd_client, *this, "", false);
 		else if (res.size() == 3)
-			_channel[listChan[i]].ClientLeave(fd_client, _client, res[2], false);
+			_channel[listChan[i]].ClientLeave(fd_client, *this, res[2], false);
 	}
 }

@@ -29,9 +29,9 @@ void Server::topic(vector<string> args, int fd_client)
 	else if (args.size() == 3)
 	{
 		_channel.at(args[1]).setTopic(args[2].substr(1));
-		confirm_to_client(fd_client, "TOPIC " + _channel.at(args[1]).getName() + " :" + args[2].substr(1), _client);
+		confirm_to_client(fd_client, "TOPIC " + _channel.at(args[1]).getName() + " :" + args[2].substr(1), *this);
 		//TODO:: faire un ft confirm to all client in channel
-		confirm_to_all_channel_client(fd_client, "TOPIC " + _channel.at(args[1]).getName() + " :" + args[2].substr(1), _client, _channel.at(args[1]));
+		confirm_to_all_channel_client(fd_client, "TOPIC " + _channel.at(args[1]).getName() + " :" + args[2].substr(1), *this, _channel.at(args[1]));
 	}
 	else
 		Rep().E409(fd_client, _client.at(fd_client).get_nick());
