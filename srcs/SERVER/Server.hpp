@@ -63,6 +63,7 @@ class Server
 		vector<int>				_client_fds;
 		map<int,Client>			_client;
 		map<string,Channel>		_channel;
+		bool					_delete_client;
 
 		std::map<std::string, std::pair<long unsigned int, CmdFunc> > commands;
 

@@ -13,9 +13,12 @@
 #include "Server.hpp"
 
 void	Server::quit(vector<string> args, int fd_client) {
-	if (args[0] != "ctrl")
-		send(fd_client, "ERROR\r\n", 13, 0);
+	this->_delete_client = true;
 	vector<string> res = super_split(args[args.size() - 1], 1);
+	if (res.size() == 1)
+		res.push_back("Client Quit");
+	int len = res.size();
+	cout << "size = " << len << endl;
 	cout << "res[0] = " << res[0] << " res1 = " << res[1] << endl;
 	string msg = res[1];
 	if (msg == "")
@@ -27,6 +30,7 @@ void	Server::quit(vector<string> args, int fd_client) {
 			for (map<int, pair<char, vector<string> > >::iterator it2 = it->second.getList().begin(); it2 != it->second.getList().end(); it2++)
 				if (it2->first != fd_client)
 					it->second.ClientLeave(it2->first, *this, msg, true);
-	_client.erase(fd_client);
+	if (_client.find(fd_client) != _client.end())
+		_client.erase(fd_client);
 	close(fd_client);
 }

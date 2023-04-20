@@ -95,6 +95,8 @@ vector<string> Server::super_split(string cmd, int nb_arg)
 	vector<string> res;
 	string tmp;
 	unsigned long int i = 0;
+	if (cmd[0] == '\n')
+		cmd = cmd.substr(1);
 	while (i < cmd.length() && nb_arg != 0)
 	{
 		if (cmd[i] == ' ' && nb_arg > 0)
@@ -109,7 +111,11 @@ vector<string> Server::super_split(string cmd, int nb_arg)
 			tmp += cmd[i++];
 	}
 	if (i == cmd.length())
+	{
+		if (res.size() == 0)
+			res.push_back(tmp);
 		return res;
+	}
 	res.push_back(cmd.substr(i));
 	return res;
 }
@@ -172,16 +178,16 @@ void Server::privmsg(vector<string> args, int client_fd) {
 
 	string msg = " ";
 	vector<string> res = super_split(args[args.size() - 1], 2); // <CMD> <TARGET> :<MSG>
-	cerr << res.size() << endl;
+	cerr << res.size() << "AAAAAAAAAAAAAAAAAAA" << endl;
 	if (res.size() < 3)
 	{
 		if (res.size() == 2)
-			Rep().E412(client_fd, _client[client_fd].get_nick());
+			return Rep().E412(client_fd, _client[client_fd].get_nick());
 		else
-			Rep().E411(client_fd, _client[client_fd].get_nick(), args[0]);
+			return Rep().E411(client_fd, _client[client_fd].get_nick(), args[0]);
 	}
-
 	vector<string> target_list = split_cmd(res[1], ',');
+	cout << "debug" << endl;
 	if (target_list.size() == 0)
 		target_list.push_back(res[1]);
 

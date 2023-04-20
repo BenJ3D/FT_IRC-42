@@ -26,6 +26,7 @@ Server::Server(const Server &src) {
 	this->_max_fd = src._max_fd;
 	this->_read_fds = src._read_fds;
 	this->_server_name = src._server_name;
+	this->_delete_client = false;
 }
 
 /*
@@ -93,6 +94,7 @@ ostream &operator<<(ostream &o, Server const &i)
 
 void	Server::send_error(int fd_client)
 {
+	this->_delete_client = true;
 	vector<string> res(1, "QUIT");
 	res.push_back("QUIT :");
 	if (_client.find(fd_client) != _client.end())
@@ -178,6 +180,7 @@ int Server::openSocket(int port)
 				return 1;
 			}
 		}
+		_delete_client = false;
 		// vérification des données reçues des clients existants
 		for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++)
 		{
@@ -214,9 +217,12 @@ int Server::openSocket(int port)
 					}
 					catch (std::exception &ex) {
 						send_error((*it).first);
+						break;
 					}
 				}
 			}
+			if (this->_delete_client)
+				break;
 		} 
 	}
 }

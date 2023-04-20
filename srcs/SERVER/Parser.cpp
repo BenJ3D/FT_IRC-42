@@ -26,7 +26,7 @@ void	Server::init_parsing_map()
 	this->commands["LIST"] = make_pair(0, &Server::list);
 	this->commands["TOPIC"] = make_pair(0, &Server::topic);
 	this->commands["PART"] = make_pair(1, &Server::part);
-	this->commands["QUIT"] = make_pair(0, &Server::quit);
+	this->commands["QUIT"] = make_pair(1, &Server::quit);
 	this->commands["OPER"] = make_pair(0, &Server::oper);
 	this->commands["MOTD"] = make_pair(0, &Server::motd);
 	this->commands["NAMES"] = make_pair(0, &Server::names);
