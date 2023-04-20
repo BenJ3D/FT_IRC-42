@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 02:46:29 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/20 01:54:04 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/20 17:03:14 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,21 +134,20 @@ void Server::mode_channel(vector<string> args, int fd_client)
 		return ;
 	}
 	vector<string>	modeParams = split_sep(args[3], ','); //split les arguments des modes
-	//TODO: remplir modeParams avec des "" pour avoir la meme tail que args[2].size() // correspondance <modes> <modeParams>
-	for (int i = 0; i < countNbrMode(args[2]) - modeParams.size(); i++)
+	//TODO: remplir modeParams avec des "" pour avoir la meme taille que args[2].size() // correspondance <modes> <modeParams>
+	for (long unsigned int i = 0; i < (countNbrMode(args[2]) - modeParams.size()); ++i)
 		modeParams.push_back("");
 	map<char, string> modeParamsMap; //for une map, plus simple en faite TODO: WIP WIP WIP WIP
 	//boucle for pour remplir la map avec tous les mode (char) de args[2] mais attention au segfault si on a pas de parametre pour un mode,, si pas de parametre, on met un string vide
-	for (int i = 0; i < args[2].size(); i++)
+	for (long unsigned int i = 0; i < args[2].size(); i++)
 	{
 		if (args[2][i] != '+' && args[2][i] != '-')
 		{
 			//tchecker si modeParams[i] est valide, sinon on met un string vide, et arrete de faire modeParams[i] pour eviter les segfault mais continuer diterer arg[2][i]
-			if (modeParams[i].empty()) //TODO:FIXME: tester si pas de segfault
+			if (modeParams[i - 1].empty()) //TODO:FIXME: tester si pas de segfault
 				modeParamsMap[args[2][i]] = "";
 			else
-				modeParamsMap[args[2][i]] = modeParams[i];
-		
+				modeParamsMap[args[2][i]] = modeParams[i - 1]; //segfault
 		}
 	}
 	bool mod = false;
@@ -156,6 +155,7 @@ void Server::mode_channel(vector<string> args, int fd_client)
 		mod = true;
 	set<char> addMode;
 	set<char> delMode;
+	map<char, string>::iterator itMap = modeParamsMap.begin();
 	for(string::iterator it = args[2].begin(); it != args[2].end(); it++)
 	{
 		// TODO: TODO:
@@ -353,6 +353,16 @@ void Server::mode_channel(vector<string> args, int fd_client)
 			if (mod)
 			{
 
+			}
+			else
+			{
+
+			}
+			break;
+		case 'b': // empêche les utilisateurs qui ne sont pas des opérateurs de canal d'envoyer des messages au canal (sujet uniquement).
+			if (mod)
+			{
+				
 			}
 			else
 			{
