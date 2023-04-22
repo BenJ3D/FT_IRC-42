@@ -17,8 +17,6 @@ void	Server::quit(vector<string> args, int fd_client) {
 	vector<string> res = super_split(args[args.size() - 1], 1);
 	if (res.size() == 1)
 		res.push_back("Client Quit");
-	int len = res.size();
-	cout << "size = " << len << endl;
 	cout << "res[0] = " << res[0] << " res1 = " << res[1] << endl;
 	string msg = res[1];
 	if (msg == "")

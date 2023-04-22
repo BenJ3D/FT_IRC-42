@@ -21,7 +21,9 @@ void	Server::part(vector<string> args, int fd_client) {
 	if (args.size() < 3)
 		return Rep().E461(fd_client, _client[fd_client].get_nick(), "PART");
 	vector<string> res = super_split(args[args.size() - 1], 2);
-	// cout << "res[0] = " << res[0] << " res1 = " << res[1] << endl; // Segfault if there is res[2] for if no args
+	if (res.size() == 1)
+		res.push_back(args[1]);
+	cout << "res[0] = " << res[0] << " res1 = " << res[1] << endl;
 	vector<string> listChan = split_cmd(res[1], ',');
 	if (listChan.size() == 0)
 		listChan.push_back(res[1]);
