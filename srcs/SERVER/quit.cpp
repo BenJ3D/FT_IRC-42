@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/16 22:38:14 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/19 20:57:49 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/22 19:15:34 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,17 @@ void	Server::quit(vector<string> args, int fd_client) {
 		msg = "Client Quit";
 	else
 		msg = res[1].substr(1);
-	for (map<string, Channel>::iterator it = _channel.begin(); it != _channel.end(); it++)
-		if (it->second.getClientMode(fd_client) != '0')
-			for (map<int, pair<char, vector<string> > >::iterator it2 = it->second.getList().begin(); it2 != it->second.getList().end(); it2++)
-				if (it2->first != fd_client)
-					it->second.ClientLeave(it2->first, *this, msg, true);
+
+	cout << ANSI::yellow << "Quit msg == '" << msg << "'" << ANSI::r << endl;
+	for (map<string, Channel>::iterator it = _channel.begin(); it != _channel.end();){ //for all chan
+		if (it->second.getClientMode(fd_client) != '0') // If in chan
+			it->second.ClientLeave(fd_client, *this, msg, true); // say he leave
+		if (it->second.getList().empty()) // Erase chan if empty
+			_channel.erase(it);
+		it++;
+	}
 	if (_client.find(fd_client) != _client.end())
 		_client.erase(fd_client);
 	close(fd_client);
+
 }

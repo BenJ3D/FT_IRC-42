@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/17 21:06:48 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/20 23:33:03 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 # include <netinet/in.h>
 # include <arpa/inet.h>
 # include <unistd.h>
+# include <errno.h>
 # include <fstream>
 # include <vector>
 # include <map>
@@ -109,7 +110,7 @@ class Server
 		vector<string>	split_to_point(string str);
 		std::string		trim(std::string str);
 		vector<string>	super_split(string cmd, int nb_arg);
-		void 			confirm_to_all_channel_client(int const &fd, string msg, Server &serv, Channel chan);
+		// void 			confirm_to_all_channel_client(int const &fd, string msg, Server &serv, Channel chan);
 
 		/* --- SERVER --- */
 		bool					isExistChannelName(string const &channelName);

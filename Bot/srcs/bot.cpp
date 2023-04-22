@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 06:32:53 by amiguez           #+#    #+#             */
-/*   Updated: 2023/04/19 21:15:00 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/20 19:43:41 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ void Bot::auth(string pasw) throw(exception){
 
 void Bot::run() {
 	string input;
-	init_cmds();
 	cout << trailing << back_green << input << end;
 	while (_run){
 		if (!_channel.empty()){
@@ -71,17 +70,18 @@ void Bot::run() {
 			input = recv_serv();
 			try {
 
-			if (input.find("Bob.help") != string::npos)
-				help(input);
-			if (input.find("Bob.ping") != string::npos)
-				ping(input);
-			if (input.find("Bob.rps") != string::npos)
-				rps(input);
-			// if (input.find("Bob.quit") != string::npos)
-			// 	quit(input);
-			// if (input.find("Bob.part") != string::npos)
-			// 	part(input);
-
+				if (input.find("Bob.help") != string::npos)
+					help();
+				if (input.find("Bob.ping") != string::npos)
+					ping();
+				if (input.find("Bob.rps") != string::npos)
+					rps(input);
+				if (input.find("Dit bonjour Bob") != string::npos)
+					bj_bob();
+				if (input.find("Bob.part") != string::npos)
+					part();
+				if (input.find("Bob.quit") != string::npos)
+					quit();
 			} catch (exception &e){
 				cout << red << e.what() << end;
 			}
@@ -89,66 +89,9 @@ void Bot::run() {
 		else
 			join();
 	}
+	cout << red << "I'm out ! Bye Bye ~ ~" << end;
 }
 
-
-void Bot::join(string chan){
-	send_serv("LIST\r\n");
-	string input_serv ("");
-	input_serv = recv_serv();
-	vector<string> line;
-	while (input_serv.find(":minitel_rose 323 Bob :End of LIST\r\n") == string::npos)
-		input_serv += recv_serv();
-	line = split_cmd(input_serv, '\n');
-	for (size_t i = 0; i < line.size(); i++)
-		line[i].erase(line[i].end()-1);
-	vector<string>::iterator it = line.begin();
-	for (; it != line.end();){
-		if ((*it).find("minitel_rose 322 Bob") == string::npos)
-			line.erase(it);
-		else
-			it++;
-	}
-	for (size_t i = 0; i < line.size(); i++){
-		line[i].erase(0, 22);
-		line[i].erase(line[i].find(" "), line[i].size()-1);
-	}
-	if (!chan.empty()){
-		cout << "Chan = " << back_black << chan << end;
-		size_t c = 0;
-		for (size_t i = 0; i < line.size(); i++){
-			if (chan == line[i]){
-				if (send_serv("JOIN " + chan + "\r\n") == -1)
-					cout << red << bold << "ERROR :" << r
-						 << red << "Couldn't send Join msg, please retry" << end;
-				else {
-					_channel = line[i];
-					return ;
-				}
-			}
-			else c++;
-			if (c == line.size())
-				cout << red << bold << "ERROR :" << r
-					 << red << "Couldn't Join the channel " << gray << "(it doesn t exist anymore :( )" << endl << end;
-		}
-	}
-	cout << bold << red << " === " << r << cyan << "Channel List" << bold << red << " === " << end << end;
-	for (size_t i = 0; i < line.size(); i++)
-		cout << bold << arg << " -- " << gray << i + 1 << " " << blue << line[i] << r << end;
-	cout << gray << "    ==============" << end << white << "  Choose a channel to join (1 ~ n)" << end; 
-	string c; 
-	if (!std::getline(std::cin, c))
-		{_run = false;return;}
-	cout << red << c << r <<endl;
-	size_t fd = atoi(c.c_str());
-	cout << yellow << "fd = " << fd << end;
-	if (fd != 0 && fd <= line.size() )
-		join(line[fd - 1]);
-	else {
-		cout << gray << "input out of range" << end;
-		join();
-	}
-}
 
 //--------------------------- Misc ----------------------------------------
 

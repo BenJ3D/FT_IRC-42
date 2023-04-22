@@ -89,7 +89,7 @@ bool Client::isOperatorInChannel(Channel &channel) const
 	for (vector<int>::iterator it = chanOp.begin(); it != chanOp.end(); it++)
 		if (*it == this->get_id())
 			return true;
-	return false;
+	return _is_operator; //TODO: to verif
 }
 
 /**

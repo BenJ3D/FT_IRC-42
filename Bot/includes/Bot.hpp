@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 06:32:18 by amiguez           #+#    #+#             */
-/*   Updated: 2023/04/19 20:07:41 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/20 15:59:31 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,18 +47,16 @@ class Bot{
 		bool _run;
 
 		string _channel;
-		map<string, CmdFunc > m_cmd;
-
 
 		void init_cmds();
-			void ping(string input);
+			void help();
+			void ping();
 			void rps(string input);
-			void help(string input);
-			void quit(string input);
-			void bj_bob(string input);
+			void bj_bob();
 
-			void part(string input);
 			void join(string chan = "");
+			void part();
+			void quit();
 
 		int send_serv(string input);
 		string recv_serv();

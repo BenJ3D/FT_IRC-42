@@ -268,10 +268,9 @@ void Server::kick(vector<string> args, int cl){
 			continue;
 		}
 
-		vector<int> chan_op = chan_temp.getOperators();
-		if (find(chan_op.begin(),chan_op.end(), cl) == chan_op.end()){
-				Rep().E482(cl, _client[cl].get_nick(), chan[i]);
-				continue;
+		if (!_client[cl].isOperatorInChannel(_channel[chan[i]])){
+			Rep().E482(cl, _client[cl].get_nick(), chan[i]);
+			continue;
 		}
 
 		for(size_t j = 0; j < usrs_fd.size(); j++){

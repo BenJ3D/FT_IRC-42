@@ -108,19 +108,27 @@ void					Channel::removeClient(int fd_client)
 	}
 }
 
+/**
+ * @brief Confirm to everyone that fd_client have leaved the chan
+ * 
+ * @param isQuit true if cmd == QUIT 
+ * @param isQuit false if cmd == PART
+ */
 void	Channel::ClientLeave(int fd_client, Server &serv, string const & msg, bool isQuit)
 {
-	string ret = ":" + serv.get_client()[fd_client].get_nick() + "!" + serv.get_client()[fd_client].get_username() + "@" + string(SERVER_NAME);
+	string ret ;
+	// = ":" + serv.get_client()[fd_client].get_nick() + "!" + serv.get_client()[fd_client].get_username() + "@" + string(SERVER_NAME);
 	if (isQuit)
-		ret = " QUIT " + _name + " " + msg + "\r\n";
+		ret = " QUIT " + msg + "\r\n";
 	else
 		ret = " PART " + _name + " " + msg + "\r\n";
-	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
-	{
-		if (send((*it).first, ret.c_str(), ret.length(), 0) == -1)
-			serv.send_error(fd_client);
-		cout << ANSI::gray << "{send} => " << ANSI::purple << ret << endl;
-	}
+	// for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
+	// {
+	// 	if (send((*it).first, ret.c_str(), ret.length(), 0) == -1)
+	// 		serv.send_error(fd_client);
+	// 	cout << ANSI::gray << "{send} => " << ANSI::purple << ret << endl;
+	// }
+	confirm_to_all_channel_client(fd_client, ret, serv, *this);
 	this->_list.erase(fd_client);
 }
 

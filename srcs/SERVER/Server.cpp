@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/19 21:00:11 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/22 17:32:48 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,7 @@ int Server::openSocket(int port)
 		if (select(_max_fd + 1, &_read_fds, NULL, NULL, NULL) == -1)
 		{
 			cerr << "Erreur lors de l'utilisation de la fonction select" << endl;
+			perror("select");
 			return 1;
 		}
 
@@ -206,7 +207,7 @@ int Server::openSocket(int port)
 				{
 					string str_buff(buffer);
 					cout << ANSI::purple << "\n### Recv client " << (*it).first << " ###\n"
-						 << ANSI::italic << str_buff.c_str() << ANSI::purple << "#####################\n"
+						 << ANSI::italic << str_buff.c_str() << endl << ANSI::r << ANSI::purple << "#####################\n"
 						 << endl;
 					if (str_buff == " " || str_buff == "\r\n" || str_buff == "\n" || str_buff.empty())
 						continue;

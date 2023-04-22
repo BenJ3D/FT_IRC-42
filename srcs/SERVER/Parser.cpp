@@ -21,7 +21,7 @@ void	Server::init_parsing_map()
 	this->commands["PASS"] = make_pair(1, &Server::pass);
 	this->commands["NOTICE"] = make_pair(1, &Server::cmd_notice);
 	this->commands["MODE"] = make_pair(0, &Server::mode);
-	this->commands["KICK"] = make_pair(0, &Server::kick);
+	this->commands["KICK"] = make_pair(1, &Server::kick);
 	this->commands["JOIN"] = make_pair(0, &Server::join);
 	this->commands["LIST"] = make_pair(0, &Server::list);
 	this->commands["TOPIC"] = make_pair(0, &Server::topic);

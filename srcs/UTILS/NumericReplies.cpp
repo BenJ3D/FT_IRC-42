@@ -23,18 +23,25 @@ void Server::notice(int const &fd, string msg) {
 	cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 }
 
-void Server::confirm_to_all_channel_client(int const &fd, string msg, Server &serv, Channel chan) {
+/**
+ * @brief Send the complete msg to everyone on
+ * 
+ * @param fd 
+ * @param msg 
+ * @param serv 
+ * @param chan 
+ */
+void confirm_to_all_channel_client(int const &fd, string msg, Server &serv, Channel chan) {
 	
 	// map<int, Client>::iterator it = _client.begin();
 	map<int, std::pair<char, std::vector<std::string> > > list = chan.getList();
 	map<int, std::pair<char, std::vector<std::string> > >::const_iterator it2 = list.begin();
-	for(; it2 != list.end(); ++it2)
+	msg = ":" + serv.get_client()[fd].get_nick() + "!" + serv.get_client()[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
+	for(; it2 != list.end(); ++it2) // for everyone in chan
 	{
-			msg = ":" + serv.get_client()[fd].get_nick() + "!" + serv.get_client()[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
 			if (send(it2->first, msg.c_str(), msg.length(), 0) == -1)
-				send_error(fd);
-			
-			cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
+				serv.send_error(fd);
+			cout << ANSI::gray << "{send} comf => " << ANSI::purple << msg << endl;
 	}
 
 	// for (; it != _client.end(); it++)
