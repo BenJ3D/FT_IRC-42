@@ -17,7 +17,6 @@ class Channel
 
 		Channel();
 		Channel( int fd_client, string const & name);
-		// Channel( int fd_client, string const & name, string const & passwd );
 		~Channel();
 
 		void										addClient(int fd_client, char mode);
@@ -30,29 +29,36 @@ class Channel
 		void										addBlackList(int fd_client);
 		void										removeBlackList(int fd_client);
 
+		void										addInviteList(int fd_client);
+		void										removeInviteList(int fd_client);
 
 		void										setInviteOnly(bool const & inviteOnly);
 		void										setModerated(bool const & moderated);
 		void										setLimit(int const & limit);
 		void										setTopic(string const & topic);
 		void										setPasswd(string const & passwd);
-		void										setMode(char const & mode);  // = for public | * for private | @ for secret
+		void										setVisibilityMode(char const & mode);  //== channel mode ==>> for public | * for private | @ for secret
 		bool										isInviteOnly( void );
-		int											getNbClient( void );
+		void										setOwner(int fd_client);
 
+		bool										isClientInInviteList(int fd_client);
+		bool										isClientInBlackList(int fd_client);
+
+		int											getNumberClientInChannel( void );
 		vector<int>									getBlackList();
+		vector<int>									getInviteList();
 		map<int, pair<char, vector<string> > >	&	getList();
 		vector<int>									getOperators();
 		string										getPasswd();
 		string										getTopic();
 		string										getName();
-		char										getMode();
-		char										getClientMode(int fd_client);
+		set<char>									getModes();
+		string										getModesStr();
+		char										getVisibilityMode(); //== channel mode
+		// char										getClientMode(int fd_client);
 		string										ListNick(Server &serv, int fd_client);
 		string										list_all_nick(map<int, Client>& clients);
-		bool										requiredPass;
-
-		bool										isExistChannelName(string const & channelName);
+		int											getOwner();
 
 		// string const &								getMode();
 
@@ -60,6 +66,7 @@ class Channel
 	private:
 		
 		bool										isOperator(int fd_client);
+		bool										_requiredPass;
 
 		bool 										_isInviteOnly;
 		bool 										_isModerated;
@@ -71,7 +78,9 @@ class Channel
 		vector<int>									_inviteList; // fd_client -- permet dinviter le client sans besoin de passwd (si mode +k), valable pour une connection
 		map<int, pair<char, vector<string> > >		_list; // fd_client, mode, flags
 		int 										_limit;
-		char										_mode; // = for public | * for private | @ for secret
+		char										_visibilityMode; // = for public | * for private | @ for secret
+		set<char>									_modes;
+		int											_owner;
 };
 
 #endif /* ********************************************************* CHANNEL_H */

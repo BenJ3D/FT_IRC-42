@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/20 23:33:03 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/22 21:45:43 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 # include <fstream>
 # include <vector>
 # include <map>
+# include <set>
 
 # include "../UTILS/ANSI.hpp"
 # include "./Channel.hpp"
@@ -106,9 +107,9 @@ class Server
 		void					send_error(int fd);
 
 		/* --- PARSING --- */
-		void			parser(string command, int client_fd);
-		vector<string>	split_to_point(string str);
-		std::string		trim(std::string str);
+		void					parser(string command, int client_fd);
+		vector<string>			split_to_point(string str);
+		std::string				trim(std::string str);
 		vector<string>	super_split(string cmd, int nb_arg);
 		// void 			confirm_to_all_channel_client(int const &fd, string msg, Server &serv, Channel chan);
 
@@ -116,6 +117,7 @@ class Server
 		bool					isExistChannelName(string const &channelName);
 		int						findClientFdWithNick(string const &nick);
 		bool					isClientOnChannel(int client_fd);
+		int						idClientFromNick(string const nick);
 };
 
 void confirm_to_client(const int &fd, string msg, Server &serv);

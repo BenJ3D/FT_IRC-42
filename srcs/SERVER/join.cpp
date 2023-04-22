@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 15:02:34 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/17 00:07:03 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/22 21:48:03 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,14 @@ void Server::join(vector<string> args, int fd_client) // TODO: check le premier 
 
 	cerr << ANSI::red << "pass.size = " << pass.size() << endl << ANSI::reset;
 
-	for (size_t i = pass.size(); i < chan.size(); ++i) // remplir de pass vide pour simplifier la suite :}
+	for (size_t i = pass.size(); i < chan.size(); ++i) // remplir de pass vide pour simplifier la suite
 		pass.push_back("");
 	vector<string>::const_iterator it_chan = chan.begin();
 	vector<string>::const_iterator it_passwd = pass.begin();
 	for (; it_chan != chan.end(); ++it_chan, ++it_passwd)
 	{
-	
 		if (checkNameChannelIsGood(*it_chan))
+		{
 			if (_channel.find(*it_chan) == _channel.end())
 			{
 				_channel[*it_chan] = Channel(fd_client, *it_chan);
@@ -63,7 +63,7 @@ void Server::join(vector<string> args, int fd_client) // TODO: check le premier 
 				confirm_to_client(fd_client, "JOIN " + *it_chan, *this);
 				confirm_to_client(fd_client, "MODE " + *it_chan + " +o " + clientNick, *this);
 
-				Rep().R353(fd_client, clientNick, *it_chan, clientNick, _channel[*it_chan].getMode(), _channel[*it_chan].getList().at(fd_client).first);
+				Rep().R353(fd_client, clientNick, *it_chan, clientNick, _channel[*it_chan].getVisibilityMode(), _channel[*it_chan].getList().at(fd_client).first); // FIXME: FAUX
 				Rep().R366(fd_client, clientNick, *it_chan);
 			}
 			else
@@ -71,8 +71,12 @@ void Server::join(vector<string> args, int fd_client) // TODO: check le premier 
 				for (vector<int>::iterator it = _channel[*it_chan].getBlackList().begin(); it != _channel[*it_chan].getBlackList().end(); it++)
 					if ((*it) == fd_client)
 						return Rep().E474(fd_client, clientNick, *it_chan);
-
-				if (_channel.at(*it_chan).requiredPass)					//y a til un passwd de set
+				// TODO: verif si le channel est en mode invite only et si le client est dans _inviteList
+				
+				//afficher _channel.at(*it_chan).isInviteOnly() et _channel.at(*it_chan).isClientInInviteList(fd_client) dans cerr pour debug
+				// cerr << ANSI::blue << "DEBUG TEST isInviteOnly = " << _channel.at(*it_chan).isInviteOnly()  << endl
+				// << "DEBUG TEST isClientInInviteList = " << _channel.at(*it_chan).isClientInInviteList(fd_client) << ANSI::reset << endl;
+				if (!_channel.at(*it_chan).getPasswd().empty()) // y a til un passwd de set
 				{
 					if (_channel.at(*it_chan).getPasswd().compare(*it_passwd) != 0) // si oui, est ce le bon passwd en param (si pas de pass channel et un pass en param, ce dernier est ignorer)
 					{
@@ -80,15 +84,30 @@ void Server::join(vector<string> args, int fd_client) // TODO: check le premier 
 						continue;
 					}
 				}
+				
+				if (_channel.at(*it_chan).isInviteOnly() == true && _channel.at(*it_chan).isClientInInviteList(fd_client) == false)
+				{
+					cerr << ANSI::red << "DEBUG TEST INVITE ONLY" << ANSI::reset << endl;
+					return Rep().E473(fd_client, clientNick, *it_chan);
+				}
+				
+				if (_channel.at(*it_chan).isClientInBlackList(fd_client) == true)
+				{
+					cerr << ANSI::red << "DEBUG TEST BLACK LIST" << ANSI::reset << endl;
+					return Rep().E474(fd_client, clientNick, *it_chan);
+				}
+
+
 				_channel[*it_chan].addClient(fd_client, ' ');
 				confirm_to_client(fd_client, "JOIN " + *it_chan, *this);
 				string user_list = _channel[*it_chan].ListNick(*this, fd_client);
-				Rep().R353(fd_client, clientNick, *it_chan, user_list, _channel[*it_chan].getMode(), _channel[*it_chan].getList().at(fd_client).first);
+				Rep().R353(fd_client, clientNick, *it_chan, user_list, _channel[*it_chan].getVisibilityMode(), _channel[*it_chan].getList().at(fd_client).first); // FIXME: FAUX
 				Rep().R366(fd_client, clientNick, *it_chan);
 				cerr << ANSI::red << "DEBUG TEST USER LIST = " << user_list << ANSI::reset << endl;
-					
+
 				// }
 			}
+		}
 		else
 			Rep().E476(fd_client, _client.at(fd_client).get_nick());
 		// if (it_passwd != pass.end())

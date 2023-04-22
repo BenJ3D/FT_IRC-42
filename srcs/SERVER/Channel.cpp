@@ -10,14 +10,15 @@ Channel::Channel()
 
 #include "../UTILS/ANSI.hpp"
 
-Channel::Channel(int fd_client, string const & name) :  requiredPass(false), _name(name), _mode('=')
+Channel::Channel(int fd_client, string const & name) :  _requiredPass(false), _name(name), _visibilityMode('='), _isInviteOnly(false), _isModerated(false), _limit(10), _topic("")
 {
 	// setPasswd("42");
 	_list[fd_client] = make_pair('@', vector<string>());
+	setOwner(fd_client);
 }
 
 //En faite a priori on ne peux pas creer de channel tout en definissant un passwd
-// Channel::Channel(int fd_client, string const & name, string const & passwd ) : requiredPass(false), _name(name), _mode('=')//TODO: DBG
+// Channel::Channel(int fd_client, string const & name, string const & passwd ) : requiredPass(false), _name(name), _modes('=')//TODO: DBG
 // {
 // 	_list[fd_client] = make_pair('@', vector<string>());
 // }
@@ -29,7 +30,7 @@ Channel::Channel(int fd_client, string const & name) :  requiredPass(false), _na
 
 Channel::~Channel()
 {
-	
+
 }
 
 string Channel::ListNick(Server &serv, int fd_client)
@@ -48,6 +49,21 @@ string Channel::ListNick(Server &serv, int fd_client)
 	return list;
 }
 
+int Channel::getOwner() //TODO: check if working //PK , copilot... sert a RIEN ?!!
+{
+	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
+		if ((*it).second.first == '@')
+			return (*it).first;
+	return 0;
+}
+
+bool Channel::isOperator(int fd_client)
+{
+	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
+		if ((*it).first == fd_client && (*it).second.first == '@')
+			return true;
+	return false;
+}
 
 map<int, pair<char, vector<string> > >	&	Channel::getList()
 {
@@ -132,6 +148,22 @@ void	Channel::ClientLeave(int fd_client, Server &serv, string const & msg, bool 
 	this->_list.erase(fd_client);
 }
 
+void Channel::addOperator(int fd_client) //TODO : check if cli
+{
+	//if client deja dans le channel ? sinon return une erreur IRC:
+	if (_list.find(fd_client) == _list.end())
+		return;
+	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
+	{
+		if ((*it).first == fd_client)
+		{
+			(*it).second.first = '@';
+			//TODO: send to all client channel -->> ben!~ben@ipserver.net MODE #chan +o :nickname
+			break;
+		}
+	}
+}
+
 void Channel::removeOperator(int fd_client)
 {
 	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
@@ -144,7 +176,57 @@ void Channel::removeOperator(int fd_client)
 	}
 }
 
-void					Channel::setTopic(string const & topic)
+void Channel::addBlackList(int fd_client)
+{
+	_blackList.push_back(fd_client);
+	//TODO: si client deja dans le channel, le kick avec PART
+}
+
+void Channel::removeBlackList(int fd_client)
+{
+	for (vector<int>::iterator it = _blackList.begin(); it != _blackList.end(); it++)
+	{
+		if ((*it) == fd_client)
+		{
+			_blackList.erase(it);
+			break;
+		}
+	}
+}
+
+void Channel::addInviteList(int fd_client)
+{
+	_inviteList.push_back(fd_client);
+}
+
+void Channel::removeInviteList(int fd_client)
+{
+	for (vector<int>::iterator it = _inviteList.begin(); it != _inviteList.end(); it++)
+	{
+		if ((*it) == fd_client)
+		{
+			_inviteList.erase(it);
+			break;
+		}
+	}
+}
+
+void Channel::setInviteOnly(bool const &inviteOnly)
+{
+	_isInviteOnly = inviteOnly;
+}
+
+void Channel::setModerated(bool const &moderated)
+{
+	_isModerated = moderated;
+}
+
+void Channel::setLimit(int const &limit)
+{
+	_limit = limit;
+}
+
+void Channel::setTopic(string const &topic)
 {
 	_topic = topic;
 }
@@ -158,19 +240,32 @@ string					Channel::getName()
 	return _name;
 }
 
+set<char> Channel::getModes()
+{
+	return set<char>();
+}
+
+string Channel::getModesStr()
+{
+	string modes;
+	for (set<char>::iterator it = _modes.begin(); it != _modes.end(); it++)
+		modes += (*it);
+	return modes;
+}
+
 string					Channel::getPasswd()
 {
 	return _passwd;
 }
 
-char 					Channel::getMode()
+char 					Channel::getVisibilityMode()
 {
-	return _mode;
+	return _visibilityMode;
 }
 
 bool 					Channel::isInviteOnly()
 {
-	return (_mode == 'i');
+	return this->_isInviteOnly;
 }
 
 vector<int>	Channel::getBlackList()
@@ -178,19 +273,53 @@ vector<int>	Channel::getBlackList()
 	return this->_blackList;
 }
 
-void 					Channel::setPasswd(string const & passwd)
+vector<int> Channel::getInviteList()
+{
+	return this->_inviteList;
+}
+
+
+
+void	Channel::setPasswd(string const & passwd)
 {
 	_passwd = passwd;
 }
 
-void 					Channel::setMode(char const & mode)
+void Channel::setVisibilityMode(char const &mode)
 {
-	_mode = mode;
+	_visibilityMode = mode;
 }
 
-int					Channel::getNbClient()
+// void 					Channel::setMode(char const & mode)
+// {
+// 	_modes = mode;
+// }
+
+int					Channel::getNumberClientInChannel()
 {
 	return _list.size();
+}
+
+void Channel::setOwner(int fd_client)
+{
+	_owner = fd_client;
+}
+
+bool Channel::isClientInInviteList(int fd_client)
+{
+	cerr << ANSI::red << "isClientInInviteList start" << ANSI::reset << endl;
+	for (vector<int>::iterator it = _inviteList.begin(); it != _inviteList.end(); it++)
+		if ((*it) == fd_client)
+			return true;
+	return false;
+}
+
+bool Channel::isClientInBlackList(int fd_client)
+{
+	for (vector<int>::iterator it = _blackList.begin(); it != _blackList.end(); it++)
+		if ((*it) == fd_client)
+			return true;
+	return false;
 }
 
 
