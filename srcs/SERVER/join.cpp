@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 15:02:34 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/20 02:08:22 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/22 02:24:06 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ void Server::join(vector<string> args, int fd_client) // TODO: check le premier 
 	vector<string>::const_iterator it_passwd = pass.begin();
 	for (; it_chan != chan.end(); ++it_chan, ++it_passwd)
 	{
-	
 		if (checkNameChannelIsGood(*it_chan))
 			if (_channel.find(*it_chan) == _channel.end())
 			{
@@ -71,6 +70,13 @@ void Server::join(vector<string> args, int fd_client) // TODO: check le premier 
 				for (vector<int>::iterator it = _channel[*it_chan].getBlackList().begin(); it != _channel[*it_chan].getBlackList().end(); it++)
 					if ((*it) == fd_client)
 						return Rep().E474(fd_client, clientNick, *it_chan);
+				//TODO: verif si le channel est en mode invite only et si le client est dans _inviteList
+
+				if (_channel.at(*it_chan).isClientInInviteList(fd_client) == false && _channel.at(*it_chan).isInviteOnly() == true)
+				{
+					cerr << ANSI::red << "DEBUG TEST INVITE ONLY" << ANSI::reset << endl;
+					return Rep().E473(fd_client, clientNick, *it_chan);
+				}
 
 				if (!_channel.at(*it_chan).getPasswd().empty())					//y a til un passwd de set
 				{

@@ -3,15 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 02:46:29 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/20 17:03:14 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/22 02:33:20 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
+/******************* MODE CLIENT *************************/
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
 void Server::mode_client(vector<string> args, int fd_client)
 {
 	if (args[2][0] != '+' && args[2][0] != '-')
@@ -126,6 +135,41 @@ int countNbrMode(std::string str)
 	return count;
 }
 
+string returnArgsAppendWithoutSeparator(string str, char separator)
+{
+	string ret;
+	for (string::iterator it = str.begin(); it != str.end(); ++it)
+	{
+		char c = *it;
+		if (c != separator)
+			ret += c;
+	}
+	return ret;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
+/******************* MODE CHANNEL ************************/
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
 void Server::mode_channel(vector<string> args, int fd_client)
 {
 	if (args[2][0] != '+' && args[2][0] != '-')
@@ -133,7 +177,11 @@ void Server::mode_channel(vector<string> args, int fd_client)
 		Rep().E501(fd_client, _client[fd_client].get_nick());
 		return ;
 	}
-	vector<string>	modeParams = split_sep(args[3], ','); //split les arguments des modes
+	cerr << ANSI::red << "mode_channel1" << endl << ANSI::reset;
+	vector<string>	modeParams; //split les arguments des modes
+	if (args.size() > 3)
+		modeParams = split_sep(args[3], ',');
+	cerr << ANSI::red << "mode_channel2" << endl << ANSI::reset;
 	//TODO: remplir modeParams avec des "" pour avoir la meme taille que args[2].size() // correspondance <modes> <modeParams>
 	for (long unsigned int i = 0; i < (countNbrMode(args[2]) - modeParams.size()); ++i)
 		modeParams.push_back("");
@@ -244,7 +292,7 @@ void Server::mode_channel(vector<string> args, int fd_client)
 					delMode.insert('k');
 				}
 			}
-			break;
+			break; 
 		case 'l': // limit number of users
 			if (mod)
 			{
@@ -253,13 +301,19 @@ void Server::mode_channel(vector<string> args, int fd_client)
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
 					return ;
 				}
-				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick()) //FIXME: plutot isOperator
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
 					return ;
 				}
 				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
 				{
+					//check if only digit in it
+					if (modeParamsMap[*it].find_first_not_of("0123456789") != string::npos)
+					{
+						Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
+						return ;
+					}
 					_channel[args[1]].setLimit(atoi(modeParamsMap[*it].c_str()));
 					addMode.insert('l');
 				}
@@ -342,24 +396,32 @@ void Server::mode_channel(vector<string> args, int fd_client)
 		case 's': // secret
 			if (mod)
 			{
-
+				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
+					return ;
+				}
+				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					_channel[args[1]].setVisibilityMode('@');
+					addMode.insert('s');
+				}
 			}
 			else
 			{
-
+				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
+					return ;
+				}
+				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				{
+					_channel[args[1]].setVisibilityMode('=');
+					delMode.insert('s');
+				}
 			}
 			break;
 		case 't': // empêche les utilisateurs qui ne sont pas des opérateurs de canal d'envoyer des messages au canal (sujet uniquement).
-			if (mod)
-			{
-
-			}
-			else
-			{
-
-			}
-			break;
-		case 'b': // empêche les utilisateurs qui ne sont pas des opérateurs de canal d'envoyer des messages au canal (sujet uniquement).
 			if (mod)
 			{
 				
@@ -369,12 +431,66 @@ void Server::mode_channel(vector<string> args, int fd_client)
 
 			}
 			break;
+		case 'b': //banList mask.
+			if (mod)
+			{
+	
+			}
+			else
+			{
+
+			}
+
+			break;
 		default: // error
 			Rep().E472(fd_client, _client[fd_client].get_nick(), *it);
 			break;
 		}
 	}
+		string appendFullCmdMod;//
+	if (addMode.size() > 1) // si on a des modes a ajouter
+		for(set<char>::iterator it = addMode.begin(); it != addMode.end(); it++)
+			appendFullCmdMod += *it;
+	if (delMode.size() > 1) //	si on a des modes a supprimer
+		for(set<char>::iterator it = delMode.begin(); it != delMode.end(); it++)
+			appendFullCmdMod += *it;
+
+	// if(appendFullCmdMod.size() > 0)
+	// 	_client[fd_client].set_modes_str(appendFullCmdMod);
+	// string appendArgs = returnArgsAppendWithoutSeparator(args[2], ',');
+	string appendMode;
+	for(map<char, string>::iterator it = modeParamsMap.begin(); it != modeParamsMap.end(); it++)
+	{
+		if (it->second.size() > 0)
+			appendMode += it->first;
+	}
+	string appendArgs;
+	for(map<char, string>::iterator it = modeParamsMap.begin(); it != modeParamsMap.end(); it++)
+	{
+		if (it->second.size() > 0)
+			appendArgs += it->second;
+	}
+
+
+	if (!appendFullCmdMod.empty())	// si on a des modes a ajouter ou supprimer, envoie tout les modes + et - valide au client
+		if (!appendArgs.empty())
+			confirm_to_client(fd_client, "MODE " + args[1] + " " + appendFullCmdMod + " :" + appendArgs, _client);
+		else
+			confirm_to_client(fd_client, "MODE " + args[1] + " :"+ appendFullCmdMod, _client);
+		// confirm_to_client(fd_client, "MODE " + args[1] + appendFullCmdMod + " :" + appendArgs, _client);// FIXME: {send} => :user!@minitel_rose # +k :+k
+		// Rep().R221(fd_client, _client[fd_client].get_nick(), appendFullCmdMod);
+	addMode.clear();
+	delMode.clear();
 }
+
+
+
+
+
+
+
+
+
 
 void Server::mode(vector<string> args, int fd_client) 
 {

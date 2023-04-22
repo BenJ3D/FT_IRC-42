@@ -28,6 +28,8 @@ class Channel
 		void										addBlackList(int fd_client);
 		void										removeBlackList(int fd_client);
 
+		void										addInviteList(int fd_client);
+		void										removeInviteList(int fd_client);
 
 		void										setInviteOnly(bool const & inviteOnly);
 		void										setModerated(bool const & moderated);
@@ -39,8 +41,11 @@ class Channel
 		int											getNbClient( void );
 		void										setOwner(int fd_client);
 
+		bool										isClientInInviteList(int fd_client);
+
 
 		vector<int>									getBlackList();
+		vector<int>									getInviteList();
 		map<int, pair<char, vector<string> > >	&	getList();
 		vector<int>									getOperators();
 		string										getPasswd();

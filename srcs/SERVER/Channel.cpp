@@ -130,7 +130,7 @@ void Channel::removeOperator(int fd_client)
 void Channel::addBlackList(int fd_client)
 {
 	_blackList.push_back(fd_client);
-	//TODO: si client deja dans le channel, le kick
+	//TODO: si client deja dans le channel, le kick avec PART
 }
 
 void Channel::removeBlackList(int fd_client)
@@ -140,6 +140,23 @@ void Channel::removeBlackList(int fd_client)
 		if ((*it) == fd_client)
 		{
 			_blackList.erase(it);
+			break;
+		}
+	}
+}
+
+void Channel::addInviteList(int fd_client)
+{
+	_inviteList.push_back(fd_client);
+}
+
+void Channel::removeInviteList(int fd_client)
+{
+	for (vector<int>::iterator it = _inviteList.begin(); it != _inviteList.end(); it++)
+	{
+		if ((*it) == fd_client)
+		{
+			_inviteList.erase(it);
 			break;
 		}
 	}
@@ -210,6 +227,13 @@ vector<int>	Channel::getBlackList()
 	return this->_blackList;
 }
 
+vector<int> Channel::getInviteList()
+{
+	return this->_inviteList;
+}
+
+
+
 void 					Channel::setPasswd(string const & passwd)
 {
 	_passwd = passwd;
@@ -233,6 +257,14 @@ int					Channel::getNbClient()
 void Channel::setOwner(int fd_client)
 {
 	_owner = fd_client;
+}
+
+bool Channel::isClientInInviteList(int fd_client)
+{
+	for (vector<int>::iterator it = _inviteList.begin(); it != _inviteList.end(); it++)
+		if ((*it) == fd_client)
+			return true;
+	return false;
 }
 
 /*
