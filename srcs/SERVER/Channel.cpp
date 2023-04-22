@@ -10,7 +10,7 @@ Channel::Channel()
 
 #include "../UTILS/ANSI.hpp"
 
-Channel::Channel(int fd_client, string const & name) :  _requiredPass(false), _name(name), _visibilityMode('=')
+Channel::Channel(int fd_client, string const & name) :  _requiredPass(false), _name(name), _visibilityMode('='), _isInviteOnly(false), _isModerated(false), _limit(10), _topic("")
 {
 	// setPasswd("42");
 	_list[fd_client] = make_pair('@', vector<string>());
@@ -30,6 +30,7 @@ Channel::Channel(int fd_client, string const & name) :  _requiredPass(false), _n
 
 Channel::~Channel()
 {
+
 }
 
 string Channel::ListNick(map<int, Client> & clients, int fd_client)
@@ -48,7 +49,7 @@ string Channel::ListNick(map<int, Client> & clients, int fd_client)
 	return list;
 }
 
-int Channel::getOwner() //TODO: check if working
+int Channel::getOwner() //TODO: check if working //PK , copilot... sert a RIEN ?!!
 {
 	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
 		if ((*it).second.first == '@')
@@ -216,10 +217,7 @@ char 					Channel::getVisibilityMode()
 
 bool 					Channel::isInviteOnly()
 {
-	set<char>::iterator it = _modes.find('i');
-	if (it == _modes.end())
-		return false;
-	return true;
+	return this->_isInviteOnly;
 }
 
 vector<int>	Channel::getBlackList()
@@ -234,7 +232,7 @@ vector<int> Channel::getInviteList()
 
 
 
-void 					Channel::setPasswd(string const & passwd)
+void	Channel::setPasswd(string const & passwd)
 {
 	_passwd = passwd;
 }
@@ -249,7 +247,7 @@ void Channel::setVisibilityMode(char const &mode)
 // 	_modes = mode;
 // }
 
-int					Channel::getNbClient()
+int					Channel::getNumberClientInChannel()
 {
 	return _list.size();
 }
@@ -261,11 +259,21 @@ void Channel::setOwner(int fd_client)
 
 bool Channel::isClientInInviteList(int fd_client)
 {
+	cerr << ANSI::red << "isClientInInviteList start" << ANSI::reset << endl;
 	for (vector<int>::iterator it = _inviteList.begin(); it != _inviteList.end(); it++)
 		if ((*it) == fd_client)
 			return true;
 	return false;
 }
+
+bool Channel::isClientInBlackList(int fd_client)
+{
+	for (vector<int>::iterator it = _blackList.begin(); it != _blackList.end(); it++)
+		if ((*it) == fd_client)
+			return true;
+	return false;
+}
+
 
 /*
 ** --------------------------------- OVERLOAD ---------------------------------

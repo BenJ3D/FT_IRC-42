@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/17 03:50:44 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/22 18:20:11 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,13 +93,14 @@ class Server
 		Server &operator=(Server const &rhs);
 
 		/* --- PARSING --- */
-		void			parser(string command, int client_fd);
-		vector<string>	split_to_point(string str);
-		std::string		trim(std::string str);
+		void					parser(string command, int client_fd);
+		vector<string>			split_to_point(string str);
+		std::string				trim(std::string str);
 
 		bool					isExistChannelName(string const &channelName);
 		int						findClientFdWithNick(string const &nick);
 		bool					isClientOnChannel(int client_fd);
+		int						idClientFromNick(string const nick);
 };
 
 void confirm_to_client(const int &fd, string msg, map<int, Client>);

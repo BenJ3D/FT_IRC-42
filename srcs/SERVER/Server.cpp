@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/17 01:33:13 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/22 18:21:58 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,5 +230,26 @@ bool Server::isExistChannelName(string const &channelName)
 		return true;
 	return false;
 }
+
+
+/**
+ * @brief return fd_client with nick
+ * return 0 if not found
+ * 
+ * @param nick 
+ * @return int 
+ */
+int	Server::idClientFromNick(string const nick)
+{
+	map<int, Client>::iterator it = _client.begin();
+
+	for (; it != _client.end(); ++it)
+	{
+		if (it->second.get_nick().compare(nick) == 0)
+			return it->first;
+	}
+	return 0;
+}
+
 
 /* ************************************************************************** */
