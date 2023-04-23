@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 02:46:29 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/23 05:19:39 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/23 17:50:24 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,12 +226,13 @@ void Server::mode_channel(vector<string> args, int fd_client)
 					continue ;
 				}
 				if (!_client[fd_client].isOperatorInChannel(_channel[args[1]]))  // TODO: that for operator
-				// if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				// if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
 					continue ;
 				}
-				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				// if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					_channel[args[1]].addOperator(fd_client, *this, args[3]);
 					addMode.insert('o');
@@ -249,12 +250,12 @@ void Server::mode_channel(vector<string> args, int fd_client)
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
 					continue ;
 				}
-				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
 					continue ;
 				}
-				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					_channel[args[1]].removeOperator(fd_client, *this, args[3]);
 					delMode.insert('o');
@@ -274,12 +275,12 @@ void Server::mode_channel(vector<string> args, int fd_client)
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
 					continue ;
 				}
-				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
 					continue ;
 				}
-				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					_channel[args[1]].setPasswd(modeParamsMap[*it]);
 					addMode.insert('k');
@@ -297,12 +298,12 @@ void Server::mode_channel(vector<string> args, int fd_client)
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
 					continue ;
 				}
-				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
 					continue ;
 				}
-				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					_channel[args[1]].setPasswd("");
 					delMode.insert('k');
@@ -322,12 +323,12 @@ void Server::mode_channel(vector<string> args, int fd_client)
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
 					continue ;
 				}
-				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick()) //FIXME: plutot isOperator
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true) //FIXME: plutot isOperator
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
 					continue ;
 				}
-				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					//check if only digit in it
 					if (modeParamsMap[*it].find_first_not_of("0123456789") != string::npos)
@@ -351,12 +352,12 @@ void Server::mode_channel(vector<string> args, int fd_client)
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
 					continue ;
 				}
-				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
 					continue ;
 				}
-				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					_channel[args[1]].setLimit(0);
 					delMode.insert('l');
@@ -367,12 +368,12 @@ void Server::mode_channel(vector<string> args, int fd_client)
 			if (mod)
 			{
 				
-				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
 					continue ;
 				}
-				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					_channel[args[1]].setInviteOnly(true);
 					addMode.insert('i');
@@ -380,12 +381,12 @@ void Server::mode_channel(vector<string> args, int fd_client)
 			}
 			else
 			{
-				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
 					continue ;
 				}
-				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					_channel[args[1]].setInviteOnly(false);
 					delMode.insert('i');
@@ -400,12 +401,12 @@ void Server::mode_channel(vector<string> args, int fd_client)
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
 					continue ;
 				}
-				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick()) //TODO: tchecker plutot si client is operator
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true) //TODO: tchecker plutot si client is operator
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
 					continue ;
 				}
-				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					_channel[args[1]].setVisibilityMode('*');
 					addMode.insert('p');
@@ -418,12 +419,12 @@ void Server::mode_channel(vector<string> args, int fd_client)
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
 					continue ;
 				}
-				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
 					continue ;
 				}
-				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					_channel[args[1]].setVisibilityMode('=');
 					delMode.insert('p');
@@ -438,12 +439,12 @@ void Server::mode_channel(vector<string> args, int fd_client)
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
 					continue ;
 				}
-				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
 					continue ;
 				}
-				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					_channel[args[1]].setVisibilityMode('@');
 					addMode.insert('s');
@@ -456,12 +457,12 @@ void Server::mode_channel(vector<string> args, int fd_client)
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
 					continue ;
 				}
-				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
 					continue ;
 				}
-				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
+				if (_channel[args[1]].isOperatorInChannel(fd_client) == true)
 				{
 					_channel[args[1]].setVisibilityMode('=');
 					delMode.insert('s');

@@ -341,6 +341,12 @@ bool Channel::isClientInBlackList(int fd_client)
 	return false;
 }
 
+bool Channel::isOperatorInChannel(int fd_client)
+{
+	if (_list.find(fd_client) == _list.end())
+		return false;
+	return true;
+}
 
 /*
 ** --------------------------------- OVERLOAD ---------------------------------

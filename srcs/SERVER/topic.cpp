@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 15:04:18 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/23 02:16:24 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/23 18:15:09 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,19 @@ void Server::topic(vector<string> args, int fd_client)
 		if (res.size() == 1)
 			res.push_back("");
 		cout << "res[0] = " << res[0] << " res1 = " << res[1] << endl; //FIXME: remove
-		string msg = res[1];
+		string msg;
+		bool startCopy = false;
+		for (string::const_iterator it = res[1].begin(); it != res[1].end(); it++)
+		{
+			if (startCopy)
+				msg += *it;
+			if (*it == ':')
+				startCopy = true;
+		}
 		if (msg == "")
 			msg = "";
-		else
-			msg = res[1].substr(1);
+		// else
+		// 	msg = res[1].substr(1);
 
 		if(_channel.at(args[1]).getClientMode(fd_client) == '@')
 		{
