@@ -10,8 +10,10 @@ Channel::Channel()
 
 #include "../UTILS/ANSI.hpp"
 
-Channel::Channel(int fd_client, string const & name) :  _requiredPass(false), _name(name), _visibilityMode('='), _isInviteOnly(false), _isModerated(false), _limit(10), _topic("")
+Channel::Channel(int fd_client, string const & name, Server &refServer) :  _requiredPass(false), _name(name), _visibilityMode('='), _isInviteOnly(false), _isModerated(false), _limit(10), _topic(""), _refServ(&refServer)
 {
+	_list[fd_client] = make_pair('@', vector<string>());
+	setOwner(fd_client);
 	// setPasswd("42");
 	_list[fd_client] = make_pair('@', vector<string>());
 	setOwner(fd_client);
@@ -30,7 +32,6 @@ Channel::Channel(int fd_client, string const & name) :  _requiredPass(false), _n
 
 Channel::~Channel()
 {
-
 }
 
 string Channel::ListNick(Server &serv, int fd_client)
@@ -148,38 +149,46 @@ void	Channel::ClientLeave(int fd_client, Server &serv, string const & msg, bool 
 	this->_list.erase(fd_client);
 }
 
-void Channel::addOperator(int fd_client) //TODO : check if cli
+void Channel::addOperator(int fd_client, Server &serv, string target_nick) //TODO : check if cli
 {
 	//if client deja dans le channel ? sinon return une erreur IRC:
-	if (_list.find(fd_client) == _list.end())
+	cerr << "addOperator HELLLOOO" << endl;
+	if (_list.find(serv.findClientFdWithNick(target_nick)) == _list.end())
 		return;
 	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
 	{
-		if ((*it).first == fd_client)
+		if ((*it).first == serv.findClientFdWithNick(target_nick))
 		{
 			(*it).second.first = '@';
-			//TODO: send to all client channel -->> ben!~ben@ipserver.net MODE #chan +o :nickname
+			confirm_to_all_channel_client(fd_client, " MODE " + _name + " +o " + target_nick + "\r\n", serv, *this);
 			break;
 		}
 	}
 }
 
-void Channel::removeOperator(int fd_client)
+void Channel::removeOperator(int fd_client, Server &serv, string target_nick)
 {
+	if (_list.find(serv.findClientFdWithNick(target_nick)) == _list.end())
+		return;
 	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
 	{
-		if ((*it).first == fd_client)
+		if ((*it).first == serv.findClientFdWithNick(target_nick))
 		{
 			(*it).second.first = ' ';
+			confirm_to_all_channel_client(fd_client, " MODE " + _name + " -o " + target_nick + "\r\n", serv, *this);
 			break;
 		}
 	}
 }
 
-void Channel::addBlackList(int fd_client)
+void Channel::addBlackList(int target ,int fd_client)
 {
-	_blackList.push_back(fd_client);
-	//TODO: si client deja dans le channel, le kick avec PART
+	_blackList.push_back(target);
+	if (_list.find(target) != _list.end())
+	{
+		// removeClient(fd_client); //TODO: chopper kick de server
+		_refServ->parser("KICK "+ _name + " " + _refServ->get_client()[target].get_nick() + " :User got blacklisted :P", fd_client);
+	}
 }
 
 void Channel::removeBlackList(int fd_client)
@@ -229,6 +238,16 @@ void Channel::setLimit(int const &limit)
 void Channel::setTopic(string const &topic)
 {
 	_topic = topic;
+}
+
+void Channel::setTopicClientSetter(string const &msg)
+{
+	_topicClientSetter = msg;
+}
+
+string Channel::getTopicClientSetter()
+{
+	return _topicClientSetter;
 }
 
 string					Channel::getTopic()

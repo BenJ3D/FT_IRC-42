@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/22 21:45:43 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/23 03:44:39 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef void (Server::*CmdFunc)(std::vector<std::string>, int);
 # define SERVER_DATE "2021-03-29"
 
 class Channel;
+class Client;
 class Server
 {
 	private:
@@ -80,11 +81,11 @@ class Server
 		void					kick(vector<string> args, int cl);
 		void					privmsg(vector<string> args, int cl);
 		void					motd(vector<string> args, int cl);
-		void						motd_auth(int cl);
+		void					motd_auth(int cl);
 		void					cmd_notice(vector<string> args, int client_fd);
 		void					mode(vector<string> args, int fd_client);
-		void						mode_channel(vector<string> args, int fd_client);
-		void						mode_client(vector<string> args, int fd_client);
+		void					mode_channel(vector<string> args, int fd_client);
+		void					mode_client(vector<string> args, int fd_client);
 		void					join(vector<string> args, int fd_client);
 		void					list(vector<string> args, int fd_client);
 		void					topic(vector<string> args, int fd_client);
@@ -92,6 +93,7 @@ class Server
 		void					quit(vector<string> args, int fd_client);
 		void					oper(vector<string> args, int fd_client);
 		void					names(vector<string> args, int fd_client);
+		void					invite(vector<string> args, int fd_client);
 
 	public:
 
@@ -117,7 +119,6 @@ class Server
 		bool					isExistChannelName(string const &channelName);
 		int						findClientFdWithNick(string const &nick);
 		bool					isClientOnChannel(int client_fd);
-		int						idClientFromNick(string const nick);
 };
 
 void confirm_to_client(const int &fd, string msg, Server &serv);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/16 22:38:14 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/22 19:15:34 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/23 02:48:20 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,19 @@ void	Server::quit(vector<string> args, int fd_client) {
 		msg = res[1].substr(1);
 
 	cout << ANSI::yellow << "Quit msg == '" << msg << "'" << ANSI::r << endl;
-	for (map<string, Channel>::iterator it = _channel.begin(); it != _channel.end();){ //for all chan
+	for (map<string, Channel>::iterator it = _channel.begin(); it != _channel.end();it++){ //for all chan
 		if (it->second.getClientMode(fd_client) != '0') // If in chan
 			it->second.ClientLeave(fd_client, *this, msg, true); // say he leave
-		if (it->second.getList().empty()) // Erase chan if empty
-			_channel.erase(it);
-		it++;
 	}
-	if (_client.find(fd_client) != _client.end())
+	map<string, Channel> tmp = _channel;
+	for (map<string, Channel>::iterator it = tmp.begin(); it != tmp.end();it++){ //for all chan
+		if (it->second.getList().empty())
+			_channel.erase(it->first);
+	}
+	if (_client.find(fd_client) != _client.end()){
+		cout << ANSI::back_blue << ANSI::gray << "erase client :" << fd_client << ANSI::r << endl;	
 		_client.erase(fd_client);
+	}
+	cout << ANSI::yellow << "Client SIZE :" << _client.size() << endl;
 	close(fd_client);
-
 }

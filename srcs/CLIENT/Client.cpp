@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/22 21:41:37 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/23 03:32:41 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,18 @@
 
 Client::Client() : _id(-1), _nick("*"), _is_auth(false), _is_pass(false), _is_away(false), _away_message("is away")
 {
+	cout << ANSI::red << ANSI::back_blue << "default const called " << ANSI::r << endl;
 }
 
-Client::Client(int fd) : _id(fd), _nick("*"), _is_auth(false), _pass_confirm(false), _away_message("is away")
+Client::Client(int fd) : _id(fd), _nick("*"), _is_auth(false), _is_pass(false), _is_away(false), _away_message("is away")
 {
+	_is_pass = false;
+	cout << ANSI::red << ANSI::back_blue << "fd const called " << ANSI::r << endl;
 }
 
 Client::Client( const Client & src )
 {
+	cout << ANSI::red << ANSI::back_blue << "copy const called " << ANSI::r << endl;
 	*this = src;
 }
 
@@ -34,6 +38,7 @@ Client::Client( const Client & src )
 */
 
 Client::~Client() {
+	cout << ANSI::red << ANSI::back_blue << "destructor called " << ANSI::r << endl;
 }
 
 
@@ -47,6 +52,7 @@ Client &				Client::operator=( Client const & rhs ) {
 		this->_id = rhs._id;
 		this->_nick = rhs._nick;
 		this->_is_auth = rhs._is_auth;
+		this->_is_pass = rhs._is_pass;
 	}
 	return *this;
 }
@@ -55,7 +61,7 @@ std::ostream &			operator<<( std::ostream & o, Client const & i ) {
 	o << "FD = " << i.get_id() << 
 	" | NICK = " << i.get_nick() << 
 	" | FIST_CONNECT = " << i.get_is_auth() << 
-	" | PASS = " << i.get_pass() << std::endl;
+	" | PASS = " << i.get_pass_confirm() << std::endl;
 	return o;
 }
 
@@ -86,7 +92,7 @@ bool Client::isOperatorInChannel(Channel &channel) const
 	for (vector<int>::iterator it = chanOp.begin(); it != chanOp.end(); it++)
 		if (*it == this->get_id())
 			return true;
-	return _is_operator; //TODO: to verif
+	return _is_operator;
 }
 
 /**
@@ -147,40 +153,12 @@ std::string Client::get_realname() const {
  * @brief set the client password verified (PASS command)
  * @param connect 
  */
-bool Client::get_pass() const {
+bool Client::get_pass_confirm() const {
 	return this->_is_pass;
 }
 
 bool Client::get_is_auth() const {
 	return this->_is_auth;
-}
-
-string Client::get_away_message() const {
-	return this->_away_message;
-}
-
-void Client::unset_mode_a() {
-	this->_is_away = false;
-}
-
-void Client::unset_mode_i() {
-	this->_is_invisible = false;
-}
-
-void Client::unset_mode_o() {
-	this->_is_operator = false;
-}
-
-// void Client::unset_mode_O() {
-// 	this->_is_reciving_server_notices = false;
-// }
-
-void Client::unset_mode_s() {
-	this->_is_reciving_server_notices = false;
-}
-
-void Client::unset_mode_w() {
-	this->_is_wallops = false;
 }
 
 bool Client::get_mode_a() const {
@@ -195,11 +173,6 @@ bool Client::get_mode_o() const {
 	return this->_is_operator;
 }
 
-// bool Client::get_mode_O() const
-// {
-// 	return false;
-// }
-
 bool Client::get_mode_s() const {
 	return this->_is_reciving_server_notices;
 }
@@ -208,7 +181,7 @@ bool Client::get_mode_w() const {
 	return this->_is_wallops;
 }
 
-string const & Client::get_away_message() const {
+string		Client::get_away_message() {
 	return this->_away_message;
 }
 
@@ -223,8 +196,9 @@ void Client::set_nick(std::string nick) {
 	this->_nick = nick;
 }
 
-void Client::comfirm_password() {
-	this->_is_pass = true;
+void Client::set_is_pass(bool is_pass)
+{
+	this->_is_pass = is_pass;
 }
 
 /*
@@ -261,6 +235,8 @@ void Client::set_mode_i() {
 void Client::set_mode_o() {
 	_modes.insert('o');
 	this->_is_operator = true;
+	cerr << ANSI::flash << "set mode o" << ANSI::reset << endl;
+	// confirm_to_all_channel_client(this->_id, this->_nick + " is now an operator");
 }
 
 // void Client::set_mode_O() {
@@ -301,11 +277,6 @@ void Client::unset_mode_o() {
 	_modes.erase('o');
 	this->_is_operator = false;
 }
-
-// void Client::unset_mode_O() {
-	// _modes.erase('O');
-// 	this->_is_reciving_server_notices = false;
-// }
 
 void Client::unset_mode_s() {
 	_modes.erase('s');

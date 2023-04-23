@@ -24,12 +24,13 @@ void	Server::init_parsing_map()
 	this->commands["KICK"] = make_pair(1, &Server::kick);
 	this->commands["JOIN"] = make_pair(0, &Server::join);
 	this->commands["LIST"] = make_pair(0, &Server::list);
-	this->commands["TOPIC"] = make_pair(0, &Server::topic);
+	this->commands["TOPIC"] = make_pair(1, &Server::topic);
 	this->commands["PART"] = make_pair(1, &Server::part);
 	this->commands["QUIT"] = make_pair(1, &Server::quit);
 	this->commands["OPER"] = make_pair(0, &Server::oper);
 	this->commands["MOTD"] = make_pair(0, &Server::motd);
 	this->commands["NAMES"] = make_pair(0, &Server::names);
+	this->commands["INVITE"] = make_pair(0, &Server::invite);
 	cout << ANSI::yellow << "init PARSING OK" << endl;
 }
 
@@ -104,7 +105,7 @@ void	Server::parser(string cmd, int client_fd) {
 	{
 	
 		vector<string> args = split_cmd(*it, ' ');
-		if (!args.empty()&& !(_client[client_fd].get_pass() || args[0] == "PASS"))
+		if (!args.empty()&& !(_client[client_fd].get_pass_confirm() || args[0] == "PASS"))
 			continue;
 		if (commands.find(args[0]) != commands.end())
 		{

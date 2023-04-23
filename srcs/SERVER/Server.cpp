@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/22 21:49:58 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/23 03:56:47 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ ostream &operator<<(ostream &o, Server const &i)
 void	Server::send_error(int fd_client)
 {
 	this->_delete_client = true;
-	vector<string> res(1, "QUIT");
+	vector<string> res;
 	res.push_back("QUIT :");
 	if (_client.find(fd_client) != _client.end())
 		(this->*commands["QUIT"].second)(res, fd_client);

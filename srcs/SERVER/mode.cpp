@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 02:46:29 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/22 21:57:46 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/23 04:49:30 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,9 +158,6 @@ string returnArgsAppendWithoutSeparator(string str, char separator)
 
 
 
-
-
-
 /*********************************************************/
 /*********************************************************/
 /*********************************************************/
@@ -172,21 +169,19 @@ string returnArgsAppendWithoutSeparator(string str, char separator)
 /*********************************************************/
 void Server::mode_channel(vector<string> args, int fd_client)
 {
+
 	if (args[2][0] != '+' && args[2][0] != '-')
 	{
 		Rep().E501(fd_client, _client[fd_client].get_nick());
 		return ;
 	}
-	cerr << ANSI::red << "mode_channel1" << endl << ANSI::reset;
 	vector<string>	modeParams; //split les arguments des modes
 	if (args.size() > 3)
 		modeParams = split_sep(args[3], ',');
-	cerr << ANSI::red << "mode_channel2" << endl << ANSI::reset;
-	//TODO: remplir modeParams avec des "" pour avoir la meme taille que args[2].size() // correspondance <modes> <modeParams>
+	
 	for (long unsigned int i = 0; i < (countNbrMode(args[2]) - modeParams.size()); ++i)
 		modeParams.push_back("");
-	map<char, string> modeParamsMap; //for une map, plus simple en faite TODO: WIP WIP WIP WIP
-	//boucle for pour remplir la map avec tous les mode (char) de args[2] mais attention au segfault si on a pas de parametre pour un mode,, si pas de parametre, on met un string vide
+	map<char, string> modeParamsMap;
 	for (long unsigned int i = 0; i < args[2].size(); i++)
 	{
 		if (args[2][i] != '+' && args[2][i] != '-')
@@ -220,6 +215,11 @@ void Server::mode_channel(vector<string> args, int fd_client)
 		case 'o': // operator channel
 			if (mod)
 			{
+				if(args.size() < 4)
+				{
+					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
+					continue ;
+				}
 				if (modeParamsMap[*it].empty())
 				{
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
@@ -232,12 +232,17 @@ void Server::mode_channel(vector<string> args, int fd_client)
 				}
 				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
 				{
-					_channel[args[1]].addOperator(*it);
+					_channel[args[1]].addOperator(fd_client, *this, args[3]);
 					addMode.insert('o');
 				}
 			}
 			else
 			{
+				if(args.size() < 4)
+				{
+					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
+					continue ;
+				}
 				if (modeParamsMap[*it].empty())
 				{
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
@@ -250,7 +255,7 @@ void Server::mode_channel(vector<string> args, int fd_client)
 				}
 				if (_client[fd_client].get_nick() == _client[_channel[args[1]].getOwner()].get_nick())
 				{
-					_channel[args[1]].removeOperator(*it);
+					_channel[args[1]].removeOperator(fd_client, *this, args[3]);
 					delMode.insert('o');
 				}
 			}
@@ -258,6 +263,11 @@ void Server::mode_channel(vector<string> args, int fd_client)
 		case 'k': // key
 			if (mod)
 			{
+				if(args.size() < 4)
+				{
+					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
+					continue ;
+				}
 				if (modeParamsMap[*it].empty())
 				{
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
@@ -276,6 +286,11 @@ void Server::mode_channel(vector<string> args, int fd_client)
 			}
 			else
 			{
+				if(args.size() < 4)
+				{
+					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
+					continue ;
+				}
 				if (modeParamsMap[*it].empty())
 				{
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
@@ -296,6 +311,11 @@ void Server::mode_channel(vector<string> args, int fd_client)
 		case 'l': // limit number of users
 			if (mod)
 			{
+				if(args.size() < 4)
+				{
+					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
+					continue ;
+				}
 				if (modeParamsMap[*it].empty())
 				{
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
@@ -320,6 +340,11 @@ void Server::mode_channel(vector<string> args, int fd_client)
 			}
 			else
 			{
+				if(args.size() < 4)
+				{
+					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
+					continue ;
+				}
 				if (modeParamsMap[*it].empty())
 				{
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
@@ -340,6 +365,7 @@ void Server::mode_channel(vector<string> args, int fd_client)
 		case 'i': // invite only
 			if (mod)
 			{
+				
 				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
@@ -368,6 +394,11 @@ void Server::mode_channel(vector<string> args, int fd_client)
 		case 'p': // private // = for public | * for private | @ for secret
 			if (mod)
 			{
+				if(args.size() < 4)
+				{
+					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
+					continue ;
+				}
 				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick()) //TODO: tchecker plutot si client is operator
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
@@ -381,6 +412,11 @@ void Server::mode_channel(vector<string> args, int fd_client)
 			}
 			else
 			{
+				if(args.size() < 4)
+				{
+					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
+					continue ;
+				}
 				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
@@ -396,6 +432,11 @@ void Server::mode_channel(vector<string> args, int fd_client)
 		case 's': // secret
 			if (mod)
 			{
+				if(args.size() < 4)
+				{
+					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
+					continue ;
+				}
 				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
@@ -409,6 +450,11 @@ void Server::mode_channel(vector<string> args, int fd_client)
 			}
 			else
 			{
+				if(args.size() < 4)
+				{
+					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
+					continue ;
+				}
 				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
@@ -434,26 +480,36 @@ void Server::mode_channel(vector<string> args, int fd_client)
 		case 'b': //banList mask.
 			if (mod)
 			{
-				cerr << ANSI::green << "client dbg banlist mode.cpp:437 =" << idClientFromNick(args[3]) << ANSI::reset << endl;
+				if(args.size() < 4)
+				{
+					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
+					continue ;
+				}
+				cerr << ANSI::green << "client dbg banlist mode.cpp:437 =" << findClientFdWithNick(args[3]) << ANSI::reset << endl;
 
-				if (idClientFromNick(args[3]) == 0) //client not exist
+				if (findClientFdWithNick(args[3]) == 0) //client not exist
 				{
 					Rep().E401(fd_client, _client[fd_client].get_nick(), args[3]);
 					continue ;
 				}
-				_channel.at(args[1]).addBlackList(_client[idClientFromNick(args[3])].get_id());
-				addMode.insert('b');
+				_channel.at(args[1]).addBlackList(_client[findClientFdWithNick(args[3])].get_id(), fd_client);
+				addMode.insert('b');				
+				
 			}
 			else
 			{
-				if (idClientFromNick(args[3]) == 0) //client not exist
+				if(args.size() < 4)
+				{
+					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
+					continue ;
+				}
+				if (findClientFdWithNick(args[3]) == 0) //client not exist
 				{
 					Rep().E401(fd_client, _client[fd_client].get_nick(), args[3]);
 					continue ;
 				}
-				_channel.at(args[1]).removeBlackList(idClientFromNick(args[3]));
-				//TODO: si client deja dans channel, le kick
-					delMode.insert('b');
+				_channel.at(args[1]).removeBlackList(findClientFdWithNick(args[3]));
+				delMode.insert('b');
 			}
 			break;
 		default: // error
@@ -490,9 +546,9 @@ void Server::mode_channel(vector<string> args, int fd_client)
 	if (!appendFullCmdMod.empty())	// si on a des modes a ajouter ou supprimer, envoie tout les modes + et - valide au client
 	{
 		if (!appendArgs.empty())
-			confirm_to_client(fd_client, "MODE " + args[1] + " " + appendFullCmdMod + " :" + appendArgs, _client);
+			confirm_to_client(fd_client, "MODE " + args[1] + " " + appendFullCmdMod + " :" + appendArgs, *this);
 		else
-			confirm_to_client(fd_client, "MODE " + args[1] + " :" + appendFullCmdMod, _client);
+			confirm_to_client(fd_client, "MODE " + args[1] + " :" + appendFullCmdMod, *this);
 	}
 		// confirm_to_client(fd_client, "MODE " + args[1] + appendFullCmdMod + " :" + appendArgs, _client);// FIXME: {send} => :user!@minitel_rose # +k :+k
 		// Rep().R221(fd_client, _client[fd_client].get_nick(), appendFullCmdMod);

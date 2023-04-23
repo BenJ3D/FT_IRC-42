@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/22 21:42:45 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/23 03:00:27 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ class Client
 		void				set_username(string nick);
 		void				set_realname(string nick);
 
-		void				now_auth();
 		void				password_verified();
 
 		bool				isOperatorInChannel(Channel & channel) const; // delete if getMod OK
@@ -83,11 +82,12 @@ class Client
 		bool				get_mode_o() const;
 		bool				get_mode_s() const;
 		bool				get_mode_w() const;
-		void			now_auth();
-		void			now_pass();
-
-		string const &		get_away_message() const;
 		
+		void				now_auth();
+		void				now_pass();
+
+		string				get_away_message();
+		void				set_is_pass(bool is_pass);
 		
 
 
