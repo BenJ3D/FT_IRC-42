@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/23 05:25:43 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/24 00:02:52 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,28 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Client::Client() : _id(-1), _nick("*"), _is_auth(false), _is_pass(false), _is_away(false), _away_message("is away")
+Client::Client() 
+: 
+_id(-1), 
+_nick("*"), 
+_is_auth(false), 
+_is_pass(false), 
+_is_operator(false),
+_is_away(false), 
+_away_message("is away")
 {
 	cout << ANSI::red << ANSI::back_blue << "default const called " << ANSI::r << endl;
 }
 
-Client::Client(int fd) : _id(fd), _nick("*"), _is_auth(false), _is_pass(false), _is_away(false), _away_message("is away")
+Client::Client(int fd) 
+:
+_id(fd), 
+_nick("*"), 
+_is_auth(false), 
+_is_pass(false), 
+_is_operator(false),
+_is_away(false), 
+_away_message("is away")
 {
 	_is_pass = false;
 	cout << ANSI::red << ANSI::back_blue << "fd const called " << ANSI::r << endl;

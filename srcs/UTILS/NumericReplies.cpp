@@ -608,7 +608,7 @@ void Rep::E403(int const &fd, const string &cNick, const string& chanName)
  */
 void Rep::E404(int const &fd, const string &cNick, const string& chanName)
 {
-	output << "404 " << cNick << " " << chanName << " :Cannot send to channel";
+	output << "404 " << cNick << " " << chanName << " :You cannot send messages to this channel";
 	send_to_client(output.str(), fd);
 	clearBuffer();
 }

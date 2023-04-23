@@ -43,6 +43,7 @@ class Channel
 
 		bool										isClientInInviteList(int fd_client);
 		bool										isClientInBlackList(int fd_client);
+		bool										isClientInChannel(int fd_client);
 		bool										isOperatorInChannel(int fd_client);
 
 		int											getNumberClientInChannel( void );

@@ -341,11 +341,24 @@ bool Channel::isClientInBlackList(int fd_client)
 	return false;
 }
 
+bool Channel::isClientInChannel(int fd_client)
+{
+	if (_list.find(fd_client) != _list.end())
+		return true;
+	return false;
+}
+
 bool Channel::isOperatorInChannel(int fd_client)
 {
-	if (_list.find(fd_client) == _list.end())
-		return false;
-	return true;
+	vector<int>::const_iterator it = getOperators().begin();
+	for (; it != getOperators().end(); it++)
+	{
+		if ((*it) == fd_client)
+			return true;
+	}
+	if (_refServ->get_client().find(fd_client)->second.get_mode_o() == true)
+		return true;
+	return false;
 }
 
 /*

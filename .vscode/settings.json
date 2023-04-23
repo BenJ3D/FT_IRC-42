@@ -52,5 +52,7 @@
 		"stdexcept": "cpp",
 		"streambuf": "cpp",
 		"typeinfo": "cpp",
+		"complex": "cpp",
+		"cinttypes": "cpp"
 	}
 }

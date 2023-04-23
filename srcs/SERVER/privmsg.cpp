@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 20:39:56 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/23 03:28:04 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/24 00:44:58 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,16 @@ void Server::privmsg(vector<string> args, int client_fd) {
 				Rep().E403(client_fd, _client[client_fd].get_nick(), target_list[i]);
 				continue;
 			}
+
+			// verifier si le client est pas dans la blacklist du channel ou si channel a un mdp et que le client n'est pas dans le channel
+			if (_channel.at(target_list[i]).isClientInBlackList(client_fd) || \
+			(!_channel.at(target_list[i]).getPasswd().empty() && _channel.at(target_list[i]).isClientInChannel(client_fd) == false) || \
+			(_channel.at(target_list[i]).isInviteOnly() && _channel.at(target_list[i]).isClientInChannel(client_fd) == false))
+			{
+				Rep().E404(client_fd, _client[client_fd].get_nick(), target_list[i]);
+				continue;
+			}
+
 			for (map<int, pair<char, vector<string> > >::const_iterator it = _channel[target_list[i]].getList().begin(); it != _channel[target_list[i]].getList().end(); it++)
 			{
 				cout << ANSI::red << "DEBUG TEST PRIVMSG = " << target_list[i] << ANSI::reset << endl;
