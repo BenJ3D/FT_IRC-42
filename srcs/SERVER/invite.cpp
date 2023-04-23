@@ -145,6 +145,6 @@ Matthew Thomas
  O | O | O
 ---+---+---
  X | O | X
-		Ahaha i win !!
+		Ahaha i win !! -O
 
  */
