@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 02:46:29 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/23 04:49:30 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/23 05:19:39 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,7 +225,8 @@ void Server::mode_channel(vector<string> args, int fd_client)
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
 					continue ;
 				}
-				if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
+				if (!_client[fd_client].isOperatorInChannel(_channel[args[1]]))  // TODO: that for operator
+				// if (_client[fd_client].get_nick() != _client[_channel[args[1]].getOwner()].get_nick())
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
 					continue ;
