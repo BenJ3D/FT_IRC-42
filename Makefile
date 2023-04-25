@@ -6,7 +6,7 @@
 #    By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/22 02:28:45 by bducrocq          #+#    #+#              #
-#    Updated: 2023/04/25 14:52:08 by bducrocq         ###   ########lyon.fr    #
+#    Updated: 2023/04/25 17:57:03 by bducrocq         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,7 +48,7 @@ OBJ = $(OBJ_NAME)
 CC = c++ $(STDCPP) $(CFLAGS) $(SANITIZE) $(LLDBFLAG)
 
 CFLAGS = -Wall -Wextra -Werror
-SANITIZE = -fsanitize=address
+SANITIZE =# -fsanitize=address
 LLDBFLAG = -g3
 STDCPP = -std=c++98
 
