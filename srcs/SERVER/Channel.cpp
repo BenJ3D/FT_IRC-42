@@ -160,7 +160,7 @@ void Channel::addOperator(int fd_client, Server &serv, string target_nick) //TOD
 		if ((*it).first == serv.findClientFdWithNick(target_nick))
 		{
 			(*it).second.first = '@';
-			confirm_to_all_channel_client(fd_client, " MODE " + _name + " +o " + target_nick + "\r\n", serv, *this);
+			confirm_to_all_channel_client_mode_o(fd_client, " MODE " + _name + " +o " + target_nick + "\r\n", serv, *this);
 			break;
 		}
 	}
@@ -175,7 +175,7 @@ void Channel::removeOperator(int fd_client, Server &serv, string target_nick)
 		if ((*it).first == serv.findClientFdWithNick(target_nick))
 		{
 			(*it).second.first = ' ';
-			confirm_to_all_channel_client(fd_client, " MODE " + _name + " -o " + target_nick + "\r\n", serv, *this);
+			confirm_to_all_channel_client_mode_o(fd_client, " MODE " + _name + " -o " + target_nick + "\r\n", serv, *this);
 			break;
 		}
 	}

@@ -45,28 +45,30 @@ void confirm_to_all_channel_client(int const &fd, string msg, Server &serv, Chan
 	}
 }
 
-// /**
-//  * @brief Send the complete msg to everyone on
-//  * 
-//  * @param fd 
-//  * @param msg 
-//  * @param serv 
-//  * @param chan 
-//  */
-// void confirm_to_all_channel_client_mode_o(int const &fd, string msg, Server &serv, Channel chan) {
+/**
+ * @brief Send the complete msg to everyone on
+ * 
+ * @param fd 
+ * @param msg 
+ * @param serv 
+ * @param chan 
+ */
+void confirm_to_all_channel_client_mode_o(int const &fd, string msg, Server &serv, Channel chan) {
 	
-// 	// map<int, Client>::iterator it = _client.begin();
-// 	map<int, std::pair<char, std::vector<std::string> > > list = chan.getList();
-// 	map<int, std::pair<char, std::vector<std::string> > >::const_iterator it2 = list.begin();
-// 	msg = ":" + serv.get_client()[fd].get_nick() + "!" + serv.get_client()[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
-// 	for(; it2 != list.end(); ++it2) // for everyone in chan
-// 	{
-// 		if (fd != )
-// 			if (send(it2->first, msg.c_str(), msg.length(), 0) == -1)
-// 				serv.send_error(fd);
-// 			cout << ANSI::gray << "{send} comf => " << ANSI::purple << msg << endl;
-// 	}
-// }
+	// map<int, Client>::iterator it = _client.begin();
+	map<int, std::pair<char, std::vector<std::string> > > list = chan.getList();
+	map<int, std::pair<char, std::vector<std::string> > >::const_iterator it2 = list.begin();
+	msg = ":" + serv.get_client()[fd].get_nick() + "!" + serv.get_client()[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
+	for(; it2 != list.end(); ++it2) // for everyone in chan
+	{
+		if (fd != it2->first)
+		{
+				if (send(it2->first, msg.c_str(), msg.length(), 0) == -1)
+					serv.send_error(fd);
+				cout << ANSI::gray << "{send} comf => " << ANSI::purple << msg << endl;
+		}
+	}
+}
 
 void confirm_to_client(int const &fd, string msg, Server &serv) {
 	msg = ":" + serv.get_client()[fd].get_nick() + "!" + serv.get_client()[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";

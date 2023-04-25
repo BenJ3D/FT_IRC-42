@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/23 03:44:39 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/25 16:53:58 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ class Server
 
 void confirm_to_client(const int &fd, string msg, Server &serv);
 void confirm_to_all_channel_client(int const &fd, string msg, Server &serv, Channel chan);
+void confirm_to_all_channel_client_mode_o(int const &fd, string msg, Server &serv, Channel chan);
 std::ostream &operator<<(std::ostream &o, Server const &i);
 
 vector<string> split_cmd(const string command, char separator);
