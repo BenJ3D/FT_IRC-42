@@ -105,10 +105,14 @@ void	Server::parser(string cmd, int client_fd) {
 	{
 	
 		vector<string> args = split_cmd(*it, ' ');
+		cout << "DEBUG : " << _client[client_fd].get_pass_confirm() << " " << _client[client_fd].get_is_auth() << " " << args[0] << endl;
 		if (!args.empty() && !(_client[client_fd].get_pass_confirm() || args[0] == "PASS"))
 			continue;
-		if (!_client[client_fd].get_is_auth() && !(args[0] == "NICK" || args[0] == "USER"))
+		else if (_client[client_fd].get_pass_confirm() && !_client[client_fd].get_is_auth() && !(args[0] == "NICK" || args[0] == "USER"))
+		{
+			cout << "NOPEEEEEEEEEEEEEEEEEEEEEEEEEE" << endl;
 			continue;
+		}
 		if (commands.find(args[0]) != commands.end())
 		{
 			cout << ANSI::back_cyan << ANSI::red << "pars" << args[0] << ANSI::r << endl;
