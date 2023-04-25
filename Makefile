@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+         #
+#    By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/22 02:28:45 by bducrocq          #+#    #+#              #
-#    Updated: 2023/04/17 00:09:19 by bducrocq         ###   ########.fr        #
+#    Updated: 2023/04/25 13:58:01 by bducrocq         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
 # Binary
 
-NAME = exec_ircserv
+NAME = ircserv
 
 # Path
 
@@ -47,8 +47,8 @@ OBJ = $(OBJ_NAME)
 
 CC = c++ $(STDCPP) $(CFLAGS) $(SANITIZE) $(LLDBFLAG)
 
-CFLAGS = -Wall -Wextra# -Werror
-SANITIZE = #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror
+SANITIZE = -fsanitize=address
 LLDBFLAG = -g3
 STDCPP = -std=c++98
 

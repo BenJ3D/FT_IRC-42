@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 20:39:56 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/23 03:34:07 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/25 11:46:22 by bducrocq         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@
 void Server::kick(vector<string> args, int cl){
 	if (args.size() < 4)
 		return Rep().E461(cl, _client[cl].get_nick(), args[0]);
+
+	if (!_client[cl].isOperatorInChannel(_channel[args[1]]))
+		return Rep().E482(cl, _client[cl].get_nick(), args[1]);
 
 	vector<string> chan = split_cmd(args[1], ',');
 	vector<string> temp_usr = split_cmd(args[2], ',');
