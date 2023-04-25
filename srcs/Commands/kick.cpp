@@ -6,11 +6,11 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 20:39:56 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/25 18:10:35 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/25 19:01:20 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./Server.hpp"
+#include "Server.hpp"
 
 // send to everyone
 //:blue!~blue@freenode-2on.i6k.qof1pp.IP KICK #4422 target :msg

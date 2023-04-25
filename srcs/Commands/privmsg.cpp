@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 20:39:56 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/24 00:44:58 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/25 19:01:27 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./Server.hpp"
+#include "Server.hpp"
 
 void Server::privmsg(vector<string> args, int client_fd) {
 	if (args[args.size() - 1][0] == '\n')

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   names.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 02:28:16 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/22 22:19:18 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/25 19:01:22 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./Server.hpp"
+#include "Server.hpp"
 
 void	Server::names(vector<string> args, int client_fd)
 {

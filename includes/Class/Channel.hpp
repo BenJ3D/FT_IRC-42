@@ -5,7 +5,7 @@
 # include <string>
 # include <algorithm>
 # include "Server.hpp"
-# include "../CLIENT/Client.hpp"
+# include "Client.hpp"
 
 class Client;
 class Server;

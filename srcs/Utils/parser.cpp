@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./Server.hpp"
+#include "Server.hpp"
 
 void	Server::init_parsing_map()
 {
@@ -105,7 +105,7 @@ void	Server::parser(string cmd, int client_fd) {
 	{
 	
 		vector<string> args = split_cmd(*it, ' ');
-		if (!args.empty()&& !(_client[client_fd].get_pass_confirm() || args[0] == "PASS"))
+		if (!args.empty() && !(_client[client_fd].get_pass_confirm() || args[0] == "PASS"))
 			continue;
 		if (commands.find(args[0]) != commands.end())
 		{

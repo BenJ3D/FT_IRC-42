@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/25 16:53:58 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/25 18:59:43 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,11 @@
 # include <map>
 # include <set>
 
-# include "../UTILS/ANSI.hpp"
-# include "./Channel.hpp"
-# include "../CLIENT/Client.hpp"
-# include "../UTILS/NumericReplies.hpp"
-# include "../UTILS/tools.hpp"
+# include "ANSI.hpp"
+# include "Channel.hpp"
+# include "Client.hpp"
+# include "NumericReplies.hpp"
+# include "tools.hpp"
 
 using namespace std;
 typedef void (Server::*CmdFunc)(std::vector<std::string>, int);
@@ -121,12 +121,7 @@ class Server
 		bool					isClientOnChannel(int client_fd);
 };
 
-void confirm_to_client(const int &fd, string msg, Server &serv);
-void confirm_to_all_channel_client(int const &fd, string msg, Server &serv, Channel chan);
-void confirm_to_all_channel_client_mode_o(int const &fd, string msg, Server &serv, Channel chan);
-std::ostream &operator<<(std::ostream &o, Server const &i);
-
-vector<string> split_cmd(const string command, char separator);
+	std::ostream &operator<<(std::ostream &o, Server const &i);
 
 #endif /* ********************************************************* SERVER_HPP */
 

@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./NumericReplies.hpp"
-#include "./ANSI.hpp"
+#include "NumericReplies.hpp"
+#include "ANSI.hpp"
 
 Rep::Rep() {}
 

@@ -8,7 +8,7 @@ Channel::Channel()
 {
 }
 
-#include "../UTILS/ANSI.hpp"
+#include "ANSI.hpp"
 
 Channel::Channel(int fd_client, string const & name, Server &refServer) :  _requiredPass(false), _name(name), _visibilityMode('='), _isInviteOnly(false), _isModerated(false), _limit(10), _topic(""), _refServ(&refServer)
 {
