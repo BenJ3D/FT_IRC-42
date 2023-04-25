@@ -35,6 +35,6 @@ exec_ircserv
 .nfs*
 Bot/Bob
 
-# .vscode
+.vscode
 .vscode/*
 .vscode/c_cpp_properties.json

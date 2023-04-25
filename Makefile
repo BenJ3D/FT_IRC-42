@@ -6,7 +6,7 @@
 #    By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/25 18:23:10 by amiguez           #+#    #+#              #
-#    Updated: 2023/04/25 19:02:24 by amiguez          ###   ########.fr        #
+#    Updated: 2023/04/25 19:56:07 by amiguez          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -65,12 +65,6 @@ PATH_UTILS	 :=	Utils
 LST_UTILS	 :=	$(addprefix $(PATH_UTILS)/,$(UTILS))
 SRCS_UTILS	 :=	$(addprefix $(PATH_SRCS)/,$(LST_UTILS))
 OBJS_UTILS	 :=	$(addprefix $(PATH_OBJS)/,$(LST_UTILS:.cpp=.o))
-        ####
-# CHANNEL		 :=	channel.cpp
-# PATH_CHANNEL :=	CHANNEL
-# LST_CHANNEL	 :=	$(addprefix $(PATH_CHANNEL)/,$(CHANNEL))
-# SRCS_CHANNEL :=	$(addprefix $(PATH_SRCS)/,$(LST_CHANNEL))
-# OBJS_CHANNEL :=	$(addprefix $(PATH_OBJS)/,$(LST_CHANNEL:.cpp=.o))
         ####
 LST_INCS	 :=	Class/ANSI.hpp\
 				Class/Channel.hpp\
