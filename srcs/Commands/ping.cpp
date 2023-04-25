@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ping.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 15:04:18 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/14 02:45:53 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/25 19:01:25 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./Server.hpp"
+#include "Server.hpp"
 
 void Server::ping(vector<string> args, int cl)
 {

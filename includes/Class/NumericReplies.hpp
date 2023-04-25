@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../SERVER/Server.hpp"
+# include "Server.hpp"
 
 #ifndef NUMERICREPLIES_HPP
 # define NUMERICREPLIES_HPP

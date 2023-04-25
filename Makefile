@@ -3,84 +3,155 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+         #
+#    By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/03/22 02:28:45 by bducrocq          #+#    #+#              #
-#    Updated: 2023/04/25 17:57:03 by bducrocq         ###   ########lyon.fr    #
+#    Created: 2023/04/25 18:23:10 by amiguez           #+#    #+#              #
+#    Updated: 2023/04/25 19:02:24 by amiguez          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-# Binary
+# =====	Binary Name	=====
 
-NAME = ircserv
+NAME := ircserv
 
-# Path
+# -----------------------
+# =====		Path	=====
+# -----------------------
 
-SRC_PATH = ./srcs/
-SRC_EXT = cpp
-INC_EXT = hpp
+PATH_SRCS		:=	srcs
+PATH_OBJS		:=	.objs
+PATH_INCLUDES	:=	includes
 
-OBJ_PATH = ./.objs/
+# -----------------------
+# =====		Files	=====
+# -----------------------
 
-CPPFLAGS = -I./includes/
+LST_SRCS	 :=	main.cpp
+SRCS_SRCS	 :=	$(addprefix $(PATH_SRCS)/,$(LST_SRCS))
+OBJS_SRCS	 :=	$(addprefix $(PATH_OBJS)/,$(LST_SRCS:.cpp=.o))
+        ####
+CLASS		 :=	Channel.cpp\
+				Client.cpp\
+				NumericReplies.cpp\
+				Server.cpp
+PATH_CLASS	 :=	Class
+LST_CLASS	 :=	$(addprefix $(PATH_CLASS)/,$(CLASS))
+SRCS_CLASS	 :=	$(addprefix $(PATH_SRCS)/,$(LST_CLASS))
+OBJS_CLASS	 :=	$(addprefix $(PATH_OBJS)/,$(LST_CLASS:.cpp=.o))
+        ####
+CMDS		 :=	auth.cpp\
+				invite.cpp\
+				join.cpp\
+				kick.cpp\
+				list.cpp\
+				mode.cpp\
+				motd.cpp\
+				names.cpp\
+				oper.cpp\
+				part.cpp\
+				ping.cpp\
+				privmsg.cpp\
+				quit.cpp\
+				topic.cpp
+PATH_CMDS	 :=	Commands
+LST_CMDS	 :=	$(addprefix $(PATH_CMDS)/,$(CMDS))
+SRCS_CMDS	 :=	$(addprefix $(PATH_SRCS)/,$(LST_CMDS))
+OBJS_CMDS	 :=	$(addprefix $(PATH_OBJS)/,$(LST_CMDS:.cpp=.o))
+        ###
+UTILS		 :=	commands.cpp\
+				parser.cpp\
+				tools.cpp
+PATH_UTILS	 :=	Utils
+LST_UTILS	 :=	$(addprefix $(PATH_UTILS)/,$(UTILS))
+SRCS_UTILS	 :=	$(addprefix $(PATH_SRCS)/,$(LST_UTILS))
+OBJS_UTILS	 :=	$(addprefix $(PATH_OBJS)/,$(LST_UTILS:.cpp=.o))
+        ####
+# CHANNEL		 :=	channel.cpp
+# PATH_CHANNEL :=	CHANNEL
+# LST_CHANNEL	 :=	$(addprefix $(PATH_CHANNEL)/,$(CHANNEL))
+# SRCS_CHANNEL :=	$(addprefix $(PATH_SRCS)/,$(LST_CHANNEL))
+# OBJS_CHANNEL :=	$(addprefix $(PATH_OBJS)/,$(LST_CHANNEL:.cpp=.o))
+        ####
+LST_INCS	 :=	Class/ANSI.hpp\
+				Class/Channel.hpp\
+				Class/Client.hpp\
+				Class/NumericReplies.hpp\
+				Class/Server.hpp\
+				tools.hpp
 
-HEADER =	$(shell find $(SRC_PATH) -name '*.$(INC_EXT)')
-# HEADER =	$(wildcard ./includes/*.hpp)
+INCS		 := $(addprefix $(PATH_INCLUDES)/,$(LST_INCS))
 
-# Variable d'inclusion
-# INC = -I./includes/
+# -----------------------
+# =====	Definition	=====
+# -----------------------
 
+SRCS := $(SRCS_SRCS) $(SRCS_UTILS) $(SRCS_CMDS) $(SRCS_CLASS) $(SRCS_CHANNEL)
 
-# Name
+OBJS := $(OBJS_SRCS) $(OBJS_UTILS) $(OBJS_CMDS) $(OBJS_CLASS) $(OBJS_CHANNEL)
 
-SRC_NAME =	$(shell find $(SRC_PATH) -name '*.$(SRC_EXT)')
+# -----------------------
+# =====		Flags	=====
+# -----------------------
 
-OBJ_NAME = $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(SRC_NAME:.cpp=.o))
+CPP		 :=	c++ -std=c++98
+CPPFLAGS :=	-Wall -Wextra -Werror
+SANITIZE :=	-fsanitize=address -g3
 
-# Files
+# -----------------------
+# =====	Cosmetics	=====
+# -----------------------
 
-SRC = $(SRC_NAME)
+ERASE	 :=	\033[2K\r
+GREY	 :=	\033[30m
+RED		 :=	\033[31m
+GREEN	 :=	\033[32m
+YELLOW	 :=	\033[33m
+BLUE	 :=	\033[34m
+PINK	 :=	\033[35m
+CYAN	 :=	\033[36m
+WHITE	 :=	\033[37m
+BOLD	 :=	\033[1m
+UNDER	 :=	\033[4m
+SUR		 :=	\033[7m
+END		 :=	\033[0m
 
-OBJ = $(OBJ_NAME)
+# -----------------------
+# =====		Rules	=====
+# -----------------------
 
-# Flags
+all : $(NAME)
 
-CC = c++ $(STDCPP) $(CFLAGS) $(SANITIZE) $(LLDBFLAG)
+$(NAME) : $(OBJS)
+	echo "$(BLUE)Creation of $(NAME) on linux ...$(END)"
+	$(CPP) $(CPPFLAGS) -I$(PATH_INCLUDES) -Iincludes/Class $(OBJS) -o $@
+	echo "$(GREEN)$(NAME) created$(END)"
 
-CFLAGS = -Wall -Wextra -Werror
-SANITIZE =# -fsanitize=address
-LLDBFLAG = -g3
-STDCPP = -std=c++98
+$(PATH_OBJS)/%.o : $(PATH_SRCS)/%.cpp $(INCS) Makefile | $(PATH_OBJS)
+	printf "$(ERASE)$(CYAN)Compilation of $< ...$(END)$(RED)"
+	$(CPP) -I$(PATH_INCLUDES) -Iincludes/Class $(CPPFLAGS) -o $@ -c $<
 
-# Rules
+$(PATH_OBJS) :
+	mkdir -p $(PATH_OBJS)
+	mkdir -p $(PATH_OBJS)/$(PATH_CMDS)
+	mkdir -p $(PATH_OBJS)/$(PATH_UTILS)
+	mkdir -p $(PATH_OBJS)/$(PATH_CLASS)
 
-all: $(NAME)
+clean :
+	echo "$(BLUE)Removal of .o files of $(NAME) ...$(END)"
+	rm -rf $(PATH_OBJS)
+	echo "$(RED)Files .o deleted\n$(END)"
 
-$(NAME): $(OBJ)
-	@echo "\033[34mCreation of $(NAME) on linux ...\033[0m"
-	@$(CC) $(OBJ) -o $@
-	@echo "\033[32m$(NAME) created\n\033[0m"
+fclean : clean
+	echo "$(BLUE)Removal of $(NAME)...$(END)"
+	rm -rf $(NAME)
+	echo "$(RED)Binary $(NAME) deleted\n$(END)"
 
-$(OBJ_PATH)%.o: $(SRC_PATH)%.$(SRC_EXT) $(HEADER) ./Makefile
-	@mkdir -p $(@D) 2> /dev/null || true
-	$(CC) $(CPPFLAGS) -o $@ -c $<
+git :
+	git add .
+	printf "Message of the commit: " && read msg && git commit -m "$$msg"
+	git push
 
-clean:
-	@echo "\033[33mRemoval of .o files of $(NAME) ...\033[0m"
-	@rm -f $(OBJ)
-	@find $(OBJ_PATH) -type d -empty -delete 2> /dev/null || true
-	@echo "\033[31mFiles .o deleted\n\033[0m"
+re : fclean all
 
-fclean: clean
-	@echo "\033[33mRemoval of $(NAME)...\033[0m"
-	@rm -rf $(NAME)
-	@echo "\033[31mBinary $(NAME) deleted\n\033[0m"
-
-git:
-	@git add .
-	@printf "Message of the commit: " && read msg && git commit -m "$$msg"
-	@git push
-
-re: fclean all
-
-.PHONY: all, clean, fclean, re
+.PHONY : all, clean, fclean, re, $(PATH_OBJS), git
+.SILENT :
