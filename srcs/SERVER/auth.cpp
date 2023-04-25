@@ -25,6 +25,8 @@ void	Server::pass(vector<string> args, int cl_fd) {
 void Server::nick(vector<string> args, int client_fd) {
 	cout << ANSI::cyan << client_fd << " --> " << args[0] << endl;
 
+	if (_client[client_fd].get_pass_confirm())
+		return;
 	if (args.size() < 2)
 		return Rep().E431(client_fd, _client[client_fd].get_nick());
 	string check("[]\\`_^{|}$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -60,6 +62,8 @@ void Server::nick(vector<string> args, int client_fd) {
 }
 
 void Server::user(vector<string> args, int cl) {
+	if (_client[cl].get_pass_confirm())
+		return;
 	cout << ANSI::cyan << cl << " --> " << args[0] << endl;
 
 	if (args.size() < 5)
