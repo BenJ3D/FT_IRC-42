@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/26 15:37:51 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/26 16:51:38 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,7 @@ Client::Client( const Client & src ) {
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
 
-Client::~Client() {
-	if (_id != -1)
-		close (_id);
-}
+Client::~Client() {}
 
 
 /*

@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/26 15:45:22 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/26 16:54:00 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,10 @@ Server::Server(string port, string password) : _pass_word(password)
 Server::~Server()
 {
 	for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++)
+	{
+		close((*it).first);
 		_client.erase(it);
+	}
 }
 
 /*
@@ -186,6 +189,7 @@ int Server::openSocket(int port)
 				if (bytes_received == -1)
 				{
 					cerr << "Erreur lors de la réception des données" << endl;
+					close((*it).first);
 					_client.erase(it);
 					break;
 				}

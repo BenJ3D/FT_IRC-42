@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/16 22:38:14 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/26 09:44:26 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/26 16:51:16 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ void	Server::quit(vector<string> args, int fd_client) {
 			_channel.erase(it->first);
 	}
 	if (_client.find(fd_client) != _client.end()){
-		cout << ANSI::back_blue << ANSI::gray << "erase client :" << fd_client << ANSI::r << endl;	
+		cout << ANSI::back_blue << ANSI::gray << "erase client :" << fd_client << ANSI::r << endl;
+		close(fd_client);
 		_client.erase(fd_client);
 	}
 	cout << ANSI::yellow << "Client SIZE :" << _client.size() << endl;
