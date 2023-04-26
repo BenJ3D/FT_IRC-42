@@ -39,12 +39,12 @@ string Channel::ListNick(Server &serv, int fd_client)
 	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
 	{
 		string msg = ":" + serv.get_client()[fd_client].get_nick() + "!" + serv.get_client()[fd_client].get_username() + "@" + string(SERVER_NAME) + " JOIN :" + _name + "\r\n";
-		if (send((*it).first, msg.c_str(), msg.length(), 0) == -1)
+		if (send_to_user(msg, it->first) == -1)
 			serv.send_error(fd_client);
 		string prefix = ((*it).second.first == '@') ? "@" : ((*it).second.first == '+') ? "+" : "";
 		list += prefix + serv.get_client()[(*it).first].get_nick() + " ";
 
-		cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
+		//cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 	}
 	return list;
 }
@@ -132,9 +132,9 @@ void	Channel::ClientLeave(int fd_client, Server &serv, string const & msg, bool 
 		ret = " PART " + _name + " " + msg + "\r\n";
 	// for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
 	// {
-	// 	if (send((*it).first, ret.c_str(), ret.length(), 0) == -1)
+	// 	if (send_to_client(ret, it->first) == -1)
 	// 		serv.send_error(fd_client);
-	// 	cout << ANSI::gray << "{send} => " << ANSI::purple << ret << endl;
+	// cout << ANSI::gray << "{send} => " << ANSI::purple << ret << endl;
 	// }
 	confirm_to_all_channel_client(fd_client, ret, serv, *this);
 	this->_list.erase(fd_client);
@@ -143,7 +143,7 @@ void	Channel::ClientLeave(int fd_client, Server &serv, string const & msg, bool 
 void Channel::addOperator(int fd_client, Server &serv, string target_nick) //TODO : check if cli
 {
 	//if client deja dans le channel ? sinon return une erreur IRC:
-	cerr << "addOperator HELLLOOO" << endl;
+	// cerr << "addOperator HELLLOOO" << endl;
 	if (_list.find(serv.findClientFdWithNick(target_nick)) == _list.end())
 		return;
 	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
@@ -312,7 +312,7 @@ void Channel::setOwner(int fd_client)
 
 bool Channel::isClientInInviteList(int fd_client)
 {
-	cerr << ANSI::red << "isClientInInviteList start" << ANSI::reset << endl;
+	// cerr << ANSI::red << "isClientInInviteList start" << ANSI::reset << endl;
 	for (vector<int>::iterator it = _inviteList.begin(); it != _inviteList.end(); it++)
 		if ((*it) == fd_client)
 			return true;

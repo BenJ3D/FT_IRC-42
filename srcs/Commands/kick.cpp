@@ -65,15 +65,15 @@ void Server::kick(vector<string> args, int cl){
 					ret += " :" + msg.back();
 			}
 			ret += "\r\n";
-			cout << ANSI::gray << "{send} =>" << ANSI::cmd << ret << ANSI::r << endl; 
+			//cout << ANSI::gray << "{send} =>" << ANSI::cmd << ret << ANSI::r << endl; 
 			for (map<int, pair<char, vector<string> > >::iterator it = cl_in_chan.begin(); it != cl_in_chan.end(); it++){
-				if (send((*it).first, ret.c_str(), ret.length(), 0) == -1)
-					send_error((*it).first);
+				if (send_to_user(ret, it->first) == -1)
+					send_error(it->first);
 			}
 			chan_temp.removeClient((*target).first);
 		}
 		if (_channel[chan[i]].getList().empty()){
-			cout << ANSI::blue << "chan erase" << endl;
+			//cout << ANSI::blue << "chan erase" << endl;
 			_channel.erase(chan[i]);
 		}
 	}

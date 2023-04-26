@@ -89,7 +89,7 @@ OBJS := $(OBJS_SRCS) $(OBJS_UTILS) $(OBJS_CMDS) $(OBJS_CLASS) $(OBJS_CHANNEL)
 
 CPP		 :=	c++ -std=c++98
 CPPFLAGS :=	-Wall -Wextra -Werror
-SANITIZE :=#	-fsanitize=address
+SANITIZE :=	-fsanitize=address
 DBGFLAGS :=	-g3
 
 # -----------------------

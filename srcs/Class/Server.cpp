@@ -107,7 +107,7 @@ int Server::openSocket(int port)
 
 	if (server_fd == -1)
 	{
-		cerr << "Erreur lors de la création du socket" << endl;
+		cerr << ANSI::red << "Erreur lors de la création du socket" << endl;
 		return 1;
 	}
 
@@ -122,14 +122,14 @@ int Server::openSocket(int port)
 	// association du socket à l'adresse et au port
 	if (bind(server_fd, (sockaddr *)&server_address, sizeof(server_address)) == -1)
 	{
-		cerr << "Erreur lors de l'association du socket à l'adresse et au port" << endl;
+		cerr << ANSI::red << "Erreur lors de l'association du socket à l'adresse et au port" << endl;
 		return 1;
 	}
 
 	// mise en écoute des connexions entrantes
 	if (listen(server_fd, SOMAXCONN) == -1)
 	{
-		cerr << "Erreur lors de la mise en écoute des connexions entrantes" << endl;
+		cerr << ANSI::red << "Erreur lors de la mise en écoute des connexions entrantes" << endl;
 		return 1;
 	}
 
@@ -155,9 +155,9 @@ int Server::openSocket(int port)
 		// utilisation de la fonction select pour attendre des connexions entrantes ou des données reçues des clients existants
 		if (select(_max_fd + 1, &_read_fds, NULL, NULL, NULL) == -1)
 		{
-			cerr << "Erreur lors de l'utilisation de la fonction select" << endl;
+			cerr << ANSI::red << "Erreur lors de l'utilisation de la fonction select" << endl;
 			perror("select");
-			return 1;
+			continue;
 		}
 
 		// vérification des connexions entrantes
@@ -168,14 +168,15 @@ int Server::openSocket(int port)
 			if (new_client_fd == -1)
 			{
 				cerr << ANSI::red << "Erreur lors de l'acceptation de la connexion entrante" << endl;
-				return 1;
+				continue;
 			}
 			_client[new_client_fd] = Client(new_client_fd);
-			cout << ANSI::green << ANSI::bold << "Nouvelle connexion entrante sur le socket " << new_client_fd << endl;
+			cout << ANSI::green << ANSI::bold << "Nouvelle connexion entrante sur le socket " << new_client_fd << ANSI::r << endl;
 			if (send(new_client_fd, "", 0, MSG_CONFIRM) == -1)
 			{
+				cerr << ANSI::red << "Erreur lors de l'envoie du 1er msg" << endl;
 				send_error(new_client_fd);
-				return 1;
+				continue;
 			}
 		}
 		_delete_client = false;
@@ -189,23 +190,24 @@ int Server::openSocket(int port)
 
 				if (bytes_received == -1)
 				{
-					cerr << "Erreur lors de la réception des données" << endl;
+					cerr << ANSI::red << "Erreur lors de la réception des données" << endl;
 					close((*it).first);
 					_client.erase(it);
 					break;
 				}
 				else if (!bytes_received)
 				{
-					cout << ANSI::red << "Connexion fermée par le client n°" << (*it).first << endl;
+					cout << ANSI::red << ANSI::bold << "Connexion fermée par le client n°" << it->first << ANSI::r << endl;
 					send_error((*it).first);
 					break;
 				}
 				else
 				{
 					string str_buff(buffer);
-					cout << ANSI::purple << "\n### Recv client " << (*it).first << " ###\n"
-						 << ANSI::italic << str_buff.c_str() << endl << ANSI::r << ANSI::purple << "#####################\n"
-						 << endl;
+					// cout << ANSI::purple << "\n### Recv client " << (*it).first << " ###\n"
+					// 	 << ANSI::italic << str_buff.c_str() << endl << ANSI::r << ANSI::purple << "#####################\n"
+					// 	 << endl;
+					cout << ANSI::green << str_buff << ANSI::r ;
 					if (str_buff == " " || str_buff == "\r\n" || str_buff == "\n" || str_buff.empty())
 						continue;
 

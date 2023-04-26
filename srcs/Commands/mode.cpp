@@ -209,7 +209,7 @@ void Server::mode_channel(vector<string> args, int fd_client)
 			if (modeParams[i - 1].empty()) 
 				modeParamsMap[args[2][i]] = "";
 			else
-				modeParamsMap[args[2][i]] = modeParams[i - 1]; //FIXME: segfault
+				modeParamsMap[args[2][i]] = modeParams[i - 1];
 		}
 	}
 	bool mod = false;

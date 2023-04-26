@@ -52,13 +52,13 @@ vector<string> Server::super_split(string cmd, int nb_arg)
 void Server::cmd_notice(vector<string> args, int client_fd) {
 	if (args[args.size() - 1][0] == '\n')
 		args[args.size() - 1] = args[args.size() - 1].substr(1);
-	cout << ANSI::cyan << client_fd << " --> " << args[0] << endl;
-	for (size_t i = 0; i < args.size(); i++)
-		cerr << ANSI::red << "ARGS[" << i << "] = " << args[i] << ANSI::reset << endl;
+	//cout << ANSI::cyan << client_fd << " --> " << args[0] << endl;
+	// for (size_t i = 0; i < args.size(); i++)
+		// cerr << ANSI::red << "ARGS[" << i << "] = " << args[i] << ANSI::reset << endl;
 
 	string msg = " ";
 	vector<string> res = super_split(args[args.size() - 1], 2); // <CMD> <TARGET> :<MSG>
-	cerr << res.size() << endl;
+	// cerr << res.size() << endl;
 	if (res.size() < 3)
 		return;
 
@@ -75,13 +75,13 @@ void Server::cmd_notice(vector<string> args, int client_fd) {
 				continue;
 			for (map<int, pair<char, vector<string> > >::const_iterator it = _channel[target_list[i]].getList().begin(); it != _channel[target_list[i]].getList().end(); it++)
 			{
-				cout << ANSI::red << "DEBUG TEST PRIVMSG = " << target_list[i] << ANSI::reset << endl;
+				//cout << ANSI::red << "DEBUG TEST PRIVMSG = " << target_list[i] << ANSI::reset << endl;
 				if (it->first != client_fd && !_client[it->first].get_mode_s())
 				{
 					string ret = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_username() + "@" + string(SERVER_NAME) + " NOTICE " + target_list[i] + " " + res[2] + "\r\n";
-					if (send((*it).first, ret.c_str(), ret.length(), 0) == -1)
+					if (send_to_user(ret, it->first) == -1)
 						send_error((*it).first);
-					cout << ANSI::gray << "{send} => " << ANSI::purple << ret << endl;
+					//cout << ANSI::gray << "{send} => " << ANSI::purple << ret << endl;
 				}
 			}
 		}
@@ -91,9 +91,9 @@ void Server::cmd_notice(vector<string> args, int client_fd) {
 			if (dst_fd == -1 || !_client[dst_fd].get_mode_s())
 				continue;
 			string ret = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_username() + "@" + string(SERVER_NAME) + " NOTICE " + target_list[i] + " " + res[2] + "\r\n";
-			if (send(dst_fd, ret.c_str(), ret.length(), 0) == -1)
+			if (send_to_user(ret, dst_fd) == -1)
 				send_error(dst_fd); // FIXME: Just do nothing ?
-			cout << ANSI::gray << "{send} => " << ANSI::purple << ret << endl;
+			//cout << ANSI::gray << "{send} => " << ANSI::purple << ret << endl;
 		}
 	}
 }

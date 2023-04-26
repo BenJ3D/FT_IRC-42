@@ -31,7 +31,7 @@ void	Server::init_parsing_map()
 	this->commands["MOTD"] = make_pair(0, &Server::motd);
 	this->commands["NAMES"] = make_pair(0, &Server::names);
 	this->commands["INVITE"] = make_pair(0, &Server::invite);
-	cout << ANSI::yellow << "init PARSING OK" << endl;
+	//cout << ANSI::yellow << "init PARSING OK" << endl;
 }
 
 std::string Server::trim(std::string str)
@@ -77,9 +77,9 @@ vector<string> split_cmd(const string command, char separator)
 	{
 		if (buffer.length() != 0)
 			args.push_back(buffer);
-		cout << ANSI::purple << "ADD ARG : " << ANSI::red << buffer << endl; // DEBUG
+		//cout << ANSI::purple << "ADD ARG : " << ANSI::red << buffer << endl; // DEBUG
 	}
-	cout << endl; // DEBUG
+	//cout << endl; // DEBUG
 	return args;
 }
 
@@ -111,7 +111,7 @@ void	Server::parser(string cmd, int client_fd) {
 			continue;
 		if (commands.find(args[0]) != commands.end())
 		{
-			cout << ANSI::back_cyan << ANSI::red << "pars" << args[0] << ANSI::r << endl;
+			//cout << ANSI::back_cyan << ANSI::red << "pars" << args[0] << ANSI::r << endl;
 				if (commands[args[0]].first == 1)
 					args.push_back(split_cmd(cmd, '\r')[distance(cmds.begin(), it)]);
 				(this->*commands[args[0]].second)(args, client_fd);
@@ -123,7 +123,7 @@ void	Server::parser(string cmd, int client_fd) {
 			if (args.size() == 0)
 				return Rep().E421(client_fd ,_client[client_fd].get_nick(), command);
 			Rep().E421(client_fd ,_client[client_fd].get_nick(), args[0]);
-			cout << ANSI::red << "Command not found for " << args[0] << endl;
+			//cout << ANSI::red << "Command not found for " << args[0] << endl;
 		}
 	}
 }

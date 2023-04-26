@@ -17,10 +17,10 @@ Rep::Rep() {}
 
 void Server::notice(int const &fd, string msg) {
 	msg = ":" + string(SERVER_NAME) + " NOTICE * :" + msg + "\r\n";
-	if (send(fd, msg.c_str(), msg.length(), 0) == -1)
+	if (send_to_user(msg, fd) == -1)
 		send_error(fd);
 
-	cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
+	//cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 }
 
 /**
@@ -39,9 +39,9 @@ void confirm_to_all_channel_client(int const &fd, string msg, Server &serv, Chan
 	msg = ":" + serv.get_client()[fd].get_nick() + "!" + serv.get_client()[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
 	for(; it2 != list.end(); ++it2) // for everyone in chan
 	{
-			if (send(it2->first, msg.c_str(), msg.length(), 0) == -1)
+			if (send_to_user(msg, it2->first) == -1)
 				serv.send_error(fd);
-			cout << ANSI::gray << "{send} comf => " << ANSI::purple << msg << endl;
+			//cout << ANSI::gray << "{send} comf => " << ANSI::purple << msg << endl;
 	}
 }
 
@@ -63,27 +63,27 @@ void confirm_to_all_channel_client_mode_o(int const &fd, string msg, Server &ser
 	{
 		if (fd != it2->first)
 		{
-				if (send(it2->first, msg.c_str(), msg.length(), 0) == -1)
+				if (send_to_user(msg, it2->first) == -1)
 					serv.send_error(fd);
-				cout << ANSI::gray << "{send} comf => " << ANSI::purple << msg << endl;
+				//cout << ANSI::gray << "{send} comf => " << ANSI::purple << msg << endl;
 		}
 	}
 }
 
 void confirm_to_client(int const &fd, string msg, Server &serv) {
 	msg = ":" + serv.get_client()[fd].get_nick() + "!" + serv.get_client()[fd].get_username() + "@" + string(SERVER_NAME) + " " + msg + "\r\n";
-	if (send(fd, msg.c_str(), msg.length(), 0) == -1)
+	if (send_to_user(msg, fd) == -1)
 		serv.send_error(fd);
 	
-	cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
+	//cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 }
 
 void Rep::send_to_client(string msg, int const &fd) {
 	msg = ":" + string(SERVER_NAME) + " " + msg +"\r\n";
-	if (send(fd, msg.c_str(), msg.length(), 0) == -1)
+	if (send_to_user(msg, fd) == -1)
 		throw ;
 
-	cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
+	//cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 }
 
 /**

@@ -23,7 +23,7 @@ void	Server::part(vector<string> args, int fd_client) {
 	vector<string> res = super_split(args[args.size() - 1], 2);
 	if (res.size() == 1)
 		res.push_back(args[1]);
-	cout << "res[0] = " << res[0] << " res1 = " << res[1] << endl;
+	//cout << "res[0] = " << res[0] << " res1 = " << res[1] << endl;
 	vector<string> listChan = split_cmd(res[1], ',');
 	if (listChan.size() == 0)
 		listChan.push_back(res[1]);
@@ -46,7 +46,7 @@ void	Server::part(vector<string> args, int fd_client) {
 		else if (res.size() > 2)
 			_channel[listChan[i]].ClientLeave(fd_client, *this, res[2], false);
 		if (_channel[listChan[i]].getList().empty()){
-			cout << ANSI::blue << "chan erase" << endl;
+			//cout << ANSI::blue << "chan erase" << endl;
 			_channel.erase(listChan[i]);
 		}
 	}

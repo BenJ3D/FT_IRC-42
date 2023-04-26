@@ -13,7 +13,7 @@
 #include "Server.hpp"
 
 void	Server::pass(vector<string> args, int cl_fd) {
-	cout << ANSI::cyan << cl_fd << " --> " << args[0] << endl;
+	//cout << ANSI::cyan << cl_fd << " --> " << args[0] << endl;
 	if (_client[cl_fd].get_pass_confirm())
 		return Rep().E462(cl_fd, _client[cl_fd].get_nick());
 	if (args.size() == 1)
@@ -23,7 +23,7 @@ void	Server::pass(vector<string> args, int cl_fd) {
 }
 
 void Server::nick(vector<string> args, int client_fd) {
-	cout << ANSI::cyan << client_fd << " --> " << args[0] << endl;
+	//cout << ANSI::cyan << client_fd << " --> " << args[0] << endl;
 	if (args.size() < 2)
 		return Rep().E431(client_fd, _client[client_fd].get_nick());
 	string check("[]\\`_^{|}$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -37,7 +37,7 @@ void Server::nick(vector<string> args, int client_fd) {
 	for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++) {
 		if ((*it).first == client_fd)
 			continue;
-		cout << _client.size() << " " << (*it).second.get_nick() << endl;
+		//cout << _client.size() << " " << (*it).second.get_nick() << endl;
 		if ((*it).second.get_nick() == new_nick)
 			return Rep().E433(client_fd, _client[client_fd].get_nick(), new_nick);
 	}
@@ -45,20 +45,20 @@ void Server::nick(vector<string> args, int client_fd) {
 		_client[client_fd].now_auth(*this);
 	string msg = ":" + get_client()[client_fd].get_nick() + "!" + get_client()[client_fd].get_username() + "@" + string(SERVER_NAME) + " NICK " + new_nick + "\r\n";
 	if (!_client[client_fd].get_is_auth()){
-		if (send(client_fd, msg.c_str(), msg.length(), 0) == -1)
+		if (send_to_user(msg, client_fd) == -1)
 			send_error(client_fd);
 		_client[client_fd].set_nick(new_nick);
 		return ;
 	}
 	for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++)
-		if (send(it->first, msg.c_str(), msg.length(), 0) == -1)
+		if (send_to_user(msg, it->first) == -1)
 			send_error(it->first);
 	//confirm_to_client(client_fd, confirm_msg, *this);
 	_client[client_fd].set_nick(new_nick);
 }
 
 void Server::user(vector<string> args, int cl) {
-	cout << ANSI::cyan << cl << " --> " << args[0] << endl;
+	//cout << ANSI::cyan << cl << " --> " << args[0] << endl;
 
 	if (args.size() < 5)
 		return Rep().E461(cl, _client[cl].get_nick(), args[0]);

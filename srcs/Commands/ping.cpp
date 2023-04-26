@@ -14,7 +14,7 @@
 
 void Server::ping(vector<string> args, int cl)
 {
-	cout << ANSI::cyan << cl << " --> " << args[0] << endl;
+	//cout << ANSI::cyan << cl << " --> " << args[0] << endl;
 	if (args.size() < 2)
 		return Rep().E409(cl, _client[cl].get_nick());
 

@@ -24,10 +24,10 @@ bool	checkNameChannelIsGood( string name )
 {
 	if (name.size() >= 1 && name[0] == '#')
 	{
-		cerr << ANSI::blue << "checkNameChannelIsGood: true" << ANSI::reset << endl;
+		// cerr << ANSI::blue << "checkNameChannelIsGood: true" << ANSI::reset << endl;
 		return true;
 	}
-	cerr << ANSI::blue << "checkNameChannelIsGood: false" << ANSI::reset << endl;
+	// cerr << ANSI::blue << "checkNameChannelIsGood: false" << ANSI::reset << endl;
 	return false;
 }
 
@@ -46,7 +46,7 @@ void Server::join(vector<string> args, int fd_client) // TODO: check le premier 
 		args.push_back("");
 	pass = split_sep(args[2], ',');
 
-	cerr << ANSI::red << "pass.size = " << pass.size() << endl << ANSI::reset;
+	// cerr << ANSI::red << "pass.size = " << pass.size() << endl << ANSI::reset;
 
 	for (size_t i = pass.size(); i < chan.size(); ++i) // remplir de pass vide pour simplifier la suite
 		pass.push_back("");
@@ -91,7 +91,7 @@ void Server::join(vector<string> args, int fd_client) // TODO: check le premier 
 				{
 					if (_channel.at(*it_chan).isClientInInviteList(fd_client) == false)
 					{
-						cerr << ANSI::red << "DEBUG TEST INVITE ONLY" << ANSI::reset << endl;
+						// cerr << ANSI::red << "DEBUG TEST INVITE ONLY" << ANSI::reset << endl;
 						return Rep().E473(fd_client, clientNick, *it_chan);
 					}
 					else 
@@ -100,7 +100,7 @@ void Server::join(vector<string> args, int fd_client) // TODO: check le premier 
 				
 				if (_channel.at(*it_chan).isClientInBlackList(fd_client) == true)
 				{
-					cerr << ANSI::red << "DEBUG TEST BLACK LIST" << ANSI::reset << endl;
+					// cerr << ANSI::red << "DEBUG TEST BLACK LIST" << ANSI::reset << endl;
 					return Rep().E474(fd_client, clientNick, *it_chan);
 				}
 
@@ -110,7 +110,7 @@ void Server::join(vector<string> args, int fd_client) // TODO: check le premier 
 				string user_list = _channel[*it_chan].ListNick(*this, fd_client);
 				Rep().R353(fd_client, clientNick, *it_chan, user_list, _channel[*it_chan].getVisibilityMode(), _channel[*it_chan].getList().at(fd_client).first); // FIXME: FAUX
 				Rep().R366(fd_client, clientNick, *it_chan);
-				cerr << ANSI::red << "DEBUG TEST USER LIST = " << user_list << ANSI::reset << endl;
+				// cerr << ANSI::red << "DEBUG TEST USER LIST = " << user_list << ANSI::reset << endl;
 
 				// }
 			}

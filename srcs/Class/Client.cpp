@@ -254,7 +254,7 @@ void Client::set_mode_i() {
 void Client::set_mode_o() {
 	_modes.insert('o');
 	this->_is_operator = true;
-	cerr << ANSI::flash << "set mode o" << ANSI::reset << endl;
+	// cerr << ANSI::flash << "set mode o" << ANSI::reset << endl;
 }
 
 void Client::set_mode_s() {
