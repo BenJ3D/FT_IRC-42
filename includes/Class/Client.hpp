@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/25 19:00:02 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/26 08:17:32 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 
 using namespace std;
 class Channel;
+class Server;
 class Client
 {
 	private:
@@ -56,11 +57,9 @@ class Client
 		void				set_username(string nick);
 		void				set_realname(string nick);
 
-		void				password_verified();
-
 		bool				isOperatorInChannel(Channel & channel) const; // delete if getMod OK
 
-		void				set_modes_str(string const &mode);
+		void				set_modes_str(string const &mode); // FIXME: delete ?
 		void				set_modes(set<char> newMode);
 		void				set_mode_a();
 		void				set_mode_i();
@@ -83,7 +82,7 @@ class Client
 		bool				get_mode_s() const;
 		bool				get_mode_w() const;
 		
-		void				now_auth();
+		void				now_auth(Server &serv);
 		void				now_pass();
 
 		string				get_away_message();

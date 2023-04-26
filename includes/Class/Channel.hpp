@@ -73,7 +73,6 @@ class Channel
 		bool										_requiredPass;
 		string		 								_name;
 		string										_passwd;
-		// int											_topicClientSetter; //save fd du client qui a set le topic
 		vector<int>									_blackList; // fd_client
 		vector<int>									_inviteList; // fd_client -- permet dinviter le client sans besoin de passwd (si mode +k), valable pour une connection
 		map<int, pair<char, vector<string> > >		_list; // fd_client, mode, flags

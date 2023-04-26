@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/24 00:02:52 by bducrocq         ###   ########lyon.fr   */
+/*   Updated: 2023/04/26 08:10:58 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,27 +16,27 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Client::Client() 
-: 
-_id(-1), 
-_nick("*"), 
-_is_auth(false), 
-_is_pass(false), 
+Client::Client() :
+_id(-1),
+_nick("*"),
+_username(""),
+_is_auth(false),
+_is_pass(false),
 _is_operator(false),
-_is_away(false), 
+_is_away(false),
 _away_message("is away")
 {
 	cout << ANSI::red << ANSI::back_blue << "default const called " << ANSI::r << endl;
 }
 
-Client::Client(int fd) 
-:
-_id(fd), 
-_nick("*"), 
-_is_auth(false), 
-_is_pass(false), 
+Client::Client(int fd) :
+_id(fd),
+_nick("*"),
+_username(""),
+_is_auth(false),
+_is_pass(false),
 _is_operator(false),
-_is_away(false), 
+_is_away(false),
 _away_message("is away")
 {
 	_is_pass = false;
@@ -90,8 +90,13 @@ std::ostream &			operator<<( std::ostream & o, Client const & i ) {
  * @brief set the client as authentified (NICK and USER command)
  * @param connect 
  */
-void Client::now_auth() {
+void Client::now_auth(Server &serv) {
 	this->_is_auth = true;
+
+		Rep().R001(_id, _nick);
+		Rep().R002(_id, _nick, string(SERVER_NAME), string(SERVER_VERSION));
+		Rep().R003(_id, _nick, string(SERVER_DATE));
+		return serv.parser("MOTD", _id);
 }
 
 /**

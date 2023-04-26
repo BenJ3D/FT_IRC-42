@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/25 19:01:11 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/26 08:27:03 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,7 +212,6 @@ int Server::openSocket(int port)
 					if (str_buff == " " || str_buff == "\r\n" || str_buff == "\n" || str_buff.empty())
 						continue;
 
-					// parsing...
 					try {
 						this->parser(str_buff, (*it).first);
 					}

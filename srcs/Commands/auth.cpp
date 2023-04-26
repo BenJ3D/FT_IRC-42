@@ -42,15 +42,14 @@ void Server::nick(vector<string> args, int client_fd) {
 			return Rep().E433(client_fd, _client[client_fd].get_nick(), new_nick);
 	}
 	if (!_client[client_fd].get_is_auth() && _client[client_fd].get_username() != "")
-	{
-		_client[client_fd].now_auth();
-		_client[client_fd].set_nick(new_nick);
-		cout << ANSI::red << "DEBUG TEST" << ANSI::reset << endl;
-		Rep().R001(client_fd, new_nick);
-		Rep().R002(client_fd, new_nick, string(SERVER_NAME), string(SERVER_VERSION));
-		return Rep().R003(client_fd, new_nick ,string(SERVER_DATE));
-	}
+		_client[client_fd].now_auth(*this);
 	string msg = ":" + get_client()[client_fd].get_nick() + "!" + get_client()[client_fd].get_username() + "@" + string(SERVER_NAME) + " NICK " + new_nick + "\r\n";
+	if (!_client[client_fd].get_is_auth()){
+		if (send(client_fd, msg.c_str(), msg.length(), 0) == -1)
+			send_error(client_fd);
+		_client[client_fd].set_nick(new_nick);
+		return ;
+	}
 	for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++)
 		if (send(it->first, msg.c_str(), msg.length(), 0) == -1)
 			send_error(it->first);
@@ -82,15 +81,7 @@ void Server::user(vector<string> args, int cl) {
 		notice(cl, "*** Could not find your ident, using " + username + " instead.");
 	}
 	if (!_client[cl].get_is_auth() && _client[cl].get_nick() != "*")
-	{
-		_client[cl].now_auth();
-		this->_client[cl].set_username(username);
-		this->_client[cl].set_realname(realname);
-		Rep().R001(cl, _client[cl].get_nick());
-		Rep().R002(cl, _client[cl].get_nick(), string(SERVER_NAME), string(SERVER_VERSION));
-		Rep().R003(cl, _client[cl].get_nick(), string(SERVER_DATE));
-		return motd_auth(cl);
-	}
+		_client[cl].now_auth(*this);
 	this->_client[cl].set_username(username);
 	this->_client[cl].set_realname(realname);
 }

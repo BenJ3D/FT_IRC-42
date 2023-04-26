@@ -92,7 +92,7 @@ void Server::cmd_notice(vector<string> args, int client_fd) {
 				continue;
 			string ret = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_username() + "@" + string(SERVER_NAME) + " NOTICE " + target_list[i] + " " + res[2] + "\r\n";
 			if (send(dst_fd, ret.c_str(), ret.length(), 0) == -1)
-				send_error(dst_fd);
+				send_error(dst_fd); // FIXME: Just do nothing ?
 			cout << ANSI::gray << "{send} => " << ANSI::purple << ret << endl;
 		}
 	}
