@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/26 21:59:45 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/26 22:29:59 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,6 @@ ostream &operator<<(ostream &o, Server const &i)
 
 void	Server::send_error(int fd_client)
 {
-	perror("What just happemnd ?????? ");
 	this->_delete_client = true;
 	vector<string> res;
 	res.push_back("QUIT :");
@@ -148,7 +147,6 @@ int Server::openSocket(int port)
 
 		for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++)
 		{
-			cout << (*it).first << endl;
 			FD_SET((*it).first, &_read_fds);
 			_max_fd = max(_max_fd, (*it).first);
 		}
@@ -157,7 +155,6 @@ int Server::openSocket(int port)
 		if (select(_max_fd + 1, &_read_fds, NULL, NULL, NULL) == -1)
 		{
 			cerr << ANSI::red << "Erreur lors de l'utilisation de la fonction select" << endl;
-			perror("select");
 			continue;
 		}
 
@@ -205,9 +202,6 @@ int Server::openSocket(int port)
 				else
 				{
 					string str_buff(buffer);
-					// cout << ANSI::purple << "\n### Recv client " << (*it).first << " ###\n"
-					// 	 << ANSI::italic << str_buff.c_str() << endl << ANSI::r << ANSI::purple << "#####################\n"
-					// 	 << endl;
 					cout << ANSI::green << str_buff << ANSI::r ;
 					if (str_buff == " " || str_buff == "\r\n" || str_buff == "\n" || str_buff.empty())
 						continue;
