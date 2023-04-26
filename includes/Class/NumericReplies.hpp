@@ -65,6 +65,7 @@ class Rep
 		void R323(NR_ARG);
 
 		void R324(NR_ARG, const std::string& chanName, const std::string& chanModeStr, const std::string& chanModeArgs);
+		void R329(int const &fd, const string &cNick, const string &chanName, const string &creationTime);
 
 		void R331(NR_ARG, const std::string& chanName);
 		void R332(NR_ARG, const std::string& chanName, const std::string& topic);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/16 22:38:14 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/26 16:51:16 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/26 18:59:07 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	Server::quit(vector<string> args, int fd_client) {
 	this->_delete_client = true;
 	vector<string> res = super_split(args[args.size() - 1], 1);
 	if (res.size() == 1)
-		res.push_back("Client Quit");
+		res.push_back(":Client Quit");
 	cout << "res[0] = " << res[0] << " res1 = " << res[1] << endl;
 	string msg = res[1];
 	if (msg == "")

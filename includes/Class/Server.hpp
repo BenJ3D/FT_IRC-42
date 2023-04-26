@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/26 15:45:59 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/26 17:59:39 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,7 @@ class Server
 		/* --- GETTER --- */
 		map<int, Client>		&get_client();
 		map<string, Channel>	&get_channel();
+		string					recupAllModChan(string channelName, bool displayKey);
 
 		void					send_error(int fd);
 
@@ -117,7 +118,6 @@ class Server
 		/* --- SERVER --- */
 		bool					isExistChannelName(string const &channelName);
 		int						findClientFdWithNick(string const &nick);
-		// bool					isClientOnChannel(int client_fd); //FIXME: Not used
 };
 
 	std::ostream &operator<<(std::ostream &o, Server const &i);

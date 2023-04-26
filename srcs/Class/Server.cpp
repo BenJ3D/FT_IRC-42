@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/26 16:54:00 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/26 18:50:56 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ ostream &operator<<(ostream &o, Server const &i)
 
 void	Server::send_error(int fd_client)
 {
+	perror("What just happemnd ?????? ");
 	this->_delete_client = true;
 	vector<string> res;
 	res.push_back("QUIT :");

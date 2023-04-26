@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/26 16:51:38 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/26 18:38:27 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,13 +255,7 @@ void Client::set_mode_o() {
 	_modes.insert('o');
 	this->_is_operator = true;
 	cerr << ANSI::flash << "set mode o" << ANSI::reset << endl;
-	// confirm_to_all_channel_client(this->_id, this->_nick + " is now an operator");
 }
-
-// void Client::set_mode_O() {
-	// _modes.insert('O');
-// 	this->_is_reciving_server_notices = true;
-// }
 
 void Client::set_mode_s() {
 	_modes.insert('s');

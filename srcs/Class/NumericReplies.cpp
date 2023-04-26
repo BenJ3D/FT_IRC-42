@@ -431,6 +431,20 @@ void	Rep::R324(int const &fd, const string &cNick, const string& chanName, const
 }
 
 /**
+ * @brief RPL_CREATIONTIME
+ * @param fd
+ * @param cNick
+ * @param chanName
+ * @param creationTime
+ */
+void Rep::R329(int const &fd, const string &cNick, const string &chanName, const string &creationTime)
+{
+	output << "329 " << cNick << " " << chanName << " " << creationTime;
+	send_to_client(output.str(), fd);
+	clearBuffer();
+}
+
+/**
  * @brief RPL_NOTOPIC
  * @param fd 
  * @param cNick 
