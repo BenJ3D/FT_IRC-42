@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 15:02:34 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/26 23:19:41 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/27 00:53:28 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ void Server::join(vector<string> args, int fd_client)
 		{
 			if (_channel.find(*it_chan) == _channel.end())
 			{
-				_channel[*it_chan] = Channel(fd_client, *it_chan, *this);
+				cerr << ANSI::yellow << "this =" << this << endl;
+				_channel[*it_chan] = Channel(fd_client, *it_chan);
 				confirm_to_client(fd_client, "JOIN " + *it_chan, *this);
 				confirm_to_client(fd_client, "MODE " + *it_chan + " +o " + clientNick, *this);
 
@@ -66,10 +67,17 @@ void Server::join(vector<string> args, int fd_client)
 			{
 				if (_channel.at(*it_chan).isClientInChannel(fd_client) == true)
 					continue ;
-				for (vector<int>::iterator it = _channel[*it_chan].getBlackList().begin(); it != _channel[*it_chan].getBlackList().end(); it++)
-					if ((*it) == fd_client)
-						return Rep().E474(fd_client, clientNick, *it_chan);
-				if (!_channel.at(*it_chan).getPasswd().empty()) // y a til un passwd de set
+				bool tmp = false;
+				for (size_t j = 0; j < _channel[*it_chan].getBlackList().size(); j++){
+					if ( _channel[*it_chan].getBlackList()[j] == fd_client){
+						Rep().E474(fd_client, clientNick, *it_chan);
+						tmp = true;
+						break;
+					}
+				}
+				if (tmp)
+					continue;
+				if (!_channel.at(*it_chan).getPasswd().empty())	// y a til un passwd de set
 				{
 					if (_channel.at(*it_chan).getPasswd().compare(*it_passwd) != 0) // si oui, est ce le bon passwd en param
 					{
@@ -88,34 +96,21 @@ void Server::join(vector<string> args, int fd_client)
 				if (_channel.at(*it_chan).isInviteOnly() == true )
 				{
 					if (_channel.at(*it_chan).isClientInInviteList(fd_client) == false)
-					{
-						// cerr << ANSI::red << "DEBUG TEST INVITE ONLY" << ANSI::reset << endl;
 						return Rep().E473(fd_client, clientNick, *it_chan);
-					}
 					else 
 						_channel.at(*it_chan).removeInviteList(fd_client);
 				}
 				
 				if (_channel.at(*it_chan).isClientInBlackList(fd_client) == true)
-				{
-					// cerr << ANSI::red << "DEBUG TEST BLACK LIST" << ANSI::reset << endl;
 					return Rep().E474(fd_client, clientNick, *it_chan);
-				}
-
 
 				_channel[*it_chan].addClient(fd_client, ' ');
-				//confirm_to_client(fd_client, "JOIN " + *it_chan, *this);
 				string user_list = _channel[*it_chan].ListNick(*this, fd_client);
 				Rep().R353(fd_client, clientNick, *it_chan, user_list, _channel[*it_chan].getVisibilityMode(), _channel[*it_chan].getList().at(fd_client).first); // FIXME: FAUX
 				Rep().R366(fd_client, clientNick, *it_chan);
-				// cerr << ANSI::red << "DEBUG TEST USER LIST = " << user_list << ANSI::reset << endl;
-
-				// }
 			}
 		}
 		else
 			Rep().E476(fd_client, _client.at(fd_client).get_nick());
-		// if (it_passwd != pass.end())
-		// 	++it_passwd;
 	}
 }

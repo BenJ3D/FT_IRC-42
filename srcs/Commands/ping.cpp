@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ping.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 15:04:18 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/25 19:01:25 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/26 23:46:25 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void Server::ping(vector<string> args, int cl)
 {
-	//cout << ANSI::cyan << cl << " --> " << args[0] << endl;
 	if (args.size() < 2)
 		return Rep().E409(cl, _client[cl].get_nick());
 

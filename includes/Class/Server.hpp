@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/26 21:09:07 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/27 00:09:25 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ class Server
 	private:
 		Server(Server const &src);
 		Server();
-		Server &operator=(Server const &rhs);
 
 		int		openSocket(int port);
 		void	init_parsing_map();
@@ -70,8 +69,6 @@ class Server
 		bool					_delete_client;
 
 		std::map<std::string, std::pair<long unsigned int, CmdFunc> > commands;
-
-		// vector<int>				_client_fds; // FIXME: deprecated
 
 		void		config();
 		void		notice(int const &fd, string msg);
@@ -102,6 +99,7 @@ class Server
 
 		Server(std::string port, std::string password);
 		~Server();
+		Server &operator=(Server const &rhs);
 
 		/* --- GETTER --- */
 		map<int, Client>		&get_client();

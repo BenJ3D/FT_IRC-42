@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 20:39:56 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/25 19:01:20 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/26 23:45:20 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ void Server::kick(vector<string> args, int cl){
 					ret += " :" + msg.back();
 			}
 			ret += "\r\n";
-			//cout << ANSI::gray << "{send} =>" << ANSI::cmd << ret << ANSI::r << endl; 
 			for (map<int, pair<char, vector<string> > >::iterator it = cl_in_chan.begin(); it != cl_in_chan.end(); it++){
 				if (send_to_user(ret, it->first) == -1)
 					send_error(it->first);
@@ -73,7 +72,6 @@ void Server::kick(vector<string> args, int cl){
 			chan_temp.removeClient((*target).first);
 		}
 		if (_channel[chan[i]].getList().empty()){
-			//cout << ANSI::blue << "chan erase" << endl;
 			_channel.erase(chan[i]);
 		}
 	}

@@ -26,7 +26,6 @@ void Server::invite(vector<string> args, int fd_client)
 	string msg = ":" + _client[fd_client].get_nick() + "!" + _client[fd_client].get_username() + "@" + string(SERVER_NAME) + " INVITE " + args[1] + " :" + args[2] + "\n\r";
 	if (send_to_user(msg, findClientFdWithNick(args[1])) == -1)
 		send_error(findClientFdWithNick(args[1]));
-	//cout << ANSI::gray << "{send} =>" << ANSI::purple << msg << endl;
 }
 
 /* easter car

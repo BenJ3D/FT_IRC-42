@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/26 23:19:31 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/27 00:17:09 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,11 @@ Server::~Server()
 
 Server &Server::operator=(Server const &rhs)
 {
-	(void)rhs;
+	this->_client = rhs._client;
+	this->_max_fd = rhs._max_fd;
+	this->_read_fds = rhs._read_fds;
+	this->_server_name = rhs._server_name;
+	this->_delete_client = false;
 	return *this;
 }
 

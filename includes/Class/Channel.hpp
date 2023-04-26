@@ -16,7 +16,7 @@ class Channel
 	public:
 
 		Channel();
-		Channel( int fd_client, string const & name, Server &refServer);
+		Channel( int fd_client, string const & name);
 		~Channel();
 		Channel	&operator=(Channel const &rhs);
 
@@ -27,7 +27,7 @@ class Channel
 		void										addOperator(int fd_client, Server &serv, string target_nick);
 		void										removeOperator(int fd_client, Server &serv, string target_nick);
 
-		void										addBlackList(int target ,int fd_client);
+		void										addBlackList(int target ,int fd_client, Server &serv);
 		void										removeBlackList(int fd_client);
 
 		void										addInviteList(int fd_client);
@@ -45,7 +45,7 @@ class Channel
 		bool										isClientInInviteList(int fd_client);
 		bool										isClientInBlackList(int fd_client);
 		bool										isClientInChannel(int fd_client);
-		bool										isOperatorInChannel(int fd_client);
+		bool										isOperatorInChannel(int fd_client, Server &serv);
 
 		int											getNumberClientInChannel( void );
 		vector<int>									getBlackList();
@@ -83,7 +83,6 @@ class Channel
 		set<char>									_modes;
 		int											_owner;
 		string										_topic;
-		Server										*_refServ;
 };
 
 #endif /* ********************************************************* CHANNEL_H */

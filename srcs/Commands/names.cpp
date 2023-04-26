@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   names.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 02:28:16 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/25 19:01:22 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/26 23:49:26 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	Server::names(vector<string> args, int client_fd)
 				client_fd, \
 				_client[client_fd].get_nick(),it->second.getName(), \
 				it->second.list_all_nick(_client), \
-				'=', /*FIXME:*/ \
+				'=',\
 				it->second.getClientMode(client_fd));
 			Rep().R366(client_fd, _client[client_fd].get_nick(),it->second.getName());
 		}
@@ -45,7 +45,7 @@ void	Server::names(vector<string> args, int client_fd)
 				client_fd, \
 				_client[client_fd].get_nick(),_channel[listChan[i]].getName(), \
 				_channel[listChan[i]].list_all_nick(_client), \
-				'=', /*FIXME:*/ \
+				'=',\
 				_channel[listChan[i]].getClientMode(client_fd));
 			Rep().R366(client_fd, _client[client_fd].get_nick(),listChan[i]);
 		}

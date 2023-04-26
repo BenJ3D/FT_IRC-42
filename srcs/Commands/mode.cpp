@@ -6,11 +6,13 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 02:46:29 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/26 20:03:06 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/27 00:38:45 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+
+
 
 /*********************************************************/
 /*********************************************************/
@@ -98,7 +100,7 @@ void Server::mode_client(vector<string> args, int fd_client)
 			break;
 		}
 	}
-	string appendFullCmdMod;//
+	string appendFullCmdMod;
 	if (addMode.size() > 1) // si on a des modes a ajouter
 		for(set<char>::iterator it = addMode.begin(); it != addMode.end(); it++)
 			appendFullCmdMod += *it;
@@ -111,6 +113,8 @@ void Server::mode_client(vector<string> args, int fd_client)
 	addMode.clear();
 	delMode.clear();
 }
+
+
 
 /**
  * @brief Count the number of modes in a string exclude + and -
@@ -165,6 +169,9 @@ string		Server::recupAllModChan(string channelName, bool displayKey)
 		chanMode = "No mode for this channel";
 	return chanMode;
 }
+
+
+
 
 /*********************************************************/
 /*********************************************************/
@@ -500,7 +507,7 @@ void Server::mode_channel(vector<string> args, int fd_client)
 				}
 				else
 				{
-					_channel.at(args[1]).addBlackList(_client[findClientFdWithNick(args[3])].get_id(), fd_client);
+					_channel.at(args[1]).addBlackList(_client[findClientFdWithNick(args[3])].get_id(), fd_client, *this);
 					addMode.insert('b');
 				}
 				

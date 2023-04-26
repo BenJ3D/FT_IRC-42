@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 20:39:56 by abucia            #+#    #+#             */
-/*   Updated: 2023/04/25 19:01:27 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/26 23:47:04 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,9 @@
 void Server::privmsg(vector<string> args, int client_fd) {
 	if (args[args.size() - 1][0] == '\n')
 		args[args.size() - 1] = args[args.size() - 1].substr(1);
-	//cout << ANSI::cyan << client_fd << " --> " << args[0] << endl;
-	// for (size_t i = 0; i < args.size(); i++)
-		// cerr << ANSI::red << "ARGS[" << i << "] = " << args[i] << ANSI::reset << endl;
 
 	string msg = " ";
 	vector<string> res = super_split(args[args.size() - 1], 2); // <CMD> <TARGET> :<MSG>
-	// cerr << res.size() << "AAAAAAAAAAAAAAAAAAA" << endl;
 	if (res.size() < 3)
 	{
 		if (res.size() == 2)
@@ -30,7 +26,6 @@ void Server::privmsg(vector<string> args, int client_fd) {
 			return Rep().E411(client_fd, _client[client_fd].get_nick(), args[0]);
 	}
 	vector<string> target_list = split_cmd(res[1], ',');
-	//cout << "debug" << endl;
 	if (target_list.size() == 0)
 		target_list.push_back(res[1]);
 
@@ -45,7 +40,7 @@ void Server::privmsg(vector<string> args, int client_fd) {
 				continue;
 			}
 
-			// verifier si le client est pas dans la blacklist du channel ou si channel a un mdp et que le client n'est pas dans le channel
+			// verifie si le client est pas dans la blacklist du channel ou si channel a un mdp et que le client n'est pas dans le channel
 			if (_channel.at(target_list[i]).isClientInBlackList(client_fd) || \
 			(!_channel.at(target_list[i]).getPasswd().empty() && _channel.at(target_list[i]).isClientInChannel(client_fd) == false) || \
 			(_channel.at(target_list[i]).isInviteOnly() && _channel.at(target_list[i]).isClientInChannel(client_fd) == false))
@@ -56,15 +51,11 @@ void Server::privmsg(vector<string> args, int client_fd) {
 
 			for (map<int, pair<char, vector<string> > >::const_iterator it = _channel[target_list[i]].getList().begin(); it != _channel[target_list[i]].getList().end(); it++)
 			{
-				//cout << ANSI::red << "DEBUG TEST PRIVMSG = " << target_list[i] << ANSI::reset << endl;
 				if (it->first != client_fd)
 				{
-					// if (_client[it->first].get_mode_a())
-					// 	Rep().R301(client_fd, _client[client_fd].get_nick(), target_list[i], _client[it->first].get_away_message());
 					string ret = ":" + _client[client_fd].get_nick() + "!" + _client[client_fd].get_username() + "@" + string(SERVER_NAME) + " PRIVMSG " + target_list[i] + " " + res[2] + "\r\n";
 					if (send_to_user(ret, it->first) == -1)
 						send_error((*it).first);
-					//cout << ANSI::gray << "{send} => " << ANSI::purple << ret << endl;
 				}
 			}
 		}

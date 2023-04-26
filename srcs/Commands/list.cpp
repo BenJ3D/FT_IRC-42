@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 15:12:15 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/22 22:23:25 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/26 23:45:38 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void	Server::list(vector<string> args, int fd_client)
 	vector<string>target;
 	if (args.size() != 1)
 		target = split_cmd(args[1], ',');
-	// Rep().R321(fd_client, _client.at(fd_client).get_nick()); // deprecated
 	
 	map<string,Channel>::iterator	it = _channel.begin();
 	if (target.empty())

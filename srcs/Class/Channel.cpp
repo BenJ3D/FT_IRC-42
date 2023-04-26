@@ -1,4 +1,5 @@
 #include "Channel.hpp"
+#include "Server.hpp"
 #include "ANSI.hpp"
 
 /*
@@ -10,7 +11,7 @@ Channel::Channel()
 }
 
 
-Channel::Channel(int fd_client, string const & name, Server &refServer) :
+Channel::Channel(int fd_client, string const & name) :
 _requiredPass(false),
 _name(name),
 _passwd(""),
@@ -19,8 +20,7 @@ _isInviteOnly(false),
 _isModerated(false),
 _limit(10),
 _owner(fd_client),
-_topic(""),
-_refServ(&refServer)
+_topic("")
 {
 	_list[fd_client] = make_pair('@', vector<string>());
 }
@@ -184,14 +184,13 @@ void Channel::removeOperator(int fd_client, Server &serv, string target_nick)
 	}
 }
 
-void Channel::addBlackList(int target ,int fd_client)
+void Channel::addBlackList(int target ,int fd_client, Server &serv)
 {
 	_blackList.push_back(target);
+	cerr << ANSI::yellow << "target =" << target << endl;
+	// cerr << ANSI::yellow << "nick =" << _refServ << endl;
 	if (_list.find(target) != _list.end())
-	{
-		// removeClient(fd_client); //TODO: chopper kick de server
-		_refServ->parser("KICK "+ _name + " " + _refServ->get_client()[target].get_nick() + " :User got blacklisted :P", fd_client);
-	}
+		serv.parser("KICK "+ _name + " " + serv.get_client()[target].get_nick() + " :User got blacklisted :P", fd_client);
 }
 
 void Channel::removeBlackList(int fd_client)
@@ -324,7 +323,6 @@ void Channel::setOwner(int fd_client)
 
 bool Channel::isClientInInviteList(int fd_client)
 {
-	// cerr << ANSI::red << "isClientInInviteList start" << ANSI::reset << endl;
 	for (vector<int>::iterator it = _inviteList.begin(); it != _inviteList.end(); it++)
 		if ((*it) == fd_client)
 			return true;
@@ -346,7 +344,7 @@ bool Channel::isClientInChannel(int fd_client)
 	return false;
 }
 
-bool Channel::isOperatorInChannel(int fd_client)
+bool Channel::isOperatorInChannel(int fd_client, Server &serv)
 {
 	vector<int>::const_iterator it = getOperators().begin();
 	for (; it != getOperators().end(); it++)
@@ -354,7 +352,7 @@ bool Channel::isOperatorInChannel(int fd_client)
 		if ((*it) == fd_client)
 			return true;
 	}
-	if (_refServ->get_client().find(fd_client)->second.get_mode_o() == true)
+	if (serv.get_client().find(fd_client)->second.get_mode_o() == true)
 		return true;
 	return false;
 }
