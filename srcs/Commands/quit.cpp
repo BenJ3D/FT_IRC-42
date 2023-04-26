@@ -17,27 +17,21 @@ void	Server::quit(vector<string> args, int fd_client) {
 	vector<string> res = super_split(args[args.size() - 1], 1);
 	if (res.size() == 1)
 		res.push_back(":Client Quit");
-	//cout << "res[0] = " << res[0] << " res1 = " << res[1] << endl;
-	string msg = res[1];
-	if (msg == "")
-		msg = "Client Quit";
-	else
-		msg = res[1].substr(1);
+	string msg = res[1].substr(1);
+	msg = ":" + _client[fd_client].get_nick() + "!" + _client[fd_client].get_username() + "@" + string(SERVER_NAME) + " QUIT :" + msg + "\r\n";
 
-	//cout << ANSI::yellow << "Quit msg == '" << msg << "'" << ANSI::r << endl;
-	for (map<string, Channel>::iterator it = _channel.begin(); it != _channel.end();it++){ //for all chan
-		if (it->second.getClientMode(fd_client) != '0') // If in chan
-			it->second.ClientLeave(fd_client, *this, msg, true); // say he leave
+	for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++){
+		if (send_to_user(msg, it->first))
+			send_error(it->first);
 	}
+
 	map<string, Channel> tmp = _channel;
 	for (map<string, Channel>::iterator it = tmp.begin(); it != tmp.end();it++){ //for all chan
 		if (it->second.getList().empty())
 			_channel.erase(it->first);
 	}
 	if (_client.find(fd_client) != _client.end()){
-		//cout << ANSI::back_blue << ANSI::gray << "erase client :" << fd_client << ANSI::r << endl;
 		close(fd_client);
 		_client.erase(fd_client);
 	}
-	//cout << ANSI::yellow << "Client SIZE :" << _client.size() << endl;
 }
