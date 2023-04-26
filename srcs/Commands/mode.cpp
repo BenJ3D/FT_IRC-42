@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 02:46:29 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/26 19:37:39 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/26 20:03:06 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void Server::mode_client(vector<string> args, int fd_client)
 		Rep().E501(fd_client, _client[fd_client].get_nick());
 		return ;
 	}
-	bool mod = false; //determine si mode + ou -
+	bool mod = false; //determine si mode '+' ou '-'
 	if(args[2][0] == '+')
 		mod = true;
 	set<char> addMode; // liste des modes a ajouter
@@ -67,7 +67,7 @@ void Server::mode_client(vector<string> args, int fd_client)
 			break;
 		case 'o': 											// operator
 			if (mod)
-				Rep().E481(fd_client, _client[fd_client].get_nick());
+				; //deprecated in RFC-2812
 			else {
 				_client[fd_client].unset_mode_o();
 				delMode.insert('o');
@@ -185,7 +185,6 @@ void Server::mode_channel(vector<string> args, int fd_client)
 		else
 			mode = recupAllModChan(args[1], false);
 		Rep().R324(fd_client, _client[fd_client].get_nick(), args[1], mode, "");
-		// Rep().R329 // doit donner la date de creation, mais donc faut le stocker a la creation, flemme pour le moment ^^
 		return ;
 	}
 	
@@ -197,8 +196,6 @@ void Server::mode_channel(vector<string> args, int fd_client)
 	vector<string>	modeParams; //split les arguments des modes
 	if (args.size() > 3)
 		modeParams = split_sep(args[3], ',');
-	
-	// for (long unsigned int i = 0; i < (countNbrMode(args[2]) - modeParams.size()); ++i)
 	for (long unsigned int i = 0; i < (args[2].size()); ++i)
 		modeParams.push_back("");
 	map<char, string> modeParamsMap;
@@ -209,7 +206,7 @@ void Server::mode_channel(vector<string> args, int fd_client)
 			if (modeParams[i - 1].empty()) 
 				modeParamsMap[args[2][i]] = "";
 			else
-				modeParamsMap[args[2][i]] = modeParams[i - 1]; //FIXME: segfault
+				modeParamsMap[args[2][i]] = modeParams[i - 1];
 		}
 	}
 	bool mod = false;
@@ -242,7 +239,7 @@ void Server::mode_channel(vector<string> args, int fd_client)
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
 					continue ;
 				}
-				if (!_client[fd_client].isOperatorInChannel(_channel[args[1]]))  // TODO: that for operator
+				if (!_client[fd_client].isOperatorInChannel(_channel[args[1]]))
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
 					continue ;
@@ -338,14 +335,13 @@ void Server::mode_channel(vector<string> args, int fd_client)
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
 					continue ;
 				}
-				if (!_client[fd_client].isOperatorInChannel(_channel[args[1]])) //FIXME: plutot isOperator
+				if (!_client[fd_client].isOperatorInChannel(_channel[args[1]]))
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
 					continue ;
 				}
 				else
 				{
-					//check if only digit in it
 					if (modeParamsMap[*it].find_first_not_of("0123456789") != string::npos)
 					{
 						Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
@@ -416,7 +412,7 @@ void Server::mode_channel(vector<string> args, int fd_client)
 					Rep().E461(fd_client, _client[fd_client].get_nick(), "MODE");
 					continue ;
 				}
-				if (!_client[fd_client].isOperatorInChannel(_channel[args[1]])) //TODO: tchecker plutot si client is operator
+				if (!_client[fd_client].isOperatorInChannel(_channel[args[1]]))
 				{
 					Rep().E482(fd_client, _client[fd_client].get_nick(), args[1]);
 					continue ;
@@ -560,7 +556,7 @@ void Server::mode_channel(vector<string> args, int fd_client)
 	}
 
 
-	if (!appendFullCmdMod.empty() /*&& doubleSendMsgProtect == fals*/)	// si on a des modes a ajouter ou supprimer, envoie tout les modes + et - valide au client
+	if (!appendFullCmdMod.empty())	// si on a des modes a ajouter ou supprimer, envoi tout les modes + et - valide au client
 	{
 		if (!appendArgs.empty())
 			confirm_to_client(fd_client, "MODE " + args[1] + " " + appendFullCmdMod + " :" + appendArgs, *this);
