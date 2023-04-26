@@ -65,6 +65,14 @@ Client &				Client::operator=( Client const & rhs ) {
 	{
 		this->_id = rhs._id;
 		this->_nick = rhs._nick;
+		this->_username = rhs._username;
+		this->_realname = rhs._realname;
+		this->_away_message = rhs._away_message;
+		this->_is_reciving_server_notices = rhs._is_reciving_server_notices;
+		this->_is_invisible = rhs._is_invisible;
+		this->_is_operator = rhs._is_operator;
+		this->_is_wallops = rhs._is_wallops;
+		this->_is_away = rhs._is_away;
 		this->_is_auth = rhs._is_auth;
 		this->_is_pass = rhs._is_pass;
 	}
