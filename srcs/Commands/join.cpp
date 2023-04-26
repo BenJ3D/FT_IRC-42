@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 15:02:34 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/25 19:01:18 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/26 22:18:57 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
  */
 bool	checkNameChannelIsGood( string name )
 {
-	if (name.size() >= 1 && name[0] == '#')
+	if (name.size() >= 1 && name.size() < 50 && name[0] == '#')
 	{
 		// cerr << ANSI::blue << "checkNameChannelIsGood: true" << ANSI::reset << endl;
 		return true;
@@ -31,7 +31,7 @@ bool	checkNameChannelIsGood( string name )
 	return false;
 }
 
-void Server::join(vector<string> args, int fd_client) // TODO: check le premier char # &
+void Server::join(vector<string> args, int fd_client)
 {
 	string clientNick = _client[fd_client].get_nick();
 	if (args.size() < 2)
@@ -39,14 +39,15 @@ void Server::join(vector<string> args, int fd_client) // TODO: check le premier 
 
 	if (args[1].empty())
 		return;
+	for(size_t i = 0; i < args[1].size(); i++)
+		args[1][i] = tolower(args[1][i]);
+
 	vector<string> chan;
 	vector<string> pass;
 	chan = split_sep(args[1], ',');
 	if (args.size() < 3)
 		args.push_back("");
 	pass = split_sep(args[2], ',');
-
-	// cerr << ANSI::red << "pass.size = " << pass.size() << endl << ANSI::reset;
 
 	for (size_t i = pass.size(); i < chan.size(); ++i) // remplir de pass vide pour simplifier la suite
 		pass.push_back("");
@@ -59,7 +60,6 @@ void Server::join(vector<string> args, int fd_client) // TODO: check le premier 
 			if (_channel.find(*it_chan) == _channel.end())
 			{
 				_channel[*it_chan] = Channel(fd_client, *it_chan, *this);
-				//_channel[*it_chan].addClient(fd_client, '@');
 				confirm_to_client(fd_client, "JOIN " + *it_chan, *this);
 				confirm_to_client(fd_client, "MODE " + *it_chan + " +o " + clientNick, *this);
 
@@ -68,6 +68,11 @@ void Server::join(vector<string> args, int fd_client) // TODO: check le premier 
 			}
 			else
 			{
+				if (_channel.at(args[1]).isClientInChannel(fd_client) == true)
+				{
+					cerr << ANSI::purple << "vous etes deja dans un channel !" << ANSI::reset << endl;
+					continue ;
+				}
 				for (vector<int>::iterator it = _channel[*it_chan].getBlackList().begin(); it != _channel[*it_chan].getBlackList().end(); it++)
 					if ((*it) == fd_client)
 						return Rep().E474(fd_client, clientNick, *it_chan);
