@@ -24,6 +24,6 @@ vector<string> split_sep(string const & str, char separator)
 }
 
 int send_to_user(string msg, int cl_fd){
-	cout << ANSI::red << msg << ANSI::r ;
+	cout << ANSI::back_red << " " << cl_fd << " " << ANSI::r << "=>" << ANSI::red << msg << ANSI::r ;
 	return send(cl_fd, msg.c_str(), msg.size(), 0);
 }

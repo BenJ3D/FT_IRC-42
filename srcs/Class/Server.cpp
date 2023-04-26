@@ -202,7 +202,7 @@ int Server::openSocket(int port)
 				else
 				{
 					string str_buff(buffer);
-					cout << ANSI::green << str_buff << ANSI::r ;
+					cout << ANSI::back_green << " " << it->first << " " << ANSI::r << "=>" << ANSI::green << str_buff << ANSI::r ;
 					if (str_buff == " " || str_buff == "\r\n" || str_buff == "\n" || str_buff.empty())
 						continue;
 
