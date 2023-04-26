@@ -124,19 +124,10 @@ void Channel::removeClient(int fd_client)
  */
 void	Channel::ClientLeave(int fd_client, Server &serv, string const & msg, bool isQuit)
 {
-	string ret ;
-	// = ":" + serv.get_client()[fd_client].get_nick() + "!" + serv.get_client()[fd_client].get_username() + "@" + string(SERVER_NAME);
-	if (isQuit)
-		ret = " QUIT " + msg + "\r\n";
-	else
-		ret = " PART " + _name + " " + msg + "\r\n";
-	// for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
-	// {
-	// 	if (send_to_client(ret, it->first) == -1)
-	// 		serv.send_error(fd_client);
-	// cout << ANSI::gray << "{send} => " << ANSI::purple << ret << endl;
-	// }
-	confirm_to_all_channel_client(fd_client, ret, serv, *this);
+	if (!isQuit){
+		string ret = " PART " + _name + " " + msg ;
+		confirm_to_all_channel_client(fd_client, ret, serv, *this);
+	}
 	this->_list.erase(fd_client);
 }
 

@@ -21,10 +21,14 @@ void	Server::quit(vector<string> args, int fd_client) {
 	msg = ":" + _client[fd_client].get_nick() + "!" + _client[fd_client].get_username() + "@" + string(SERVER_NAME) + " QUIT :" + msg + "\r\n";
 
 	for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++){
-		if (send_to_user(msg, it->first))
+		if (send_to_user(msg, it->first) == -1)
 			send_error(it->first);
 	}
 
+	for (map<string, Channel>::iterator it = _channel.begin(); it != _channel.end();it++){ //for all chan
+		if (it->second.getList().find(fd_client) != it->second.getList().end())
+			it->second.ClientLeave(fd_client, *this, "", true);
+	}
 	map<string, Channel> tmp = _channel;
 	for (map<string, Channel>::iterator it = tmp.begin(); it != tmp.end();it++){ //for all chan
 		if (it->second.getList().empty())
@@ -34,4 +38,5 @@ void	Server::quit(vector<string> args, int fd_client) {
 		close(fd_client);
 		_client.erase(fd_client);
 	}
+
 }
