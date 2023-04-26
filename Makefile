@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+         #
+#    By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/25 18:23:10 by amiguez           #+#    #+#              #
-#    Updated: 2023/04/25 19:56:07 by amiguez          ###   ########.fr        #
+#    Updated: 2023/04/26 16:40:47 by bducrocq         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -89,7 +89,8 @@ OBJS := $(OBJS_SRCS) $(OBJS_UTILS) $(OBJS_CMDS) $(OBJS_CLASS) $(OBJS_CHANNEL)
 
 CPP		 :=	c++ -std=c++98
 CPPFLAGS :=	-Wall -Wextra -Werror
-SANITIZE :=	-fsanitize=address -g3
+SANITIZE :=#	-fsanitize=address
+DBGFLAGS :=	-g3
 
 # -----------------------
 # =====	Cosmetics	=====
@@ -117,12 +118,12 @@ all : $(NAME)
 
 $(NAME) : $(OBJS)
 	echo "$(BLUE)Creation of $(NAME) on linux ...$(END)"
-	$(CPP) $(CPPFLAGS) -I$(PATH_INCLUDES) -Iincludes/Class $(OBJS) -o $@
+	$(CPP) $(SANITIZE) $(DBGFLAGS) $(CPPFLAGS) -I$(PATH_INCLUDES) -Iincludes/Class $(OBJS) -o $@
 	echo "$(GREEN)$(NAME) created$(END)"
 
 $(PATH_OBJS)/%.o : $(PATH_SRCS)/%.cpp $(INCS) Makefile | $(PATH_OBJS)
 	printf "$(ERASE)$(CYAN)Compilation of $< ...$(END)$(RED)"
-	$(CPP) -I$(PATH_INCLUDES) -Iincludes/Class $(CPPFLAGS) -o $@ -c $<
+	$(CPP) $(SANITIZE) $(DBGFLAGS) -I$(PATH_INCLUDES) -Iincludes/Class $(CPPFLAGS) -o $@ -c $<
 
 $(PATH_OBJS) :
 	mkdir -p $(PATH_OBJS)
