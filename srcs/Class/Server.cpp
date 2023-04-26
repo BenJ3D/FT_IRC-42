@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/26 08:27:03 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/26 15:45:22 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,7 @@ Server::Server(string port, string password) : _pass_word(password)
 Server::~Server()
 {
 	for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++)
-	{
-		close((*it).first);
 		_client.erase(it);
-	}
 }
 
 /*
@@ -74,17 +71,13 @@ Server::~Server()
 Server &Server::operator=(Server const &rhs)
 {
 	(void)rhs;
-	// if ( this != &rhs )
-	//{
-	// this->_value = rhs.getValue();
-	//}
 	return *this;
 }
 
 ostream &operator<<(ostream &o, Server const &i)
 {
 	(void)i;
-	// o << "Value = " << i.getValue();
+	// o << "Value = " << i.getValue(); // FIXME: 
 	return o;
 }
 
@@ -193,7 +186,6 @@ int Server::openSocket(int port)
 				if (bytes_received == -1)
 				{
 					cerr << "Erreur lors de la réception des données" << endl;
-					close((*it).first);
 					_client.erase(it);
 					break;
 				}
@@ -310,10 +302,10 @@ void	Server::config(){
 			_oper_user = string();
 		}
 	}
-	cout << ANSI::green << "_operPassWord - = '" << _oper_passw << "'" << endl;
-	cout << ANSI::green << "_operUserName - = '" << _oper_user << "'" << endl;
-	cout << ANSI::green << "_motd - - - - - = '" << _motd << "'" << endl;
-
+	// cout << ANSI::green << "_operPassWord - = '" << _oper_passw << "'" << endl;
+	// cout << ANSI::green << "_operUserName - = '" << _oper_user << "'" << endl;
+	// cout << ANSI::green << "_motd - - - - - = '" << _motd << "'" << endl; 
+		// FIXME: LOGS ?
 
 }
 

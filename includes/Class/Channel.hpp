@@ -49,7 +49,7 @@ class Channel
 		int											getNumberClientInChannel( void );
 		vector<int>									getBlackList();
 		vector<int>									getInviteList();
-		map<int, pair<char, vector<string> > >	&	getList();
+		map<int, pair<char, vector<string> > > &	getList();
 		vector<int>									getOperators();
 		string										getPasswd();
 		string										getTopic();
@@ -60,16 +60,15 @@ class Channel
 		char										getClientMode(int fd_client);
 		string										ListNick(Server &serv, int fd_client);
 		string										list_all_nick(map<int, Client>& clients);
-		int											getOwner();
 		string										getTopicClientSetter();
 		void 										setTopicClientSetter(string const &msg);
 
-		// string const &								getMode();
-
 
 	private:
-		string										_topicClientSetter; //save fd du client qui a set le topic
+
 		bool										isOperator(int fd_client);
+
+		string										_topicClientSetter; //save fd du client qui a set le topic
 		bool										_requiredPass;
 		string		 								_name;
 		string										_passwd;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/16 22:38:14 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/23 02:48:20 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/26 09:44:26 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,4 @@ void	Server::quit(vector<string> args, int fd_client) {
 		_client.erase(fd_client);
 	}
 	cout << ANSI::yellow << "Client SIZE :" << _client.size() << endl;
-	close(fd_client);
 }

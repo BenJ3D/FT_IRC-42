@@ -34,7 +34,7 @@ class Rep
 	public:
 		Rep();
 		void send_to_client(std::string msg, int const &fd);
-		/* Replies */
+				/* ----- Replies ----- */
 		void R001(NR_ARG);
 		void R002(NR_ARG, const std::string& servName, const std::string &servVersion);
 		void R003(NR_ARG, const std::string& date);
@@ -88,7 +88,7 @@ class Rep
 
 		void R391(NR_ARG, const std::string& servName);
 
-		/* Errors */
+				/* ----- Errors ----- */
 		void E401(NR_ARG, const std::string& inputNick);
 		void E402(NR_ARG, const std::string& chanName);
 		void E403(NR_ARG, const std::string& chanName);
@@ -125,7 +125,6 @@ class Rep
 		void E473(NR_ARG, const std::string& chanName);
 		void E474(NR_ARG, const std::string& chanName);
 		void E475(NR_ARG, const std::string& chanName);
-		/* For some ungodly reason, ERR_BADCHANMASK doesn't take the user nick as input, still needs a string tho so it's fine */
 		void E476(NR_ARG);
 		void E481(NR_ARG);
 		void E482(NR_ARG, const std::string& chanName);

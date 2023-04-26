@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/25 18:59:43 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/26 15:45:59 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,29 +51,31 @@ class Server
 {
 	private:
 		Server(Server const &src);
-		Server(void);
+		Server();
+		Server &operator=(Server const &rhs);
 
 		int		openSocket(int port);
 		void	init_parsing_map();
 
-		string					_server_name;
 		const string			_pass_word;
 		string					_oper_passw;
 		string					_oper_user;
+		string					_server_name;
 		string					_motd;
+		map<string,Channel>		_channel;
+		map<int,Client>			_client;
 		fd_set					_read_fds;
 		int						_max_fd;
-		vector<int>				_client_fds;
-		map<int,Client>			_client;
-		map<string,Channel>		_channel;
 		bool					_delete_client;
 
 		std::map<std::string, std::pair<long unsigned int, CmdFunc> > commands;
 
+		// vector<int>				_client_fds; // FIXME: deprecated
+
 		void		config();
 		void		notice(int const &fd, string msg);
-		/** COMMAND **/
 
+		/* --- COMMAND --- */
 		void					pass(vector<string> args, int cl);
 		void					nick(vector<string> args, int cl);
 		void					ping(vector<string> args, int cl);
@@ -100,8 +102,6 @@ class Server
 		Server(std::string port, std::string password);
 		~Server();
 
-		Server &operator=(Server const &rhs);
-
 		/* --- GETTER --- */
 		map<int, Client>		&get_client();
 		map<string, Channel>	&get_channel();
@@ -112,13 +112,12 @@ class Server
 		void					parser(string command, int client_fd);
 		vector<string>			split_to_point(string str);
 		std::string				trim(std::string str);
-		vector<string>	super_split(string cmd, int nb_arg);
-		// void 			confirm_to_all_channel_client(int const &fd, string msg, Server &serv, Channel chan);
+		vector<string>			super_split(string cmd, int nb_arg);
 
 		/* --- SERVER --- */
 		bool					isExistChannelName(string const &channelName);
 		int						findClientFdWithNick(string const &nick);
-		bool					isClientOnChannel(int client_fd);
+		// bool					isClientOnChannel(int client_fd); //FIXME: Not used
 };
 
 	std::ostream &operator<<(std::ostream &o, Server const &i);

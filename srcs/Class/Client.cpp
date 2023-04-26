@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:40:42 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/26 08:10:58 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/26 15:37:51 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,32 +20,32 @@ Client::Client() :
 _id(-1),
 _nick("*"),
 _username(""),
-_is_auth(false),
-_is_pass(false),
+_realname(""),
+_away_message("Is away"),
+_is_reciving_server_notices(false),
+_is_invisible(false),
 _is_operator(false),
+_is_wallops(false),
 _is_away(false),
-_away_message("is away")
-{
-	cout << ANSI::red << ANSI::back_blue << "default const called " << ANSI::r << endl;
-}
+_is_auth(false),
+_is_pass(false){}
+
 
 Client::Client(int fd) :
 _id(fd),
 _nick("*"),
 _username(""),
-_is_auth(false),
-_is_pass(false),
+_realname(""),
+_away_message("Is away"),
+_is_reciving_server_notices(false),
+_is_invisible(false),
 _is_operator(false),
+_is_wallops(false),
 _is_away(false),
-_away_message("is away")
-{
-	_is_pass = false;
-	cout << ANSI::red << ANSI::back_blue << "fd const called " << ANSI::r << endl;
-}
+_is_auth(false),
+_is_pass(false){}
 
-Client::Client( const Client & src )
-{
-	cout << ANSI::red << ANSI::back_blue << "copy const called " << ANSI::r << endl;
+Client::Client( const Client & src ) {
 	*this = src;
 }
 
@@ -54,7 +54,8 @@ Client::Client( const Client & src )
 */
 
 Client::~Client() {
-	cout << ANSI::red << ANSI::back_blue << "destructor called " << ANSI::r << endl;
+	if (_id != -1)
+		close (_id);
 }
 
 
@@ -74,10 +75,10 @@ Client &				Client::operator=( Client const & rhs ) {
 }
 
 std::ostream &			operator<<( std::ostream & o, Client const & i ) {
-	o << "FD = " << i.get_id() << 
-	" | NICK = " << i.get_nick() << 
-	" | FIST_CONNECT = " << i.get_is_auth() << 
-	" | PASS = " << i.get_pass_confirm() << std::endl;
+	o	<<"FD = "	<< i.get_id() << " | "
+		<<"NICK = "	<< i.get_nick() << " | "
+		<<"FIST_CONNECT = "	<< i.get_is_auth() << " | "
+		<<"PASS = "	<< i.get_pass_confirm() << std::endl;
 	return o;
 }
 
@@ -96,7 +97,7 @@ void Client::now_auth(Server &serv) {
 		Rep().R001(_id, _nick);
 		Rep().R002(_id, _nick, string(SERVER_NAME), string(SERVER_VERSION));
 		Rep().R003(_id, _nick, string(SERVER_DATE));
-		return serv.parser("MOTD", _id);
+		serv.parser("MOTD", _id);
 }
 
 /**
@@ -277,12 +278,6 @@ void Client::set_mode_w() {
 
 
 //######################### UNSETTER #########################
-
-// void Client::unset_mode(string const &mode)
-// {
-// 	this->_modes = mode;
-// }
-
 
 void Client::unset_mode_a() {
 	this->_is_away = false;

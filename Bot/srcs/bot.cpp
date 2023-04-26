@@ -6,7 +6,7 @@
 /*   By: amiguez <amiguez@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 06:32:53 by amiguez           #+#    #+#             */
-/*   Updated: 2023/04/20 19:43:41 by amiguez          ###   ########.fr       */
+/*   Updated: 2023/04/26 15:23:11 by amiguez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ void Bot::run() {
 int Bot::send_serv(string input){
 	return (send(_server_fd, input.c_str(), input.length(), SOCK_STREAM));
 }
+
 string Bot::recv_serv(){
 	char buff[1024] = {0};
 	recv(_server_fd, buff, 1024, 0);

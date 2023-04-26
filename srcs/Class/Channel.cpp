@@ -10,7 +10,15 @@ Channel::Channel()
 
 #include "ANSI.hpp"
 
-Channel::Channel(int fd_client, string const & name, Server &refServer) :  _requiredPass(false), _name(name), _visibilityMode('='), _isInviteOnly(false), _isModerated(false), _limit(10), _topic(""), _refServ(&refServer)
+Channel::Channel(int fd_client, string const & name, Server &refServer) :
+_requiredPass(false),
+_name(name),
+_visibilityMode('='),
+_isInviteOnly(false),
+_isModerated(false),
+_limit(10),
+_topic(""),
+_refServ(&refServer)
 {
 	_list[fd_client] = make_pair('@', vector<string>());
 	setOwner(fd_client);
@@ -19,20 +27,11 @@ Channel::Channel(int fd_client, string const & name, Server &refServer) :  _requ
 	setOwner(fd_client);
 }
 
-//En faite a priori on ne peux pas creer de channel tout en definissant un passwd
-// Channel::Channel(int fd_client, string const & name, string const & passwd ) : requiredPass(false), _name(name), _modes('=')//TODO: DBG
-// {
-// 	_list[fd_client] = make_pair('@', vector<string>());
-// }
-
-
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
 
-Channel::~Channel()
-{
-}
+Channel::~Channel(){}
 
 string Channel::ListNick(Server &serv, int fd_client)
 {
@@ -50,14 +49,6 @@ string Channel::ListNick(Server &serv, int fd_client)
 	return list;
 }
 
-int Channel::getOwner() //TODO: check if working //PK , copilot... sert a RIEN ?!!
-{
-	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
-		if ((*it).second.first == '@')
-			return (*it).first;
-	return 0;
-}
-
 bool Channel::isOperator(int fd_client)
 {
 	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
@@ -66,12 +57,12 @@ bool Channel::isOperator(int fd_client)
 	return false;
 }
 
-map<int, pair<char, vector<string> > >	&	Channel::getList()
+map<int, pair<char, vector<string> > > & Channel::getList()
 {
 	return _list;
 }
 
-string	Channel::list_all_nick(map<int, Client> & _client)
+string Channel::list_all_nick(map<int, Client> & _client)
 {
 	string list;
 	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
@@ -87,7 +78,7 @@ string	Channel::list_all_nick(map<int, Client> & _client)
  * @param fd_client 
  * @return 
  */
-char	Channel::getClientMode(int fd_client)
+char Channel::getClientMode(int fd_client)
 {
 	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
 		if ((*it).first == fd_client)
@@ -95,7 +86,7 @@ char	Channel::getClientMode(int fd_client)
 	return '0';
 }
 
-vector<int>			Channel::getOperators()
+vector<int> Channel::getOperators()
 {
 	vector<int>		operator_list;
 
@@ -105,7 +96,7 @@ vector<int>			Channel::getOperators()
 	return operator_list;
 }
 
-void	Channel::addClient(int fd_client, char mode)
+void Channel::addClient(int fd_client, char mode)
 {
 	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
 		if ((*it).first == fd_client)
@@ -113,7 +104,7 @@ void	Channel::addClient(int fd_client, char mode)
 	_list[fd_client] = make_pair(mode, vector<string>());
 }
 
-void					Channel::removeClient(int fd_client)
+void Channel::removeClient(int fd_client)
 {
 	for (map<int, pair<char, vector<string> > >::iterator it = _list.begin(); it != _list.end(); it++)
 	{
@@ -308,11 +299,6 @@ void Channel::setVisibilityMode(char const &mode)
 {
 	_visibilityMode = mode;
 }
-
-// void 					Channel::setMode(char const & mode)
-// {
-// 	_modes = mode;
-// }
 
 int					Channel::getNumberClientInChannel()
 {
