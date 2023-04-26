@@ -1,4 +1,5 @@
 #include "Channel.hpp"
+#include "ANSI.hpp"
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -8,23 +9,20 @@ Channel::Channel()
 {
 }
 
-#include "ANSI.hpp"
 
 Channel::Channel(int fd_client, string const & name, Server &refServer) :
 _requiredPass(false),
 _name(name),
+_passwd(""),
 _visibilityMode('='),
 _isInviteOnly(false),
 _isModerated(false),
 _limit(10),
+_owner(fd_client),
 _topic(""),
 _refServ(&refServer)
 {
 	_list[fd_client] = make_pair('@', vector<string>());
-	setOwner(fd_client);
-	// setPasswd("42");
-	_list[fd_client] = make_pair('@', vector<string>());
-	setOwner(fd_client);
 }
 
 /*
@@ -47,6 +45,29 @@ string Channel::ListNick(Server &serv, int fd_client)
 		//cout << ANSI::gray << "{send} => " << ANSI::purple << msg << endl;
 	}
 	return list;
+}
+
+/*
+** --------------------------------   METHODE   --------------------------------
+*/
+
+Channel &Channel::operator=(Channel const &rhs)
+{
+	this->_topicClientSetter = rhs._topicClientSetter;
+	this->_requiredPass = rhs._requiredPass;
+	this->_name = rhs._name;
+	this->_passwd = rhs._passwd;
+	this->_blackList = rhs._blackList;
+	this->_inviteList = rhs._inviteList;
+	this->_list = rhs._list;
+	this->_visibilityMode = rhs._visibilityMode;
+	this->_isInviteOnly = rhs._isInviteOnly;
+	this->_isModerated = rhs._isModerated;
+	this->_limit = rhs._limit;
+	this->_modes = rhs._modes;
+	this->_owner = rhs._owner;
+	this->_topic = rhs._topic;
+	return *this;
 }
 
 bool Channel::isOperator(int fd_client)

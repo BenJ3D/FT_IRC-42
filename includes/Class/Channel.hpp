@@ -18,6 +18,7 @@ class Channel
 		Channel();
 		Channel( int fd_client, string const & name, Server &refServer);
 		~Channel();
+		Channel	&operator=(Channel const &rhs);
 
 		void										addClient(int fd_client, char mode);
 		void										removeClient(int fd_client);
