@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/26 22:29:59 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/26 23:19:31 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,19 +35,7 @@ Server::Server(const Server &src) {
 
 Server::Server(string port, string password) : _pass_word(password)
 {
-
-		//DBG SEGFAUT *******/
-
-		// vector<string> test;
-		// test.push_back("JOIN");
-		// test.push_back("#1,#2,#");
-		// test.push_back("44,42,");
-		// join(test, 4);
-		// join(test, 5);
-		// cerr << ANSI::red << "FINNNNNNNN DEBUG" << endl << ANSI::reset;
 	
-		//DBG SEGFAUT *******/
-		
 	init_parsing_map();
 	config();
 	openSocket(atoi(port.c_str())); // fonction TEST pour le moment
@@ -210,6 +198,7 @@ int Server::openSocket(int port)
 						this->parser(str_buff, (*it).first);
 					}
 					catch (std::exception &ex) {
+						cerr << ANSI::yellow << ex.what() << endl;
 						send_error((*it).first);
 						break;
 					}

@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 00:24:59 by amiguez           #+#    #+#             */
-/*   Updated: 2023/04/23 01:54:26 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/26 23:18:41 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,5 @@ void Server::oper(vector<string> args, int cl){
 	if (args[1] != _oper_user)
 		return Rep().E464(cl, _client[cl].get_nick());
 	_client[cl].set_mode_o();
-	Rep().R381(cl, "Trixi");
-	notice(cl,"c'est un nom de pute. :(");
+	Rep().R381(cl, _client[cl].get_nick());
 }

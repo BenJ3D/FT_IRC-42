@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 15:02:34 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/26 22:18:57 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/26 23:19:41 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,7 @@
 bool	checkNameChannelIsGood( string name )
 {
 	if (name.size() >= 1 && name.size() < 50 && name[0] == '#')
-	{
-		// cerr << ANSI::blue << "checkNameChannelIsGood: true" << ANSI::reset << endl;
 		return true;
-	}
-	// cerr << ANSI::blue << "checkNameChannelIsGood: false" << ANSI::reset << endl;
 	return false;
 }
 
@@ -63,16 +59,13 @@ void Server::join(vector<string> args, int fd_client)
 				confirm_to_client(fd_client, "JOIN " + *it_chan, *this);
 				confirm_to_client(fd_client, "MODE " + *it_chan + " +o " + clientNick, *this);
 
-				Rep().R353(fd_client, clientNick, *it_chan, clientNick, _channel[*it_chan].getVisibilityMode(), _channel[*it_chan].getList().at(fd_client).first); // FIXME: FAUX
+				Rep().R353(fd_client, clientNick, *it_chan, clientNick, _channel[*it_chan].getVisibilityMode(), _channel[*it_chan].getList().at(fd_client).first);
 				Rep().R366(fd_client, clientNick, *it_chan);
 			}
 			else
 			{
-				if (_channel.at(args[1]).isClientInChannel(fd_client) == true)
-				{
-					cerr << ANSI::purple << "vous etes deja dans un channel !" << ANSI::reset << endl;
+				if (_channel.at(*it_chan).isClientInChannel(fd_client) == true)
 					continue ;
-				}
 				for (vector<int>::iterator it = _channel[*it_chan].getBlackList().begin(); it != _channel[*it_chan].getBlackList().end(); it++)
 					if ((*it) == fd_client)
 						return Rep().E474(fd_client, clientNick, *it_chan);
