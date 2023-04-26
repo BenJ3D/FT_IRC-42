@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/26 17:59:39 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/26 21:09:07 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 # include <vector>
 # include <map>
 # include <set>
+# include <cctype>
 
 # include "ANSI.hpp"
 # include "Channel.hpp"

@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 00:12:30 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/26 18:50:56 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/26 21:59:45 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,7 @@ int Server::openSocket(int port)
 
 		for (map<int, Client>::iterator it = _client.begin(); it != _client.end(); it++)
 		{
+			cout << (*it).first << endl;
 			FD_SET((*it).first, &_read_fds);
 			_max_fd = max(_max_fd, (*it).first);
 		}
