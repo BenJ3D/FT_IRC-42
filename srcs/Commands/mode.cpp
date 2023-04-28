@@ -6,7 +6,7 @@
 /*   By: bducrocq <bducrocq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 02:46:29 by bducrocq          #+#    #+#             */
-/*   Updated: 2023/04/27 00:38:45 by bducrocq         ###   ########.fr       */
+/*   Updated: 2023/04/28 16:58:29 by bducrocq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@ string		Server::recupAllModChan(string channelName, bool displayKey)
 			chanMode += " :<key>";
 	}
 	if (chanMode.empty())
-		chanMode = "No mode for this channel";
+		chanMode = "";
 	return chanMode;
 }
 
