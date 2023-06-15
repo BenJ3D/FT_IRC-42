@@ -67,7 +67,8 @@ Et afficher le topic avec la commande TOPIC sans arguments :
 ```/topic```
 
 BONUS :
-Vous pouvez compiler avec make et lancer le bot en allant dans le dossier Bot, il prend comme argument le port et mdp de serveur (il doit donc se lancer obligatoirement sur la même machine que le serveur lui même pour se connecter en localhost)
+Vous pouvez compiler avec make et lancer le bot en allant dans le dossier Bot, il prend comme argument obligatoire le Mdp du serveur et se connectera sur l'ip `127.0.0.1` avec le port `6667`, mais vous pouvez les rajouter dans cet ordre pour les modifier à volonté
+$\hspace{5pt}$```./Bob <password> [<ip_address> [port]]```
 
 Pour l'envoi de fichier il suffit d'utiliser la commande send de weechat :
 ```/dcc send <nom_utilisateur_destinataire> <chemin_du_fichier>```
