@@ -23,12 +23,12 @@ Ce projet est un serveur IRC développé en C++98 dans le cadre du cursus de l'�
 
 
 2. Lancer le serveur IRC en spécifiant le port d'écoute et le mot de passe
-      ```./ircserv <port> <password>```
+$\hspace{5pt}$```./ircserv <port> <password>```
 
 3. Utiliser un le client IRC WEECHAT pour se connecter au serveur. 
 Assurez-vous de spécifier l'adresse IP du serveur et le port d'écoute, ainsi que le password.
 Par exemple pour un serveur lancé en local sur le port 4242 et password 4242, ajouter dans weechat le serveur suivant :
-     ```/server add host 127.0.0.1/4242 password=4242```
+$\hspace{5pt}$```/server add host 127.0.0.1/4242 password=4242```
 
 Puis s'y connecter à l'aide de la commande : ```/connect host```
 
@@ -43,8 +43,8 @@ Voici les commandes de bases utilisées dans weechat pour irc :
 7. **`/nick <new_nickname>`** : Changer de pseudo.
 10. **`/back`** : Revenir en ligne après avoir été absent.
 11. **`/topic <new_topic>`** : Changer le sujet du canal.
-12. `/names` : Lister les utilisateurs présents sur le canal.
-13. `/list` : Lister les canaux disponibles sur le serveur.
+12. **`/names`** : Lister les utilisateurs présents sur le canal.
+13. **`/list`** : Lister les canaux disponibles sur le serveur.
 14. **`/buffer close`** : Fermer l'onglet actuel.
 15. **`/set <option> <value>`** : Modifier les options de configuration de WeeChat.
 20. **`/help`** : Afficher de l'aide sur les commandes disponibles.
@@ -61,14 +61,14 @@ Exemple : **`MODE #channel +b usermask`** ou **`MODE #channel -b usermask`**
 Exemple : **`MODE #channel +i`** ou **`MODE #channel -i`**
 
 Vous pouvez aussi changer le topic d'un channel via la commande TOPIC :
-```/topic NouveauTopicChannel```
+$\hspace{5pt}$```/topic NouveauTopicChannel```
 
 Et afficher le topic avec la commande TOPIC sans arguments :
-```/topic```
+$\hspace{5pt}$```/topic```
 
 BONUS :
 Vous pouvez compiler avec make et lancer le bot en allant dans le dossier Bot, il prend comme argument obligatoire le Mdp du serveur et se connectera sur l'ip `127.0.0.1` avec le port `6667`, mais vous pouvez les rajouter dans cet ordre pour les modifier à volonté
 $\hspace{5pt}$```./Bob <password> [<ip_address> [port]]```
 
 Pour l'envoi de fichier il suffit d'utiliser la commande send de weechat :
-```/dcc send <nom_utilisateur_destinataire> <chemin_du_fichier>```
+$\hspace{5pt}$```/dcc send <nom_utilisateur_destinataire> <chemin_du_fichier>```
